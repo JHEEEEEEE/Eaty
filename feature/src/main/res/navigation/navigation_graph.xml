@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/home_fragment">
+
+    <fragment
+        android:id="@+id/home_fragment"
+        android:name="com.effort.feature.home.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_communityFragment"
+            app:destination="@id/community_fragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_mapFragment"
+            app:destination="@id/map_fragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_myPageFragment"
+            app:destination="@id/myPage_fragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/community_fragment"
+        android:name="com.effort.feature.community.CommunityFragment"
+        android:label="CommunityFragment"
+        tools:layout="@layout/fragment_community" />
+    <fragment
+        android:id="@+id/map_fragment"
+        android:name="com.effort.feature.map.MapFragment"
+        android:label="MapFragment"
+        tools:layout="@layout/fragment_map" />
+
+
+    <fragment
+        android:id="@+id/myPage_fragment"
+        android:name="com.effort.feature.mypage.MyPageFragment"
+        android:label="MyPageFragment"
+        tools:layout="@layout/fragment_mypage">
+        <action
+            android:id="@+id/action_myPageFragment_to_editProfileFragment"
+            app:destination="@id/editProfile_fragment" />
+        <action
+            android:id="@+id/action_myPageFragment_to_noticeFragment"
+            app:destination="@id/notice_fragment" />
+        <action
+            android:id="@+id/action_myPageFragment_to_FAQFragment"
+            app:destination="@id/faq_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/faq_fragment"
+        android:name="com.effort.feature.mypage.detail.faq.FAQFragment"
+        android:label="FAQFragment"
+        tools:layout="@layout/fragment_recyclerview" />
+    <fragment
+        android:id="@+id/editProfile_fragment"
+        android:name="com.effort.feature.mypage.detail.editprofile.EditProfileFragment"
+        android:label="EditProfileFragment"
+        tools:layout="@layout/fragment_editprofile" />
+    <fragment
+        android:id="@+id/notice_fragment"
+        android:name="com.effort.feature.mypage.detail.notice.NoticeFragment"
+        android:label="NoticeFragment"
+        tools:layout="@layout/fragment_recyclerview" />
+
+</navigation>
