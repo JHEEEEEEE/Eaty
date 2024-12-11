@@ -5,4 +5,13 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="FragmentPaddingStyle">
+        <item name="android:paddingTop">50dp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+    </style>
+
+    <style name="MapPaddingStyle">
+        <item name="android:paddingTop">36dp</item>
+    </style>
 </resources>

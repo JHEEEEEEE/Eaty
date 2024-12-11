@@ -1,5 +1,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/FragmentPaddingStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -25,7 +26,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/community_logo"/>
+        app:layout_constraintTop_toBottomOf="@id/community_logo" />
 
     <!-- 탭바 -->
     <com.google.android.material.tabs.TabLayout
@@ -46,12 +47,10 @@
     <FrameLayout
         android:id="@+id/tabContent"
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_height="0dp" />
 
-    <include
-        layout="@layout/progress_indicator"/>
+    <include layout="@layout/progress_indicator" />
 
-    <include
-        layout="@layout/floating_button" />
+    <include layout="@layout/floating_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

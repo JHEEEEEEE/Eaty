@@ -31,7 +31,12 @@
         android:id="@+id/map_fragment"
         android:name="com.effort.feature.map.MapFragment"
         android:label="MapFragment"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map">
+
+        <argument
+            android:name="applyPadding"
+            android:defaultValue="false" />
+    </fragment>
 
 
     <fragment
@@ -41,7 +46,9 @@
         tools:layout="@layout/fragment_mypage">
         <action
             android:id="@+id/action_myPageFragment_to_editProfileFragment"
-            app:destination="@id/editProfile_fragment" />
+            app:destination="@id/editProfile_fragment"
+            app:popUpTo="@id/myPage_fragment"
+            app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_myPageFragment_to_noticeFragment"
             app:destination="@id/notice_fragment" />

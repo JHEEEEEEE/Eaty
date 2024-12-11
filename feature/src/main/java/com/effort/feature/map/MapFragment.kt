@@ -41,7 +41,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     }
 
     override fun initView() {
-
+        val applyPadding = arguments?.getBoolean("applyPadding") ?: true
+        if (!applyPadding) {
+            view?.setPadding(0, 0, 0, 0) // 패딩 제거
+        }
     }
 
 

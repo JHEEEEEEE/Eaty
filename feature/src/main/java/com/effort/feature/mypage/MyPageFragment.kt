@@ -1,6 +1,8 @@
 package com.effort.feature.mypage
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,12 +24,8 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         return binding.root
     }
 
-
     override fun initView() {
-        // navigationMap을 통해 각 버튼에 클릭 리스너 설정
-        navigationMap.forEach { (button, actionId) ->
-            setNavigationClickListener(button, actionId)
-        }
+        setNavigationClickListener()
     }
 
 
@@ -37,19 +35,19 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         initView()
     }
 
-    // navigationMap을 여기서 정의
-    private val navigationMap by lazy {
-        mapOf(
+
+    // 공통 네비게이션 클릭 리스너 메소드
+    private fun setNavigationClickListener() {
+        val navigationMap = mapOf(
             binding.faq to R.id.action_myPageFragment_to_FAQFragment,
             binding.notice to R.id.action_myPageFragment_to_noticeFragment,
             binding.profileSettings to R.id.action_myPageFragment_to_editProfileFragment,
         )
-    }
 
-    // 공통 네비게이션 클릭 리스너 메소드
-    private fun setNavigationClickListener(button: View, actionId: Int) {
-        button.setOnClickListener {
-            findNavController().navigate(actionId)
+        navigationMap.forEach { (view, actionId) ->
+            view.setOnClickListener {
+                    findNavController().navigate(actionId)
+                }
+            }
         }
     }
-}

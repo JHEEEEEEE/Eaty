@@ -4,15 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/map_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:background="@drawable/map_logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <!-- 네이버 지도 MapFragment를 포함하는 컨테이너 -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
