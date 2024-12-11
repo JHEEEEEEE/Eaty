@@ -1,10 +1,15 @@
 package com.effort.feature.community
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.effort.feature.R
 import com.effort.feature.community.giveaway.GiveAwayFragment
 import com.effort.feature.community.question.QuestionFragment
@@ -12,11 +17,23 @@ import com.effort.feature.community.meetup.MeetupFragment
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.databinding.FragmentCommunityBinding
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 class CommunityFragment :
     BaseFragment<FragmentCommunityBinding>(FragmentCommunityBinding::inflate) {
-    override fun initView() {
+    private lateinit var navController: NavController
 
+    override fun initView() {
+        setupTabLayoutAndViewPager()
+    }
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        _binding = FragmentCommunityBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     // 실행테스트 더미코드
@@ -25,43 +42,28 @@ class CommunityFragment :
         initView()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        _binding = FragmentCommunityBinding.inflate(inflater, container, false)
 
-        // 탭 추가
-        binding.tabs?.apply {
-            addTab(this.newTab().setText("게시글"))
-            addTab(this.newTab().setText("나눔"))
-            addTab(this.newTab().setText("모임"))
+    private fun setupTabLayoutAndViewPager() {
+        // NavController 연결
+        try {
+            navController = findNavController()  // 부모 Fragment의 NavController를 찾음
+        } catch (e: Exception) {
+            Log.e("CommunityFragment", "NavController is not found", e)
         }
 
-        // 기본으로 첫 번째 탭의 Fragment 로드
-        loadFragment(QuestionFragment())
+        val tabLayout: TabLayout = binding.tabs
+        val viewPager: ViewPager2 = binding.tabContent
 
-        // 탭 선택 시 프래그먼트 변경
-        binding.tabs?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                when (tab?.text) {
-                    "게시글" -> loadFragment(QuestionFragment())
-                    "나눔" -> loadFragment(GiveAwayFragment())
-                    "모임" -> loadFragment(MeetupFragment())
-                }
+        val communityDetailAdapter = CommunityDetailAdapter(this)
+        viewPager.adapter = communityDetailAdapter
+
+        // TabLayout과 ViewPager 연결
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            when (position) {
+                0 -> tab.text = "질문"
+                1 -> tab.text = "나눔"
+                2 -> tab.text = "모임"
             }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
-
-        return binding.root
-    }
-
-    // 프래그먼트 로드 함수
-    private fun loadFragment(fragment: Fragment) {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.tabContent, fragment)
-            .commit()
+        }.attach()
     }
 }

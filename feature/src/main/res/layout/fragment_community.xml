@@ -20,7 +20,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:orientation="vertical"
-        app:constraint_referenced_ids="tabs,tabContent"
+        app:constraint_referenced_ids="tabs,tab_content"
         app:flow_verticalGap="17dp"
         app:flow_verticalStyle="packed"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,10 +44,16 @@
         app:tabTextColor="@color/gray" />
 
     <!--FrameLayout -->
-    <FrameLayout
+<!--    <FrameLayout
         android:id="@+id/tabContent"
         android:layout_width="match_parent"
-        android:layout_height="0dp" />
+        android:layout_height="0dp" />-->
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/tab_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
 
     <include layout="@layout/progress_indicator" />
 
