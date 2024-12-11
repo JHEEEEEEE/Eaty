@@ -54,7 +54,7 @@
         android:id="@+id/faq_fragment"
         android:name="com.effort.feature.mypage.detail.faq.FAQFragment"
         android:label="FAQFragment"
-        tools:layout="@layout/fragment_recyclerview" />
+        tools:layout="@layout/fragment_faq" />
     <fragment
         android:id="@+id/editProfile_fragment"
         android:name="com.effort.feature.mypage.detail.editprofile.EditProfileFragment"
@@ -64,6 +64,6 @@
         android:id="@+id/notice_fragment"
         android:name="com.effort.feature.mypage.detail.notice.NoticeFragment"
         android:label="NoticeFragment"
-        tools:layout="@layout/fragment_recyclerview" />
+        tools:layout="@layout/fragment_faq" />
 
 </navigation>

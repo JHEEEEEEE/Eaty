@@ -36,4 +36,14 @@
     <string name="community">커뮤니티</string>
     <string name="map">지도</string>
 
+    <!-- community   -->
+    <string name="recy_talk">Recy-Talk</string>
+    <string name="recy_talk_description">환경을 사랑하는 리사이크루들의 소통의 장! 환경에 대한 자유로운 이야기로 나눠요🍀</string>
+
+    <string name="recy_giveaway">Recy-Giveaway</string>
+    <string name="recy_giveaway_description">환경을 사랑하는 리사이크루들의 나눔의 장! 서로에게 필요한 제품을 나누며 환경을 지켜요💚</string>
+
+    <string name="recy_meetup">Recy-Meetup</string>
+    <string name="recy_meetup_description">환경에 진심인 크루들의 모임의 장! 함께 모여 플로깅을 하며 건강과 환경을 지켜요🌱</string>
+
 </resources>

@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.effort.feature.core.base.BaseFragment
-import com.effort.feature.databinding.FragmentRecyclerviewBinding
+import com.effort.feature.databinding.FragmentNoticeBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NoticeFragment: BaseFragment<FragmentRecyclerviewBinding>(FragmentRecyclerviewBinding::inflate) {
+class NoticeFragment: BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding::inflate) {
     override fun initView() {
 
     }
@@ -26,7 +26,7 @@ class NoticeFragment: BaseFragment<FragmentRecyclerviewBinding>(FragmentRecycler
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentRecyclerviewBinding.inflate(inflater, container, false)
+        _binding = FragmentNoticeBinding.inflate(inflater, container, false)
         return binding.root
     }
 }

@@ -5,12 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.effort.feature.core.base.BaseFragment
-import com.effort.feature.databinding.FragmentRecyclerviewBinding
+import com.effort.feature.databinding.FragmentFaqBinding
+import com.effort.feature.databinding.FragmentQuestionBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class FAQFragment :
-    BaseFragment<FragmentRecyclerviewBinding>(FragmentRecyclerviewBinding::inflate) {
+    BaseFragment<FragmentFaqBinding>(FragmentFaqBinding::inflate) {
     override fun initView() {
 
     }
@@ -26,7 +27,7 @@ class FAQFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentRecyclerviewBinding.inflate(inflater, container, false)
+        _binding = FragmentFaqBinding.inflate(inflater, container, false)
         return binding.root
     }
 }
