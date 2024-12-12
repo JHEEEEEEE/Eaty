@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.effort.recycrew" />
+                  <option name="mobileSdkAppId" value="1:470817209530:android:d64ac9be9a5aad0a71d683" />
+                  <option name="projectId" value="recycrew-c126e" />
+                  <option name="projectNumber" value="470817209530" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

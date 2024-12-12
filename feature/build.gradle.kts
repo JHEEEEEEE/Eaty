@@ -30,7 +30,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     
     buildFeatures {
@@ -54,6 +54,15 @@ dependencies {
     // navigation
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
+
+    // glide
+    implementation(libs.glide)
+
+    //naverMap
+    implementation(libs.naver.map)
+    implementation(libs.play.services.location)
+
+
 
     implementation(project(":presentation"))
 }

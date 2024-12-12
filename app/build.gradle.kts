@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -51,6 +52,11 @@ dependencies {
     // hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+
+    // firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.common.ktx)
 
     implementation(project(":feature"))
     implementation(project(":presentation"))

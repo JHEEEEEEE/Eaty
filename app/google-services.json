@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "470817209530",
+    "project_id": "recycrew-c126e",
+    "storage_bucket": "recycrew-c126e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470817209530:android:d64ac9be9a5aad0a71d683",
+        "android_client_info": {
+          "package_name": "com.effort.recycrew"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNtN1KB6nZ-gpsVpTWJQ4ChqV9LywA5Nk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
