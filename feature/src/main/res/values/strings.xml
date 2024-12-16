@@ -47,6 +47,8 @@
     <string name="recy_meetup_description">환경에 진심인 크루들의 모임의 장! 함께 모여 플로깅을 하며 건강과 환경을 지켜요🌱</string>
     <string name="play">실행</string>
     <string name="category">카테고리</string>
+    <string name="title">제목</string>
     <string name="question">질문</string>
+
 
 </resources>

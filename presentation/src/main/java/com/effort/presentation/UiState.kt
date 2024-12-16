@@ -11,3 +11,4 @@ sealed class UiState<out T> {
         fun <T> successList(data: List<T>): UiState<List<T>> = Success(data)
     }
 }
+

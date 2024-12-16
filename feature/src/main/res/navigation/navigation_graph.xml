@@ -46,9 +46,7 @@
         tools:layout="@layout/fragment_mypage">
         <action
             android:id="@+id/action_myPageFragment_to_editProfileFragment"
-            app:destination="@id/editProfile_fragment"
-            app:popUpTo="@id/myPage_fragment"
-            app:popUpToInclusive="false" />
+            app:destination="@id/editProfile_fragment" />
         <action
             android:id="@+id/action_myPageFragment_to_noticeFragment"
             app:destination="@id/notice_fragment" />

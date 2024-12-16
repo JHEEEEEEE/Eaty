@@ -14,6 +14,7 @@ class FaqRemoteDataSourceImpl @Inject constructor(
     // FirebaseService에서 FaqWrapperResponse 데이터를 가져오고
     // 각 FaqResponse를 toData() 메서드를 통해 FaqEntity로 변환하여 반환
     override suspend fun getFaqs(): List<FaqEntity> {
-        return firebaseService.getFaqs().summaryFaqs.map { it.toData() }
+        return firebaseService.getFaqs().resultFaqs.map { it.toData() }
     }
+
 }

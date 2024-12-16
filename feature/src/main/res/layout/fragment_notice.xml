@@ -26,6 +26,7 @@
         app:layout_constraintTop_toBottomOf="@id/notice_logo"/>
 
     <include
+        android:id="@+id/progress_circular"
         layout="@layout/progress_indicator"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

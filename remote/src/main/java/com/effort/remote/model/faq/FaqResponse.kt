@@ -1,7 +1,6 @@
-package com.effort.remote.model
+package com.effort.remote.model.faq
 
 import com.effort.data.model.FaqEntity
-import com.google.firebase.Timestamp
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -11,10 +10,13 @@ import kotlinx.serialization.Serializable
 data class FaqResponse(
     @SerialName("category")
     val category: String = "",
+
     @SerialName("question")
     val question: String = "",
+
     @SerialName("answer")
     val answer: String = "",
+
     @SerialName("timestamp")
     val timestamp: String = ""
 ) {

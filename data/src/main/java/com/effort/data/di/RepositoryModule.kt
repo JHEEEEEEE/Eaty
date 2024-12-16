@@ -1,8 +1,10 @@
 package com.effort.data.di
 
 import com.effort.data.repositoryimpl.FaqRepositoryImpl
+import com.effort.data.repositoryimpl.NoticeRepositoryImpl
 //import com.effort.data.repositoryimpl.NoticeRepositoryImpl
 import com.effort.domain.repository.FaqRepository
+import com.effort.domain.repository.NoticeRepository
 //import com.effort.domain.repository.NoticeRepository
 import dagger.Binds
 import dagger.Module
@@ -19,7 +21,7 @@ internal abstract class RepositoryModule {
     @Singleton
     abstract fun bindFaqRepository(repo: FaqRepositoryImpl): FaqRepository
 
-/*    @Binds
+    @Binds
     @Singleton
-    abstract fun bindNoticeRepository(repo: NoticeRepositoryImpl): NoticeRepository*/
+    abstract fun bindNoticeRepository(repo: NoticeRepositoryImpl): NoticeRepository
 }

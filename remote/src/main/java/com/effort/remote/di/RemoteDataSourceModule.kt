@@ -1,7 +1,9 @@
 package com.effort.remote.di
 
 import com.effort.data.datasource.FaqRemoteDataSource
+import com.effort.data.datasource.NoticeRemoteDataSource
 import com.effort.remote.datasourceimpl.FaqRemoteDataSourceImpl
+import com.effort.remote.datasourceimpl.NoticeRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,5 +19,9 @@ internal abstract class RemoteDataSourceModule {
     // Hilt가 이 설정을 기반으로 FaqRemoteDataSource 의존성을 제공
     @Binds
     @Singleton
-    abstract fun bindFaqRemoteDataSource(source: FaqRemoteDataSourceImpl): FaqRemoteDataSource
+    abstract fun bindFaqRemoteDataSource(faqRemoteDataSourceImpl: FaqRemoteDataSourceImpl): FaqRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindNoticeRemoteDataSource(noticeRemoteDataSourceImpl: NoticeRemoteDataSourceImpl): NoticeRemoteDataSource
 }
