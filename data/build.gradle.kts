@@ -48,5 +48,9 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    // firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.common.ktx)
+
     implementation(project(":domain"))
 }

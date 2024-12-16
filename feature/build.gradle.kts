@@ -62,7 +62,5 @@ dependencies {
     implementation(libs.naver.map)
     implementation(libs.play.services.location)
 
-
-
     implementation(project(":presentation"))
 }
