@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.effort.feature.R
 import com.effort.feature.databinding.ItemNoticeBinding
-import com.effort.presentation.model.NoticeModel
+import com.effort.presentation.model.mypage.detail.notice.NoticeModel
 
 class NoticeListAdapter: ListAdapter<NoticeModel, NoticeListAdapter.NoticeViewHolder>(diffCallback) {
     private val expandedStates = mutableMapOf<Int, Boolean>()

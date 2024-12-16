@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.databinding.FragmentNoticeBinding
 import com.effort.presentation.UiState
-import com.effort.presentation.mypage.NoticeViewModel
+import com.effort.presentation.viewmodel.mypage.detail.notice.NoticeViewModel
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest

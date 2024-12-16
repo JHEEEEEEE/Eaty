@@ -1,9 +1,9 @@
 package com.effort.remote.di
 
-import com.effort.data.datasource.FaqRemoteDataSource
-import com.effort.data.datasource.NoticeRemoteDataSource
-import com.effort.remote.datasourceimpl.FaqRemoteDataSourceImpl
-import com.effort.remote.datasourceimpl.NoticeRemoteDataSourceImpl
+import com.effort.data.datasource.mypage.detail.faq.FaqRemoteDataSource
+import com.effort.data.datasource.mypage.detail.notice.NoticeRemoteDataSource
+import com.effort.remote.datasourceimpl.mypage.detail.faq.FaqRemoteDataSourceImpl
+import com.effort.remote.datasourceimpl.mypage.detail.notice.NoticeRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

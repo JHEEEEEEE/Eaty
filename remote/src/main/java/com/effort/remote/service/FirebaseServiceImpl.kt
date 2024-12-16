@@ -1,9 +1,9 @@
 package com.effort.remote.service
 
-import com.effort.remote.model.faq.FaqResponse
-import com.effort.remote.model.faq.FaqWrapperResponse
-import com.effort.remote.model.notice.NoticeResponse
-import com.effort.remote.model.notice.NoticeWrapperResponse
+import com.effort.remote.model.mypage.detail.faq.FaqResponse
+import com.effort.remote.model.mypage.detail.faq.FaqWrapperResponse
+import com.effort.remote.model.mypage.detail.notice.NoticeResponse
+import com.effort.remote.model.mypage.detail.notice.NoticeWrapperResponse
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

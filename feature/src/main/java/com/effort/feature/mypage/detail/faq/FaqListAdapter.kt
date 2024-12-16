@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.databinding.ItemFaqBinding
-import com.effort.presentation.model.FaqModel
+import com.effort.presentation.model.mypage.detail.faq.FaqModel
 
 class FaqListAdapter : ListAdapter<FaqModel, FaqListAdapter.FaqViewHolder>(diffCallback) {
 

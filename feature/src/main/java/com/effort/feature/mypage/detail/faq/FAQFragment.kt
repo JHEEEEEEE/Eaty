@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.databinding.FragmentFaqBinding
 import com.effort.presentation.UiState
-import com.effort.presentation.mypage.FaqViewModel
+import com.effort.presentation.viewmodel.mypage.detail.faq.FaqViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
