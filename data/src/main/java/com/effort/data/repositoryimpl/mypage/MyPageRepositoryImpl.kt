@@ -14,7 +14,7 @@ class MyPageRepositoryImpl @Inject constructor(
 ) : MyPageRepository {
 
     override fun observeUserUpdate(): Flow<DataResource<FirebaseUser>> = channelFlow {
-        send(DataResource.loading()) // 로딩 상태 방출
+        send(DataResource.loading())
 
         val flow = myPageRemoteDataSource.observeUserUpdate()
             .map { entity -> DataResource.success(entity.toDomain()) }
@@ -22,7 +22,7 @@ class MyPageRepositoryImpl @Inject constructor(
         try {
             flow.collect { send(it) } // Flow 내 데이터 방출
         } catch (exception: Exception) {
-            send(DataResource.error(exception)) // 예외 발생 시 에러 상태 방출
+            send(DataResource.error(exception))
         }
     }
 }

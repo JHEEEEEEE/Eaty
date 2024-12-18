@@ -4,7 +4,7 @@ import com.effort.data.model.auth.FirebaseUserEntity
 import com.effort.remote.model.auth.FirebaseUserResponse
 
 interface AuthService {
-    suspend fun authenticateUser(idToken: String): FirebaseUserResponse
+    suspend fun authenticateUser(idToken: String): Boolean
 
     suspend fun saveUser(user: FirebaseUserEntity)
 }

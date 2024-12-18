@@ -2,11 +2,10 @@ package com.effort.domain.repository.auth
 
 import com.effort.domain.DataResource
 import com.effort.domain.model.auth.FirebaseUser
-import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
-    fun authenticateUser(idToken: String): Flow<DataResource<FirebaseUser>>
+    suspend fun authenticateUser(idToken: String): DataResource<Boolean>
 
     suspend fun saveUser(user: FirebaseUser)
 }

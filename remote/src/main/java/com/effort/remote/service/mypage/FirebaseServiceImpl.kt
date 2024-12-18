@@ -6,7 +6,6 @@ import com.effort.remote.model.mypage.detail.faq.FaqWrapperResponse
 import com.effort.remote.model.mypage.detail.notice.NoticeResponse
 import com.effort.remote.model.mypage.detail.notice.NoticeWrapperResponse
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
