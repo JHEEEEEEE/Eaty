@@ -63,7 +63,12 @@ class FirebaseServiceImpl @Inject constructor(
     }
 
     override fun observeUserUpdate(): Flow<FirebaseUserResponse> = callbackFlow {
-        val email = firebaseAuth.currentUser?.email.toString()
+        val email = firebaseAuth.currentUser?.email.orEmpty()
+        if (email.isEmpty()) {
+            close(IllegalStateException("User email is null or empty")) // 이메일이 없으면 예외 처리
+            return@callbackFlow
+        }
+
         val listenerRegistration = firestore.collection("users")
             .document(email)
             .addSnapshotListener { snapshot, exception ->
