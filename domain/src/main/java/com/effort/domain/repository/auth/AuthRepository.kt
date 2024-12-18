@@ -9,6 +9,4 @@ interface AuthRepository {
     fun authenticateUser(idToken: String): Flow<DataResource<FirebaseUser>>
 
     suspend fun saveUser(user: FirebaseUser)
-
-    fun observeUserUpdate(email: String): Flow<DataResource<FirebaseUser>>
 }

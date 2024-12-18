@@ -30,17 +30,4 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun saveUser(user: FirebaseUser) {
         authRemoteDataSource.saveUser(user.toEntity())
     }
-
-    override fun observeUserUpdate(email: String): Flow<DataResource<FirebaseUser>> = channelFlow {
-        send(DataResource.loading()) // 로딩 상태 방출
-
-        val flow = authRemoteDataSource.observeUserUpdate(email)
-            .map { entity -> DataResource.success(entity.toDomain()) }
-
-        try {
-            flow.collect { send(it) } // Flow 내 데이터 방출
-        } catch (exception: Exception) {
-            send(DataResource.error(exception)) // 예외 발생 시 에러 상태 방출
-        }
-    }
 }

@@ -5,9 +5,6 @@ import com.effort.remote.model.auth.FirebaseUserResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -53,21 +50,6 @@ class AuthServiceImpl @Inject constructor(
             "profilePicUrl" to user.profilePicUrl
         )
         firestore.collection("users").document(user.email).set(userData).await()
-    }
-
-    override fun observeUserUpdate(email: String): Flow<FirebaseUserResponse> = callbackFlow {
-        val listenerRegistration = firestore.collection("users")
-            .document(email)
-            .addSnapshotListener { snapshot, exception ->
-                if (exception != null) {
-                    close(exception)
-                    return@addSnapshotListener
-                }
-                snapshot?.toObject(FirebaseUserResponse::class.java)?.let {
-                    trySend(it)
-                }
-            }
-        awaitClose { listenerRegistration.remove() } // 리스너 해제
     }
 
 }

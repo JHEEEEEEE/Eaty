@@ -1,10 +1,14 @@
 package com.effort.remote.service.mypage
 
+import com.effort.remote.model.auth.FirebaseUserResponse
 import com.effort.remote.model.mypage.detail.faq.FaqResponse
 import com.effort.remote.model.mypage.detail.faq.FaqWrapperResponse
 import com.effort.remote.model.mypage.detail.notice.NoticeResponse
 import com.effort.remote.model.mypage.detail.notice.NoticeWrapperResponse
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -53,5 +57,20 @@ class FirebaseServiceImpl @Inject constructor(
         }
 
         return NoticeWrapperResponse(resultNotices = noticeList)
+    }
+
+    override fun observeUserUpdate(email: String): Flow<FirebaseUserResponse> = callbackFlow {
+        val listenerRegistration = firestore.collection("users")
+            .document(email)
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    close(exception)
+                    return@addSnapshotListener
+                }
+                snapshot?.toObject(FirebaseUserResponse::class.java)?.let {
+                    trySend(it)
+                }
+            }
+        awaitClose { listenerRegistration.remove() } // 리스너 해제
     }
 }

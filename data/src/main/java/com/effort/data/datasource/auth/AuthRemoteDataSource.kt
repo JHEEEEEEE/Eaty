@@ -8,6 +8,4 @@ interface AuthRemoteDataSource {
     suspend fun authenticateUser(idToken: String): FirebaseUserEntity
 
     suspend fun saveUser(user: FirebaseUserEntity)
-
-    fun observeUserUpdate(email: String): Flow<FirebaseUserEntity>
 }

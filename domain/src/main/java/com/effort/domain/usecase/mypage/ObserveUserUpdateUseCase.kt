@@ -1,4 +1,4 @@
-package com.effort.domain.usecase.auth
+package com.effort.domain.usecase.mypage
 
 import com.effort.domain.DataResource
 import com.effort.domain.model.auth.FirebaseUser

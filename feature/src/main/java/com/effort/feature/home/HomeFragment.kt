@@ -8,13 +8,12 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.databinding.FragmentHomeBinding
 import com.effort.presentation.UiState
-import com.effort.presentation.viewmodel.auth.AuthViewModel
+import com.effort.presentation.viewmodel.mypage.MyPageViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +23,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
     private lateinit var firebaseAuth: FirebaseAuth
-    private val viewModel: AuthViewModel by viewModels()
+    private val viewModel: MyPageViewModel by viewModels()
     private lateinit var progressIndicator: ProgressBar
 
     override fun initView() {
