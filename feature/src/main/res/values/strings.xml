@@ -46,9 +46,21 @@
     <string name="recy_meetup">Recy-Meetup</string>
     <string name="recy_meetup_description">환경에 진심인 크루들의 모임의 장! 함께 모여 플로깅을 하며 건강과 환경을 지켜요🌱</string>
     <string name="play">실행</string>
+
+    <!-- FAQ, Notice   -->
     <string name="category">카테고리</string>
     <string name="title">제목</string>
     <string name="question">질문</string>
+
+    <!-- SignInActivity    -->
+    <string name="welcome_message">반가워요 회원님!</string>
+    <string name="failure_firebase_auth">Firebase 인증 실패</string>
+    <string name="already_existed_user">이미 존재하는 회원임. 초기화를 스킵합니다.</string>
+    <string name="success_register_user">유저가 성공적으로 저장되었습니다.</string>
+    <string name="failure_register_user">유저 등록이 실패했습니다</string>
+    <string name="failure_check_user">firestore에서 유저 확인이 불가능합니다.</string>
+    <string name="default_web_client_id">470817209530-40d10pr00gntk355qel6ojgtvb9cefco.apps.googleusercontent.com</string>
+
 
 
 </resources>

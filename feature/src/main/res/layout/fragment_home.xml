@@ -23,7 +23,7 @@
         android:layout_marginTop="16dp"
         android:src="@drawable/thunder_home"
         app:layout_constraintBottom_toBottomOf="@+id/tv_points"
-        app:layout_constraintEnd_toStartOf="@+id/tv_username"
+        app:layout_constraintEnd_toStartOf="@+id/user_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/community_logo" />
 
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:orientation="vertical"
-        app:constraint_referenced_ids="tv_greeting,tv_username,tv_points"
+        app:constraint_referenced_ids="tv_greeting,user_name,tv_points"
         app:flow_horizontalAlign="start"
         app:flow_verticalGap="4dp"
         app:layout_constraintStart_toEndOf="@id/iv_profile"
@@ -50,7 +50,7 @@
         android:textStyle="bold" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_username"
+        android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/user_name"
@@ -126,6 +126,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_view" />
+
+
+    <include
+        android:id="@+id/progress_circular"
+        layout="@layout/progress_indicator" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

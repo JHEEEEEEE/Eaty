@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.databinding.FragmentNoticeBinding
 import com.effort.presentation.UiState
@@ -33,34 +35,40 @@ class NoticeFragment: BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding:
 
         // ViewModel의 상태를 관찰
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collectLatest { uiState ->
-                when (uiState) {
-                    is UiState.Loading -> {
-                        progressIndicator.visibility = View.VISIBLE
-                        binding.recyclerviewNotice.visibility = View.GONE
-                    }
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collectLatest { uiState ->
+                    when (uiState) {
+                        is UiState.Loading -> {
+                            progressIndicator.visibility = View.VISIBLE
+                            binding.recyclerviewNotice.visibility = View.GONE
+                        }
 
-                    is UiState.Success -> {
-                        progressIndicator.visibility = View.GONE
-                        binding.recyclerviewNotice.visibility = View.VISIBLE
-                        noticeListAdapter.submitList(uiState.data)
-                    }
+                        is UiState.Success -> {
+                            progressIndicator.visibility = View.GONE
+                            binding.recyclerviewNotice.visibility = View.VISIBLE
+                            noticeListAdapter.submitList(uiState.data)
+                        }
 
-                    is UiState.Error -> {
-                        progressIndicator.visibility = View.GONE
-                        binding.recyclerviewNotice.visibility = View.GONE
-                        Toast.makeText(
-                            requireContext(),
-                            "Error: ${uiState.exception.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                        is UiState.Error -> {
+                            progressIndicator.visibility = View.GONE
+                            binding.recyclerviewNotice.visibility = View.GONE
+                            Toast.makeText(
+                                requireContext(),
+                                "Error: ${uiState.exception.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
 
-                    is UiState.Empty -> {
-                        progressIndicator.visibility = View.GONE
-                        binding.recyclerviewNotice.visibility = View.GONE
-                        Toast.makeText(requireContext(), "No data available", Toast.LENGTH_SHORT)
-                            .show()
+                        is UiState.Empty -> {
+                            progressIndicator.visibility = View.GONE
+                            binding.recyclerviewNotice.visibility = View.GONE
+                            Toast.makeText(
+                                requireContext(),
+                                "No data available",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
                     }
                 }
             }

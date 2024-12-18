@@ -50,5 +50,8 @@ dependencies {
     // viewModel lifecycle
     implementation(libs.lifecycle.viewmodel)
 
+    //auth
+    implementation(libs.play.services.auth)
+
     implementation(project(":domain"))
 }

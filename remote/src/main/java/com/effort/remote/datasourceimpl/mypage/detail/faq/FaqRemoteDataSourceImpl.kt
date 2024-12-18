@@ -2,7 +2,7 @@ package com.effort.remote.datasourceimpl.mypage.detail.faq
 
 import com.effort.data.datasource.mypage.detail.faq.FaqRemoteDataSource
 import com.effort.data.model.mypage.detail.faq.FaqEntity
-import com.effort.remote.service.FirebaseService
+import com.effort.remote.service.mypage.FirebaseService
 import javax.inject.Inject
 
 // Remote Layer에서 FirebaseService를 사용해 데이터를 처리하는 구현체

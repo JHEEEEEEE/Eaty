@@ -1,4 +1,4 @@
-package com.effort.remote.service
+package com.effort.remote.service.mypage
 
 import com.effort.remote.model.mypage.detail.faq.FaqWrapperResponse
 import com.effort.remote.model.mypage.detail.notice.NoticeWrapperResponse

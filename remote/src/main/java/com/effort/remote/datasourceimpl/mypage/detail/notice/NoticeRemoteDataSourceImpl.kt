@@ -2,7 +2,7 @@ package com.effort.remote.datasourceimpl.mypage.detail.notice
 
 import com.effort.data.datasource.mypage.detail.notice.NoticeRemoteDataSource
 import com.effort.data.model.mypage.detail.notice.NoticeEntity
-import com.effort.remote.service.FirebaseService
+import com.effort.remote.service.mypage.FirebaseService
 import javax.inject.Inject
 
 

@@ -20,7 +20,7 @@
         android:theme="@style/Theme.Recycrew"
         tools:targetApi="31">
         <activity
-            android:name="com.effort.feature.MainActivity"
+            android:name="com.effort.feature.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +28,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.effort.feature.MainActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.effort.feature.auth.AuthActivity"
+            android:exported="false" />
+
+
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"

@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -57,6 +58,9 @@ dependencies {
     // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.common.ktx)
+
+    // auth
+    implementation(libs.play.services.auth)
 
     implementation(project(":feature"))
     implementation(project(":presentation"))
