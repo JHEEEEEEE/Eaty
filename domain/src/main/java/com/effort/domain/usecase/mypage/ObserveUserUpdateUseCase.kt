@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ObserveUserUpdateUseCase {
 
-    operator fun invoke(email: String): Flow<DataResource<FirebaseUser>>
+    operator fun invoke(): Flow<DataResource<FirebaseUser>>
 }

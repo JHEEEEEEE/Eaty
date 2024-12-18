@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface MyPageRemoteDataSource {
 
-    fun observeUserUpdate(email: String): Flow<FirebaseUserEntity>
+    fun observeUserUpdate(): Flow<FirebaseUserEntity>
 }

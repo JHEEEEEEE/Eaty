@@ -11,8 +11,8 @@ class MyPageRemoteDataSourceImpl @Inject constructor(
     private val firebaseService: FirebaseService
 ) : MyPageRemoteDataSource {
 
-    override fun observeUserUpdate(email: String): Flow<FirebaseUserEntity> {
-        return firebaseService.observeUserUpdate(email)
+    override fun observeUserUpdate(): Flow<FirebaseUserEntity> {
+        return firebaseService.observeUserUpdate()
             .map { response -> response.toData() }
     }
 }

@@ -12,5 +12,5 @@ interface FirebaseService {
 
     suspend fun getNotices(): NoticeWrapperResponse
 
-    fun observeUserUpdate(email: String): Flow<FirebaseUserResponse>
+    fun observeUserUpdate(): Flow<FirebaseUserResponse>
 }

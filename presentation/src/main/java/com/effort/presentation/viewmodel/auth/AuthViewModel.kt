@@ -49,10 +49,6 @@ class AuthViewModel @Inject constructor(
                     when (dataResource) {
                         is DataResource.Success -> {
                             val firebaseUser = dataResource.data
-                            /*Log.d(
-                                "AuthViewModel",
-                                "Authenticated User: $firebaseUser"
-                            ) // FirebaseUser 로그*/
                             saveUserUseCase(firebaseUser)
                             _authenticateState.value =
                                 UiState.Success(firebaseUser.toPresentation())

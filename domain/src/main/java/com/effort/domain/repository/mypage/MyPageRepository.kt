@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface MyPageRepository {
 
-    fun observeUserUpdate(email: String): Flow<DataResource<FirebaseUser>>
+    fun observeUserUpdate(): Flow<DataResource<FirebaseUser>>
 }

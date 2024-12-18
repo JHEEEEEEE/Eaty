@@ -5,6 +5,8 @@ import com.effort.remote.model.mypage.detail.faq.FaqResponse
 import com.effort.remote.model.mypage.detail.faq.FaqWrapperResponse
 import com.effort.remote.model.mypage.detail.notice.NoticeResponse
 import com.effort.remote.model.mypage.detail.notice.NoticeWrapperResponse
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +18,7 @@ import javax.inject.Inject
 // Firebase에서 데이터를 가져오는 구현체. FirebaseServiceImpl은 FirebaseService 인터페이스를 구현
 // Firestore에서 데이터를 가져오고 FaqWrapperResponse로 감싸 반환
 class FirebaseServiceImpl @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ) : FirebaseService {
 
@@ -59,7 +62,8 @@ class FirebaseServiceImpl @Inject constructor(
         return NoticeWrapperResponse(resultNotices = noticeList)
     }
 
-    override fun observeUserUpdate(email: String): Flow<FirebaseUserResponse> = callbackFlow {
+    override fun observeUserUpdate(): Flow<FirebaseUserResponse> = callbackFlow {
+        val email = firebaseAuth.currentUser?.email.toString()
         val listenerRegistration = firestore.collection("users")
             .document(email)
             .addSnapshotListener { snapshot, exception ->

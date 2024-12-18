@@ -13,10 +13,10 @@ class MyPageRepositoryImpl @Inject constructor(
     private val myPageRemoteDataSource: MyPageRemoteDataSource
 ) : MyPageRepository {
 
-    override fun observeUserUpdate(email: String): Flow<DataResource<FirebaseUser>> = channelFlow {
+    override fun observeUserUpdate(): Flow<DataResource<FirebaseUser>> = channelFlow {
         send(DataResource.loading()) // 로딩 상태 방출
 
-        val flow = myPageRemoteDataSource.observeUserUpdate(email)
+        val flow = myPageRemoteDataSource.observeUserUpdate()
             .map { entity -> DataResource.success(entity.toDomain()) }
 
         try {
