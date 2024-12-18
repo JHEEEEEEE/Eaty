@@ -50,6 +50,9 @@ class AuthActivity : AppCompatActivity() {
 
         setupUI()
         observeState()
+
+        // 로그인 상태 확인
+        viewModel.checkUserLoggedIn()
     }
 
     private fun setupUI() {

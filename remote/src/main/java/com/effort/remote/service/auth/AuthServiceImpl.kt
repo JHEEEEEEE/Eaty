@@ -1,6 +1,5 @@
 package com.effort.remote.service.auth
 
-import com.effort.data.model.auth.FirebaseUserEntity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,9 +20,13 @@ class AuthServiceImpl @Inject constructor(
             // 2. Firebase 인증 결과 가져오기
             val firebaseUser = result.user ?: throw Exception("Failed to authenticate user")
 
-            // 3. Firestore에서 사용자 정보 확인
+            // 3. Firestore에서 사용자 정보 확인 및 저장 로직 호출
             val email = firebaseUser.email ?: throw Exception("Email is null")
-            firestore.collection("users").document(email).get().await()
+            saveUser(
+                email = email,
+                name = firebaseUser.displayName ?: "Unknown",
+                profilePicUrl = firebaseUser.photoUrl?.toString() ?: ""
+            )
 
             // 4. 인증 성공 시 true 반환
             true
@@ -33,14 +36,28 @@ class AuthServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveUser(user: FirebaseUserEntity) {
-        val userData = mapOf(
-            "name" to user.name,
-            "nickname" to user.nickname,
-            "email" to user.email,
-            "profilePicUrl" to user.profilePicUrl
-        )
-        firestore.collection("users").document(user.email).set(userData).await()
+    override suspend fun checkUserLoggedIn(): Boolean {
+        return firebaseAuth.currentUser != null
     }
 
+    private suspend fun saveUser(email: String, name: String, profilePicUrl: String) {
+        try {
+            // 1. Firestore에서 사용자 문서 확인
+            val userDocument = firestore.collection("users").document(email).get().await()
+
+            if (!userDocument.exists()) {
+                // 2. 사용자 정보가 존재하지 않으면 Firestore에 저장
+                val userData = mapOf(
+                    "name" to name,
+                    "nickname" to "",
+                    "email" to email,
+                    "profilePicUrl" to profilePicUrl
+                )
+                firestore.collection("users").document(email).set(userData).await()
+            }
+            // 사용자 정보가 이미 존재하면 아무 작업도 하지 않음 (자동 로그인 처리)
+        } catch (e: Exception) {
+            throw Exception("Failed to save user: ${e.message}", e)
+        }
+    }
 }

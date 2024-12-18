@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.effort.recycrew.di
 
 import android.content.Context
@@ -18,7 +20,6 @@ import javax.inject.Singleton
 object AuthModule {
     @Provides
     @Singleton
-    @Suppress("DEPRECATION")
     fun provideGoogleSignInClient(@ApplicationContext context: Context): GoogleSignInClient {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(context.getString(R.string.default_web_client_id))

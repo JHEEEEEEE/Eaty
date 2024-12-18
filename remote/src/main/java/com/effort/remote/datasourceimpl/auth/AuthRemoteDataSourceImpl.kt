@@ -8,12 +8,13 @@ import javax.inject.Inject
 class AuthRemoteDataSourceImpl @Inject constructor(
     private val authService: AuthService
 ) : AuthRemoteDataSource {
+
     override suspend fun authenticateUser(idToken: String): Boolean {
         val response = authService.authenticateUser(idToken)
         return response // FirebaseUserResponse → FirebaseUserEntity 변환
     }
 
-    override suspend fun saveUser(user: FirebaseUserEntity) {
-        authService.saveUser(user)
+    override suspend fun checkUserLoggedIn(): Boolean {
+        return authService.checkUserLoggedIn()
     }
 }

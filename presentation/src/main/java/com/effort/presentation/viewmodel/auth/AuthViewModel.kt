@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.effort.domain.DataResource
 import com.effort.domain.model.auth.FirebaseUser
 import com.effort.domain.usecase.auth.AuthenticateUserUseCase
-import com.effort.domain.usecase.auth.SaveUserUseCase
+import com.effort.domain.usecase.auth.CheckUserLoggedInUseCase
 import com.effort.presentation.UiState
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authenticateUserUseCase: AuthenticateUserUseCase,
-    private val saveUserUseCase: SaveUserUseCase,
+    private val checkUserLoggedInUseCase: CheckUserLoggedInUseCase,
     private val googleSignInClient: GoogleSignInClient
 ) : ViewModel() {
 
@@ -28,6 +28,25 @@ class AuthViewModel @Inject constructor(
     val authenticateState get() = _authenticateState.asStateFlow()
 
     fun getGoogleSignInIntent() = googleSignInClient.signInIntent
+
+    fun checkUserLoggedIn() {
+        viewModelScope.launch {
+            _authenticateState.value = UiState.Loading
+
+            when (val dataResource = checkUserLoggedInUseCase()) {
+                is DataResource.Loading -> _authenticateState.value = UiState.Loading
+                is DataResource.Success -> {
+                    if (dataResource.data) {
+                        _authenticateState.value = UiState.Success(Unit) // 성공 시 상태 업데이트
+                    } else {
+                        _authenticateState.value = UiState.Error(Throwable("User not logged in"))
+                    }
+                }
+                is DataResource.Error -> _authenticateState.value = UiState.Error(dataResource.throwable)
+            }
+        }
+    }
+
 
     fun handleSignInResult(account: GoogleSignInAccount) {
         viewModelScope.launch {
@@ -66,42 +85,3 @@ class AuthViewModel @Inject constructor(
         }
     }
 }
-
-
-
-
-// Google 로그인 결과 처리
-/*fun handleSignInResult(account: GoogleSignInAccount) {
-    viewModelScope.launch {
-        authenticateUserUseCase(account.idToken!!)
-            .onStart {
-                _authenticateState.value = UiState.Loading
-            }
-            .onCompletion {
-                if (_authenticateState.value is UiState.Loading) {
-                    _authenticateState.value = UiState.Empty
-                }
-            }
-            .collectLatest { dataResource ->
-                when (dataResource) {
-                    is DataResource.Success -> {
-                        val firebaseUser = dataResource.data
-                        saveUserUseCase(firebaseUser)
-                        _authenticateState.value =
-                            UiState.Success(firebaseUser.toPresentation())
-                    }
-
-                    is DataResource.Error -> {
-                        _authenticateState.value =
-                            UiState.Error(dataResource.throwable)
-                    }
-
-                    is DataResource.Loading -> {
-                        _authenticateState.value =
-                            UiState.Loading
-                    }
-                }
-
-            }
-    }
-}*/

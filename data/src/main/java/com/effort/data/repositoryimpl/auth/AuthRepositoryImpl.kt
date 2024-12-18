@@ -10,6 +10,7 @@ import javax.inject.Inject
 class AuthRepositoryImpl @Inject constructor(
     private val authRemoteDataSource: AuthRemoteDataSource
 ) : AuthRepository {
+
     override suspend fun authenticateUser(idToken: String): DataResource<Boolean> {
         return try {
             DataResource.loading<Boolean>()
@@ -20,7 +21,13 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveUser(user: FirebaseUser) {
-        authRemoteDataSource.saveUser(user.toEntity())
+    override suspend fun checkUserLoggedIn(): DataResource<Boolean> {
+        return try {
+            DataResource.loading<Boolean>()
+            val isLoggedIn = authRemoteDataSource.checkUserLoggedIn()
+            DataResource.success(isLoggedIn)
+        } catch (e: Exception) {
+            DataResource.error(e)
+        }
     }
 }
