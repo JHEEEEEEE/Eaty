@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import com.effort.feature.MainActivity
 import com.effort.feature.auth.AuthActivity
 import com.effort.feature.databinding.ActivitySplashBinding
 

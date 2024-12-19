@@ -45,10 +45,11 @@
         app:layout_constraintBottom_toTopOf="@+id/green_button_save"
         app:layout_constraintTop_toBottomOf="@+id/circular_imageview_profile"
         app:layout_constraintVertical_chainStyle="packed"
+        app:hint="@string/nickname_empty_message"
         app:text="@string/nickname" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/nicknameErrorTextView"
+        android:id="@+id/nickname_state_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"

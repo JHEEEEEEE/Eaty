@@ -56,8 +56,8 @@ class FAQFragment :
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getFaqState.collectLatest { uiState ->
-                    when (uiState) {
+                viewModel.getFaqState.collectLatest { state ->
+                    when (state) {
                         is UiState.Loading -> {
                             progressIndicator.showLoading(true)
                             binding.recyclerviewFaq.visibility = View.GONE
@@ -66,7 +66,7 @@ class FAQFragment :
                         is UiState.Success -> {
                             progressIndicator.showLoading(false)
                             binding.recyclerviewFaq.visibility = View.VISIBLE
-                            faqListAdapter.submitList(uiState.data)
+                            faqListAdapter.submitList(state.data)
                         }
 
                         is UiState.Error -> {

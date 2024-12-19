@@ -14,5 +14,7 @@ interface FirebaseService {
 
     suspend fun updateNickname(nickname: String): Boolean
 
+    fun checkNicknameDuplicated(nickname: String): Flow<Boolean>
+
     fun observeUserUpdate(): Flow<FirebaseUserResponse>
 }

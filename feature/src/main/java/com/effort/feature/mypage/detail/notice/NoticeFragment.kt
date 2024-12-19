@@ -36,8 +36,8 @@ class NoticeFragment: BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding:
         // ViewModel의 상태를 관찰
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collectLatest { uiState ->
-                    when (uiState) {
+                viewModel.uiState.collectLatest { state ->
+                    when (state) {
                         is UiState.Loading -> {
                             progressIndicator.visibility = View.VISIBLE
                             binding.recyclerviewNotice.visibility = View.GONE
@@ -46,7 +46,7 @@ class NoticeFragment: BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding:
                         is UiState.Success -> {
                             progressIndicator.visibility = View.GONE
                             binding.recyclerviewNotice.visibility = View.VISIBLE
-                            noticeListAdapter.submitList(uiState.data)
+                            noticeListAdapter.submitList(state.data)
                         }
 
                         is UiState.Error -> {
@@ -54,7 +54,7 @@ class NoticeFragment: BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding:
                             binding.recyclerviewNotice.visibility = View.GONE
                             Toast.makeText(
                                 requireContext(),
-                                "Error: ${uiState.exception.message}",
+                                "Error: ${state.exception.message}",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }

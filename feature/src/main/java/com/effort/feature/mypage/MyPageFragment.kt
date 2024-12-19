@@ -57,13 +57,16 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
                         is UiState.Loading -> {
                             progressIndicator.showLoading(true)
                         }
+
                         is UiState.Success -> {
                             progressIndicator.showLoading(false)
                             updateUIWithUserProfile(state.data)
                         }
+
                         is UiState.Error -> {
                             progressIndicator.showLoading(false)
                         }
+
                         is UiState.Empty -> {
                             progressIndicator.showLoading(false)
                         }
@@ -75,30 +78,29 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
 
     private fun updateUIWithUserProfile(userProfile: FirebaseUserModel?) {
         with(binding) {
-            if (userProfile != null) {
-                if (userProfile.nickname.isEmpty()) {
-                    profileName.text = userProfile.name
-                } else {
-                    profileName.text = userProfile.nickname
-                }
+            profileName.text = getDisplayName(userProfile)
+            profileEmail.text = userProfile?.email ?: getString(R.string.needLogin)
+            loadProfileImage(userProfile?.profilePicUrl)
+        }
+    }
 
-                profileEmail.text = userProfile.email
-                if (userProfile.profilePicUrl.isNotEmpty()) {
-                    Glide.with(profileImage.context)
-                        .load(userProfile.profilePicUrl)
-                        .placeholder(R.drawable.placeholder_image)
-                        .error(R.drawable.error_image)
-                        .into(profileImage)
-                } else {
-                    profileImage.setImageResource(R.drawable.profile_img_default)
-                }
+    private fun getDisplayName(userProfile: FirebaseUserModel?): String {
+        return when {
+            userProfile == null -> getString(R.string.guest)
+            userProfile.nickname.isNotEmpty() -> userProfile.nickname
+            else -> userProfile.name
+        }
+    }
 
-            } else {
-                // 기본 UI 설정
-                profileName.text = getString(R.string.guest)
-                profileEmail.text = getString(R.string.needLogin)
-                profileImage.setImageResource(R.drawable.profile_img_default)
-            }
+    private fun loadProfileImage(profilePicUrl: String?) {
+        if (!profilePicUrl.isNullOrEmpty()) {
+            Glide.with(binding.profileImage.context)
+                .load(profilePicUrl)
+                .placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.error_image)
+                .into(binding.profileImage)
+        } else {
+            binding.profileImage.setImageResource(R.drawable.profile_img_default)
         }
     }
 
@@ -112,8 +114,8 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
 
         navigationMap.forEach { (view, actionId) ->
             view.setOnClickListener {
-                    findNavController().navigate(actionId)
-                }
+                findNavController().navigate(actionId)
             }
         }
     }
+}

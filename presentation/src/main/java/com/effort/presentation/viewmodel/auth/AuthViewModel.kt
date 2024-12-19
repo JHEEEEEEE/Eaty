@@ -5,7 +5,6 @@ package com.effort.presentation.viewmodel.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.effort.domain.DataResource
-import com.effort.domain.model.auth.FirebaseUser
 import com.effort.domain.usecase.auth.AuthenticateUserUseCase
 import com.effort.domain.usecase.auth.CheckUserLoggedInUseCase
 import com.effort.presentation.UiState

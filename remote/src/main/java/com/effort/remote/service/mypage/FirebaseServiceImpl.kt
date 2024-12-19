@@ -75,6 +75,24 @@ class FirebaseServiceImpl @Inject constructor(
         }
     }
 
+    override fun checkNicknameDuplicated(nickname: String): Flow<Boolean> = callbackFlow {
+
+        val listenerRegistration = firestore.collection("users")
+            .whereEqualTo("nickname", nickname)
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    close(exception) // 예외 발생 시 스트림 종료
+                    return@addSnapshotListener
+                }
+
+                val isAvailable = snapshot?.documents.isNullOrEmpty()
+                trySend(isAvailable) // 중복 여부를 스트림으로 전송 -> 중복 있으면 false, 없으면 true
+            }
+
+        awaitClose {
+            listenerRegistration.remove() // 리스너 해제
+        }
+    }
 
     override fun observeUserUpdate(): Flow<FirebaseUserResponse> = callbackFlow {
         val email = firebaseAuth.currentUser?.email.orEmpty()
