@@ -2,11 +2,11 @@
 
 package com.effort.feature.auth
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.ProgressBar
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +14,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.effort.feature.MainActivity
+import com.effort.feature.core.util.showLoading
 import com.effort.feature.databinding.ActivityAuthBinding
 import com.effort.presentation.UiState
 import com.effort.presentation.viewmodel.auth.AuthViewModel
@@ -25,10 +26,8 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AuthActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityAuthBinding
     private val viewModel: AuthViewModel by viewModels()
-    private lateinit var progressIndicator: ProgressBar
 
     private val googleSignInLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -45,11 +44,12 @@ class AuthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupUI()
-        observeState()
+        observeAuthenticatedState()
 
         // 로그인 상태 확인
         viewModel.checkUserLoggedIn()
@@ -62,40 +62,32 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
-    private fun observeState() {
+    private fun observeAuthenticatedState() {
+        val progressIndicator = binding.progressCircular.progressBar
+
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.authenticateState.collectLatest { state ->
                     when (state) {
-                        is UiState.Loading -> showLoading(true)
+                        is UiState.Loading -> progressIndicator.showLoading(true)
                         is UiState.Success -> {
-                            showLoading(false)
+                            progressIndicator.showLoading(false)
                             navigateToMainActivity()
                         }
 
                         is UiState.Error -> {
-                            showLoading(false)
-                            Log.e(TAG, "Error: ${state.exception.message}")
+                            progressIndicator.showLoading(false)
                         }
 
-                        is UiState.Empty -> showLoading(false)
+                        is UiState.Empty -> progressIndicator.showLoading(false)
                     }
                 }
             }
         }
     }
 
-    private fun showLoading(isLoading: Boolean) {
-        progressIndicator = binding.progressCircular.progressBar
-        progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
     private fun navigateToMainActivity() {
         startActivity(Intent(this, MainActivity::class.java))
         finish()
-    }
-
-    companion object {
-        private const val TAG = "AuthActivity"
     }
 }

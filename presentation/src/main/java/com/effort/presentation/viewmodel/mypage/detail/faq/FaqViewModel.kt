@@ -21,8 +21,8 @@ class FaqViewModel @Inject constructor(
     private val getFaqListUseCase: GetFaqListUseCase
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow<UiState<List<FaqModel>>>(UiState.Empty)
-    val uiState get() = _uiState.asStateFlow()
+    private val _getFaqState = MutableStateFlow<UiState<List<FaqModel>>>(UiState.Empty)
+    val getFaqState get() = _getFaqState.asStateFlow()
 
     init {
         fetchFaqs()
@@ -33,28 +33,28 @@ class FaqViewModel @Inject constructor(
             getFaqListUseCase()
                 .onStart {
                     // 로딩 상태로 업데이트
-                    _uiState.value = UiState.Loading
+                    _getFaqState.value = UiState.Loading
                 }
                 .onCompletion {
                     // 로딩 종료
-                    if (_uiState.value is UiState.Loading) {
-                        _uiState.value = UiState.Empty
+                    if (_getFaqState.value is UiState.Loading) {
+                        _getFaqState.value = UiState.Empty
                     }
                 }
                 .collectLatest { dataResource ->
                     when (dataResource) {
                         is DataResource.Success -> {
                             val data = dataResource.data.map { it.toPresentation() }
-                            _uiState.value = UiState.Success(data)
+                            _getFaqState.value = UiState.Success(data)
                         }
 
                         is DataResource.Error -> {
-                            _uiState.value = UiState.Error(dataResource.throwable)
+                            _getFaqState.value = UiState.Error(dataResource.throwable)
                         }
 
                         is DataResource.Loading -> {
                             // 로딩 상태 처리 (추가적인 로딩 상태가 필요하면 사용 가능)
-                            _uiState.value = UiState.Loading
+                            _getFaqState.value = UiState.Loading
                         }
                     }
                 }

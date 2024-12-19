@@ -19,11 +19,14 @@ import javax.inject.Inject
 class MyPageViewModel @Inject constructor(
     private val observeUserUpdateUseCase: ObserveUserUpdateUseCase
 ) : ViewModel() {
-
     private val _userUpdateState = MutableStateFlow<UiState<FirebaseUserModel>>(UiState.Empty)
     val userUpdateState get() = _userUpdateState.asStateFlow()
 
-    fun observeUserUpdate(email: String) {
+    init {
+        observeUserUpdate()
+    }
+
+    private fun observeUserUpdate() {
         viewModelScope.launch {
             observeUserUpdateUseCase().collectLatest { dataResource ->
                 when (dataResource) {

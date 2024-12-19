@@ -60,7 +60,8 @@
     <string name="failure_register_user">유저 등록이 실패했습니다</string>
     <string name="failure_check_user">firestore에서 유저 확인이 불가능합니다.</string>
     <string name="default_web_client_id">470817209530-40d10pr00gntk355qel6ojgtvb9cefco.apps.googleusercontent.com</string>
-
+    <string name="guest">Guest</string>
+    <string name="needLogin">로그인이 필요합니다.</string>
 
 
 </resources>
