@@ -33,16 +33,17 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _authenticateState.value = UiState.Loading
 
-            when (val dataResource = checkUserLoggedInUseCase()) {
-                is DataResource.Loading -> _authenticateState.value = UiState.Loading
+            _authenticateState.value = when (val dataResource = checkUserLoggedInUseCase()) {
+                is DataResource.Loading -> UiState.Loading
                 is DataResource.Success -> {
                     if (dataResource.data) {
-                        _authenticateState.value = UiState.Success(Unit) // 성공 시 상태 업데이트
+                        UiState.Success(Unit) // 성공 시 상태 업데이트
                     } else {
-                        _authenticateState.value = UiState.Error(Throwable("User not logged in"))
+                        UiState.Error(Throwable("User not logged in"))
                     }
                 }
-                is DataResource.Error -> _authenticateState.value = UiState.Error(dataResource.throwable)
+
+                is DataResource.Error -> UiState.Error(dataResource.throwable)
             }
         }
     }

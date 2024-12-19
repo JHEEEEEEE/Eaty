@@ -61,6 +61,21 @@ class FirebaseServiceImpl @Inject constructor(
         return NoticeWrapperResponse(resultNotices = noticeList)
     }
 
+    override suspend fun updateNickname(nickname: String): Boolean {
+        return try {
+            val currentUserEmail =
+                firebaseAuth.currentUser?.email ?: throw Exception("User not logged in")
+
+            val userDoc = firestore.collection("users").document(currentUserEmail)
+            userDoc.update("nickname", nickname).await()
+
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+
     override fun observeUserUpdate(): Flow<FirebaseUserResponse> = callbackFlow {
         val email = firebaseAuth.currentUser?.email.orEmpty()
         if (email.isEmpty()) {

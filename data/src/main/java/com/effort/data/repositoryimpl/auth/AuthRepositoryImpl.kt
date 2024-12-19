@@ -1,9 +1,7 @@
 package com.effort.data.repositoryimpl.auth
 
 import com.effort.data.datasource.auth.AuthRemoteDataSource
-import com.effort.data.model.auth.toEntity
 import com.effort.domain.DataResource
-import com.effort.domain.model.auth.FirebaseUser
 import com.effort.domain.repository.auth.AuthRepository
 import javax.inject.Inject
 

@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FaqViewModel @Inject constructor(
     private val getFaqListUseCase: GetFaqListUseCase
-): ViewModel() {
+) : ViewModel() {
 
     private val _getFaqState = MutableStateFlow<UiState<List<FaqModel>>>(UiState.Empty)
     val getFaqState get() = _getFaqState.asStateFlow()
@@ -42,19 +42,19 @@ class FaqViewModel @Inject constructor(
                     }
                 }
                 .collectLatest { dataResource ->
-                    when (dataResource) {
+                    _getFaqState.value = when (dataResource) {
                         is DataResource.Success -> {
                             val data = dataResource.data.map { it.toPresentation() }
-                            _getFaqState.value = UiState.Success(data)
+                            UiState.Success(data)
                         }
 
                         is DataResource.Error -> {
-                            _getFaqState.value = UiState.Error(dataResource.throwable)
+                            UiState.Error(dataResource.throwable)
                         }
 
                         is DataResource.Loading -> {
                             // 로딩 상태 처리 (추가적인 로딩 상태가 필요하면 사용 가능)
-                            _getFaqState.value = UiState.Loading
+                            UiState.Loading
                         }
                     }
                 }

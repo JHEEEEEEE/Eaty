@@ -1,7 +1,6 @@
 package com.effort.remote.datasourceimpl.auth
 
 import com.effort.data.datasource.auth.AuthRemoteDataSource
-import com.effort.data.model.auth.FirebaseUserEntity
 import com.effort.remote.service.auth.AuthService
 import javax.inject.Inject
 

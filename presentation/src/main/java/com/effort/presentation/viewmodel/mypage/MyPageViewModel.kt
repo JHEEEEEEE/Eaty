@@ -29,17 +29,17 @@ class MyPageViewModel @Inject constructor(
     private fun observeUserUpdate() {
         viewModelScope.launch {
             observeUserUpdateUseCase().collectLatest { dataResource ->
-                when (dataResource) {
+                _userUpdateState.value = when (dataResource) {
                     is DataResource.Success -> {
-                        _userUpdateState.value = UiState.Success(dataResource.data.toPresentation())
+                        UiState.Success(dataResource.data.toPresentation())
                     }
 
                     is DataResource.Error -> {
-                        _userUpdateState.value = UiState.Error(dataResource.throwable)
+                        UiState.Error(dataResource.throwable)
                     }
 
                     is DataResource.Loading -> {
-                        _userUpdateState.value = UiState.Loading
+                        UiState.Loading
                     }
                 }
             }

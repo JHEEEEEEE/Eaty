@@ -3,11 +3,13 @@ package com.effort.recycrew.di
 import com.effort.domain.usecase.auth.AuthenticateUserUseCase
 import com.effort.domain.usecase.auth.CheckUserLoggedInUseCase
 import com.effort.domain.usecase.mypage.ObserveUserUpdateUseCase
+import com.effort.domain.usecase.mypage.detail.editprofile.UpdateNicknameUseCase
 import com.effort.domain.usecase.mypage.detail.faq.GetFaqListUseCase
 import com.effort.domain.usecase.mypage.detail.notice.GetNoticeListUseCase
 import com.effort.domain.usecaseimpl.auth.AuthenticateUserUseCaseImpl
 import com.effort.domain.usecaseimpl.auth.CheckUserLoggedInUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.ObserveUserUpdateUseCaseImpl
+import com.effort.domain.usecaseimpl.mypage.detail.editprofile.UpdateNicknameUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.faq.GetFaqListUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.notice.GetNoticeListUseCaseImpl
 import dagger.Binds
@@ -21,15 +23,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DomainModule {
-
-    @Binds
-    @Singleton
-    abstract fun bindGetFaqListUseCase(getFaqListUseCaseImpl: GetFaqListUseCaseImpl): GetFaqListUseCase
-
-    @Binds
-    @Singleton
-    abstract fun bindGetNoticeListUseCase(getNoticeListUseCaseImpl: GetNoticeListUseCaseImpl): GetNoticeListUseCase
-
+    // Auth
     @Binds
     @Singleton
     abstract fun bindAuthenticateUserUseCase(authenticateUserUseCaseImpl: AuthenticateUserUseCaseImpl): AuthenticateUserUseCase
@@ -38,8 +32,28 @@ abstract class DomainModule {
     @Singleton
     abstract fun bindCheckedLoggedInUseCase(checkedLoggedInUseCaseImpl: CheckUserLoggedInUseCaseImpl): CheckUserLoggedInUseCase
 
+    // MyPage
     @Binds
     @Singleton
     abstract fun bindObserveUserUpdateUseCase(observeUserUpdateUseCaseImpl: ObserveUserUpdateUseCaseImpl): ObserveUserUpdateUseCase
+
+    // Faq
+    @Binds
+    @Singleton
+    abstract fun bindGetFaqListUseCase(getFaqListUseCaseImpl: GetFaqListUseCaseImpl): GetFaqListUseCase
+
+    // Notice
+    @Binds
+    @Singleton
+    abstract fun bindGetNoticeListUseCase(getNoticeListUseCaseImpl: GetNoticeListUseCaseImpl): GetNoticeListUseCase
+
+    // EditProfile
+    @Binds
+    @Singleton
+    abstract fun bindUpdateNicknameUseCase(updateNicknameUseCaseImpl: UpdateNicknameUseCaseImpl): UpdateNicknameUseCase
+
+/*    @Binds
+    @Singleton
+    abstract fun bindUpdateProfilePicUseCase(updateProfilePicUseCaseImpl: UpdateProfilePicUseCaseImpl): UpdateProfilePicUseCase*/
 }
 

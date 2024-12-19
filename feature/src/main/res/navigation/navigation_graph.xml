@@ -12,13 +12,16 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_communityFragment"
-            app:destination="@id/community_fragment" />
+            app:destination="@id/community_fragment"
+            app:launchSingleTop="true"/>
         <action
             android:id="@+id/action_homeFragment_to_mapFragment"
-            app:destination="@id/map_fragment" />
+            app:destination="@id/map_fragment"
+            app:launchSingleTop="true"/>
         <action
             android:id="@+id/action_homeFragment_to_myPageFragment"
-            app:destination="@id/myPage_fragment" />
+            app:destination="@id/myPage_fragment"
+            app:launchSingleTop="true"/>
     </fragment>
 
 
@@ -46,13 +49,16 @@
         tools:layout="@layout/fragment_mypage">
         <action
             android:id="@+id/action_myPageFragment_to_editProfileFragment"
-            app:destination="@id/editProfile_fragment" />
+            app:destination="@id/editProfile_fragment"
+            app:launchSingleTop="true"/>
         <action
             android:id="@+id/action_myPageFragment_to_noticeFragment"
-            app:destination="@id/notice_fragment" />
+            app:destination="@id/notice_fragment"
+            app:launchSingleTop="true"/>
         <action
             android:id="@+id/action_myPageFragment_to_FAQFragment"
-            app:destination="@id/faq_fragment" />
+            app:destination="@id/faq_fragment"
+            app:launchSingleTop="true"/>
     </fragment>
 
     <fragment
@@ -64,7 +70,8 @@
         android:id="@+id/editProfile_fragment"
         android:name="com.effort.feature.mypage.detail.editprofile.EditProfileFragment"
         android:label="EditProfileFragment"
-        tools:layout="@layout/fragment_editprofile" />
+        tools:layout="@layout/fragment_editprofile"/>
+
     <fragment
         android:id="@+id/notice_fragment"
         android:name="com.effort.feature.mypage.detail.notice.NoticeFragment"

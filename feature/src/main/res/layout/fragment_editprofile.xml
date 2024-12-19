@@ -83,4 +83,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/green_button_save" />
 
+    <include
+        android:id="@+id/progress_circular"
+        layout="@layout/progress_indicator" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

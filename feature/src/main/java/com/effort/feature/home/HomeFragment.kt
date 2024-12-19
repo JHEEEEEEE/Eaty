@@ -53,7 +53,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                         }
                         is UiState.Success -> {
                             progressIndicator.showLoading(false)
-                            binding.userName.text = state.data.name
+                            binding.userName.text = state.data.nickname
                         }
                         is UiState.Error -> {
                             progressIndicator.showLoading(false)

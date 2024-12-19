@@ -12,5 +12,7 @@ interface FirebaseService {
 
     suspend fun getNotices(): NoticeWrapperResponse
 
+    suspend fun updateNickname(nickname: String): Boolean
+
     fun observeUserUpdate(): Flow<FirebaseUserResponse>
 }

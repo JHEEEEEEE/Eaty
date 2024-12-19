@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NoticeViewModel @Inject constructor(
     private val getNoticeListUseCase: GetNoticeListUseCase
-): ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState<List<NoticeModel>>>(UiState.Empty)
     val uiState get() = _uiState.asStateFlow()
 
@@ -43,18 +43,18 @@ class NoticeViewModel @Inject constructor(
                     }
                 }
                 .collectLatest { dataResource ->
-                    when (dataResource) {
+                    _uiState.value = when (dataResource) {
                         is DataResource.Success -> {
                             val data = dataResource.data.map { it.toPresentation() }
-                            _uiState.value = UiState.Success(data)
+                            UiState.Success(data)
                         }
 
                         is DataResource.Error -> {
-                            _uiState.value = UiState.Error(dataResource.throwable)
+                            UiState.Error(dataResource.throwable)
                         }
 
                         is DataResource.Loading -> {
-                            _uiState.value = UiState.Loading
+                            UiState.Loading
                         }
                     }
 
