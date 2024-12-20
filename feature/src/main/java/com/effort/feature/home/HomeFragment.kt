@@ -1,6 +1,7 @@
 package com.effort.feature.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +36,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         return binding.root
     }
 
-    // 실행 테스트 더미 코드
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
@@ -53,7 +53,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                         }
                         is UiState.Success -> {
                             progressIndicator.showLoading(false)
-                            binding.userName.text = state.data.nickname
+                            binding.userName.text = getDisplayName(state.data.nickname, state.data.name)
                         }
                         is UiState.Error -> {
                             progressIndicator.showLoading(false)
@@ -65,5 +65,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 }
             }
         }
+    }
+
+    private fun getDisplayName(nickname: String, name: String): String {
+        return nickname.ifBlank { name }
     }
 }

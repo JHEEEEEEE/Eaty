@@ -5,6 +5,7 @@ import com.effort.domain.usecase.auth.CheckUserLoggedInUseCase
 import com.effort.domain.usecase.mypage.ObserveUserUpdateUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.CheckNicknameDuplicatedUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateNicknameUseCase
+import com.effort.domain.usecase.mypage.detail.editprofile.UpdateProfilePicUseCase
 import com.effort.domain.usecase.mypage.detail.faq.GetFaqListUseCase
 import com.effort.domain.usecase.mypage.detail.notice.GetNoticeListUseCase
 import com.effort.domain.usecaseimpl.auth.AuthenticateUserUseCaseImpl
@@ -12,6 +13,7 @@ import com.effort.domain.usecaseimpl.auth.CheckUserLoggedInUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.ObserveUserUpdateUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.CheckNicknameDuplicatedUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.UpdateNicknameUseCaseImpl
+import com.effort.domain.usecaseimpl.mypage.detail.editprofile.UpdateProfilePicUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.faq.GetFaqListUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.notice.GetNoticeListUseCaseImpl
 import dagger.Binds
@@ -54,9 +56,9 @@ abstract class DomainModule {
     @Singleton
     abstract fun bindUpdateNicknameUseCase(updateNicknameUseCaseImpl: UpdateNicknameUseCaseImpl): UpdateNicknameUseCase
 
-/*    @Binds
+    @Binds
     @Singleton
-    abstract fun bindUpdateProfilePicUseCase(updateProfilePicUseCaseImpl: UpdateProfilePicUseCaseImpl): UpdateProfilePicUseCase*/
+    abstract fun bindUpdateProfilePicUseCase(updateProfilePicUseCaseImpl: UpdateProfilePicUseCaseImpl): UpdateProfilePicUseCase
 
     @Binds
     @Singleton

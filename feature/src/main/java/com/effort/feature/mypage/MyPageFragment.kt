@@ -26,6 +26,9 @@ import kotlinx.coroutines.launch
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate) {
     private val viewModel: MyPageViewModel by viewModels()
 
+    private lateinit var profilePicUrl: String
+    private lateinit var nickname: String
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -61,6 +64,10 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
                         is UiState.Success -> {
                             progressIndicator.showLoading(false)
                             updateUIWithUserProfile(state.data)
+
+                            // SafeArgs에 전달할 데이터를 초기화
+                            profilePicUrl = state.data.profilePicPath
+                            nickname = state.data.nickname
                         }
 
                         is UiState.Error -> {
@@ -80,7 +87,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         with(binding) {
             profileName.text = getDisplayName(userProfile)
             profileEmail.text = userProfile?.email ?: getString(R.string.needLogin)
-            loadProfileImage(userProfile?.profilePicUrl)
+            loadProfileImage(userProfile?.profilePicPath)
         }
     }
 
@@ -92,10 +99,10 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         }
     }
 
-    private fun loadProfileImage(profilePicUrl: String?) {
-        if (!profilePicUrl.isNullOrEmpty()) {
+    private fun loadProfileImage(profilePicPath: String?) {
+        if (!profilePicPath.isNullOrEmpty()) {
             Glide.with(binding.profileImage.context)
-                .load(profilePicUrl)
+                .load(profilePicPath)
                 .placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.error_image)
                 .into(binding.profileImage)
@@ -108,14 +115,22 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     private fun setNavigationClickListener() {
         val navigationMap = mapOf(
             binding.faq to R.id.action_myPageFragment_to_FAQFragment,
-            binding.notice to R.id.action_myPageFragment_to_noticeFragment,
-            binding.profileSettings to R.id.action_myPageFragment_to_editProfileFragment,
+            binding.notice to R.id.action_myPageFragment_to_noticeFragment
         )
 
         navigationMap.forEach { (view, actionId) ->
             view.setOnClickListener {
                 findNavController().navigate(actionId)
             }
+        }
+
+        // profileSettings 클릭 리스너에 데이터 전달 로직 추가
+        binding.profileSettings.setOnClickListener {
+            val action = MyPageFragmentDirections.actionMyPageFragmentToEditProfileFragment(
+                profilePicUrl = profilePicUrl,
+                nickname = nickname
+            )
+            findNavController().navigate(action)
         }
     }
 }

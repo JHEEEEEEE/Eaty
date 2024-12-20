@@ -66,5 +66,10 @@
     <string name="nickname_error_message">잘못된 닉네임입니다.</string>
     <string name="nickname_empty_message">닉네임을 입력해주세요.</string>
 
+    <string name="no_input_message">변경된 점이 없습니다.</string>
+    <string name="update_failed_message">프로필 업데이트에 실패하였습니다. 잠시 후 다시 시도해주세요.</string>
+    <string name="need_select_image">이미지를 선택하지 않았습니다.</string>
+    <string name="error">Error: %1$s</string>
+
 
 </resources>

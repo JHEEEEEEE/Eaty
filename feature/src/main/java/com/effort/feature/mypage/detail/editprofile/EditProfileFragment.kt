@@ -1,17 +1,23 @@
 package com.effort.feature.mypage.detail.editprofile
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.effort.feature.R
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.showLoading
+import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentEditprofileBinding
 import com.effort.presentation.UiState
 import com.effort.presentation.viewmodel.mypage.detail.editprofile.EditProfileViewModel
@@ -23,19 +29,8 @@ import kotlinx.coroutines.launch
 class EditProfileFragment :
     BaseFragment<FragmentEditprofileBinding>(FragmentEditprofileBinding::inflate) {
     private val viewModel: EditProfileViewModel by viewModels()
-
-    override fun initView() {
-        observeUpdateNicknameState()
-        observeCheckNicknameDuplicated()
-        setupNicknameInputListener()
-        saveButtonClickListener()
-    }
-
-    // 실행테스트 더미코드
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initView()
-    }
+    private val args: EditProfileFragmentArgs by navArgs() //SafeArgs로 데이터 받기
+    private lateinit var photoPickerLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,14 +38,46 @@ class EditProfileFragment :
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEditprofileBinding.inflate(inflater, container, false)
+        initializePhotoPickerLauncher()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView()
+    }
+
+    override fun initView() {
+        observeUpdateNicknameState()
+        observeCheckNicknameDuplicated()
+        setupNicknameInputListener()
+        saveButtonClickListener()
+        setPhotoPickerClickListener()
+        initializeUserProfile()
+    }
+
+    private fun initializeUserProfile() {
+        with(binding) {
+            // 닉네임 설정
+            val nickname = args.nickname
+            tagEdittextNickname.setText(nickname.ifEmpty { "" })
+
+
+            // 프로필 사진 설정
+            val profilePicUrl = args.profilePicUrl
+            if (profilePicUrl.isNotEmpty()) {
+                circularImageviewProfile.setImageUrl(profilePicUrl)
+            } else {
+                circularImageviewProfile.setImageUrl(R.drawable.profile_img_default)
+            }
+        }
     }
 
     private fun observeUpdateNicknameState() {
         val progressIndicator = binding.progressCircular.progressBar
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.updateNicknameState.collectLatest { state ->
+            viewModel.updateState.collectLatest { state ->
                 when (state) {
                     is UiState.Loading -> {
                         progressIndicator.showLoading(true)
@@ -58,11 +85,12 @@ class EditProfileFragment :
 
                     is UiState.Success -> {
                         progressIndicator.showLoading(false)
-                        findNavController().navigateUp()  // 수정필요 -> mypage로 back
+                        findNavController().navigateUp()
                     }
 
                     is UiState.Error -> {
                         progressIndicator.showLoading(false)
+                        showToast(getString(R.string.update_failed_message))
                     }
 
                     is UiState.Empty -> {
@@ -90,7 +118,8 @@ class EditProfileFragment :
                     }
 
                     is UiState.Empty -> {
-                        binding.greenButtonSave.isEnabled = false // 초기 상태 비활성화
+                        // 닉네임 상태 초기화 (닉네임 입력 없음)
+                        binding.nicknameStateMessage.text = ""
                     }
                 }
             }
@@ -127,22 +156,55 @@ class EditProfileFragment :
     // 닉네임 입력 리스너 설정 함수
     private fun setupNicknameInputListener() {
         binding.tagEdittextNickname.doAfterTextChanged { text ->
-            text?.toString()?.trim()?.takeIf { it.isNotBlank() }?.let {
-                viewModel.checkNicknameDuplicated(it)
-            }
+            text?.toString()?.trim()?.takeIf { it.isNotBlank() }
+                ?.let { viewModel.checkNicknameDuplicated(it) }
+                ?: viewModel.setEmptyNicknameState() // 비어있을 경우 Empty 상태로 전환
         }
     }
 
     private fun saveButtonClickListener() {
         binding.greenButtonSave.setOnClickListener {
-            binding.tagEdittextNickname.getText().trim().takeIf { it.isNotBlank() }
-                ?.let { newNickname ->
-                    viewModel.updateNickname(newNickname) // ViewModel에서 닉네임 업데이트
-                } ?: Toast.makeText(
-                requireContext(),
-                getString(R.string.nickname_empty_message),
-                Toast.LENGTH_SHORT
-            ).show()
+            val newNickname = binding.tagEdittextNickname.getText().trim()
+            val profilePictureUri = viewModel.selectedImageUri.value // 선택된 이미지의 URI
+
+            if (newNickname.isNotBlank() || !profilePictureUri.isNullOrEmpty()) {
+                viewModel.updateProfile(
+                    nickname = newNickname.takeIf { it.isNotBlank() },
+                    profilePictureUri = profilePictureUri
+                )
+            } else {
+                showToast(getString(R.string.no_input_message))
+            }
+        }
+    }
+
+    // Activity Result Launcher 초기화
+    private fun initializePhotoPickerLauncher() {
+        photoPickerLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val selectedImageUri: Uri? = result.data?.data
+                    if (selectedImageUri != null) {
+                        val imagePath = selectedImageUri.toString() // URI를 String으로 변환
+                        viewModel.setSelectedImageUri(imagePath) // ViewModel로 전달
+                        binding.circularImageviewProfile.setImageUri(selectedImageUri)
+                    } else {
+                        showToast(getString(R.string.need_select_image))
+                    }
+                }
+            }
+    }
+
+    private fun launchPhotoPicker() {
+        val photoPickerIntent = Intent(Intent.ACTION_PICK).apply {
+            type = "image/*"
+        }
+        photoPickerLauncher.launch(photoPickerIntent) // Activity Result API 사용
+    }
+
+    private fun setPhotoPickerClickListener() {
+        binding.circularImageviewEditProfile.setOnClickListener {
+            launchPhotoPicker()
         }
     }
 }

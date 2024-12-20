@@ -1,10 +1,12 @@
 package com.effort.presentation.viewmodel.mypage.detail.editprofile
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.effort.domain.DataResource
 import com.effort.domain.usecase.mypage.detail.editprofile.CheckNicknameDuplicatedUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateNicknameUseCase
+import com.effort.domain.usecase.mypage.detail.editprofile.UpdateProfilePicUseCase
 import com.effort.presentation.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,36 +20,54 @@ import javax.inject.Inject
 @HiltViewModel
 class EditProfileViewModel @Inject constructor(
     private val updateNicknameUseCase: UpdateNicknameUseCase,
-    private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase
+    private val checkNicknameDuplicatedUseCase: CheckNicknameDuplicatedUseCase,
+    private val updateProfilePicUseCase: UpdateProfilePicUseCase
 ) : ViewModel() {
 
-    private val _updateNicknameState = MutableStateFlow<UiState<Boolean>>(UiState.Empty)
-    val updateNicknameState get() = _updateNicknameState.asStateFlow()
+    private val _updateState = MutableStateFlow<UiState<Boolean>>(UiState.Empty)
+    val updateState get() = _updateState.asStateFlow()
 
     private val _checkNicknameDuplicatedState = MutableStateFlow<UiState<Boolean>>(UiState.Empty)
-    val checkNicknameDuplicatedState get() = _checkNicknameDuplicatedState.asStateFlow()
+    val  checkNicknameDuplicatedState get() = _checkNicknameDuplicatedState.asStateFlow()
 
-    fun updateNickname(nickname: String) {
+    private val _selectedImageUri = MutableStateFlow<String?>(null)
+    val selectedImageUri get() = _selectedImageUri.asStateFlow()
+
+    fun setSelectedImageUri(uri: String) {
+        _selectedImageUri.value = uri
+    }
+
+    fun setEmptyNicknameState() {
+        _checkNicknameDuplicatedState.value = UiState.Empty
+    }
+
+    fun updateProfile(nickname: String?, profilePictureUri: String?) {
         viewModelScope.launch {
-            _updateNicknameState.value = UiState.Loading
+            _updateState.value = UiState.Loading
+            var nicknameUpdated = false
+            var profileUpdated = false
 
-            val datasource = updateNicknameUseCase(nickname)
-            _updateNicknameState.value = when (datasource) {
-                is DataResource.Success -> {
-                    UiState.Success(true)
+            try {
+                if (!nickname.isNullOrEmpty()) {
+                    val nicknameResult = updateNicknameUseCase(nickname)
+                    nicknameUpdated = nicknameResult is DataResource.Success
                 }
 
-                is DataResource.Error -> {
-                    UiState.Error(datasource.throwable)
+                if (!profilePictureUri.isNullOrEmpty()) {
+                    val profileResult = updateProfilePicUseCase(profilePictureUri)
+                    profileUpdated = profileResult is DataResource.Success
                 }
 
-                is DataResource.Loading -> {
-                    UiState.Loading
+                if (nicknameUpdated || profileUpdated) {
+                    _updateState.value = UiState.Success(true)
+                } else {
+                    _updateState.value = UiState.Error(Throwable("No updates were made"))
                 }
+            } catch (e: Exception) {
+                _updateState.value = UiState.Error(e)
             }
         }
     }
-
 
     fun checkNicknameDuplicated(nickname: String) {
         viewModelScope.launch {

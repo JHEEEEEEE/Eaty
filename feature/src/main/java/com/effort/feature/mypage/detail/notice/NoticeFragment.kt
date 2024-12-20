@@ -9,7 +9,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.effort.feature.R
 import com.effort.feature.core.base.BaseFragment
+import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentNoticeBinding
 import com.effort.presentation.UiState
 import com.effort.presentation.viewmodel.mypage.detail.notice.NoticeViewModel
@@ -52,22 +54,13 @@ class NoticeFragment: BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding:
                         is UiState.Error -> {
                             progressIndicator.visibility = View.GONE
                             binding.recyclerviewNotice.visibility = View.GONE
-                            Toast.makeText(
-                                requireContext(),
-                                "Error: ${state.exception.message}",
-                                Toast.LENGTH_SHORT
-                            ).show()
+
+                            showToast(getString(R.string.error, state.exception.message))
                         }
 
                         is UiState.Empty -> {
                             progressIndicator.visibility = View.GONE
                             binding.recyclerviewNotice.visibility = View.GONE
-                            Toast.makeText(
-                                requireContext(),
-                                "No data available",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
                         }
                     }
                 }

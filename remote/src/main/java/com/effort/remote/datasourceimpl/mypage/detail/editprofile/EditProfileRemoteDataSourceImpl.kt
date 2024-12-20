@@ -16,4 +16,8 @@ class EditProfileRemoteDataSourceImpl @Inject constructor(
     override fun checkNicknameDuplicated(nickname: String): Flow<Boolean> {
         return firebaseService.checkNicknameDuplicated(nickname)
     }
+
+    override suspend fun updateProfilePic(profilePicPath: String): Boolean {
+        return firebaseService.updateProfilePic(profilePicPath)
+    }
 }

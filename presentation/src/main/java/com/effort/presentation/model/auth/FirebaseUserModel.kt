@@ -6,9 +6,9 @@ data class FirebaseUserModel(
     val name: String,
     val nickname: String,
     val email: String,
-    val profilePicUrl: String
+    val profilePicPath: String
 )
 
 fun FirebaseUser.toPresentation(): FirebaseUserModel {
-    return FirebaseUserModel(name, nickname, email, profilePicUrl)
+    return FirebaseUserModel(name, nickname, email, profilePicPath)
 }

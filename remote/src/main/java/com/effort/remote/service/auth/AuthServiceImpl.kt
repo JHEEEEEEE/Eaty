@@ -7,7 +7,7 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AuthServiceImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
+    private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ) : AuthService {
 
@@ -15,7 +15,7 @@ class AuthServiceImpl @Inject constructor(
         return try {
             // 1. Firebase 인증
             val credential = GoogleAuthProvider.getCredential(idToken, null)
-            val result = firebaseAuth.signInWithCredential(credential).await()
+            val result = auth.signInWithCredential(credential).await()
 
             // 2. Firebase 인증 결과 가져오기
             val firebaseUser = result.user ?: throw Exception("Failed to authenticate user")
@@ -25,7 +25,7 @@ class AuthServiceImpl @Inject constructor(
             saveUser(
                 email = email,
                 name = firebaseUser.displayName ?: "Unknown",
-                profilePicUrl = firebaseUser.photoUrl?.toString() ?: ""
+                profilePicPath = firebaseUser.photoUrl?.toString() ?: ""
             )
 
             // 4. 인증 성공 시 true 반환
@@ -37,10 +37,10 @@ class AuthServiceImpl @Inject constructor(
     }
 
     override suspend fun checkUserLoggedIn(): Boolean {
-        return firebaseAuth.currentUser != null
+        return auth.currentUser != null
     }
 
-    private suspend fun saveUser(email: String, name: String, profilePicUrl: String) {
+    private suspend fun saveUser(email: String, name: String, profilePicPath: String) {
         try {
             // 1. Firestore에서 사용자 문서 확인
             val userDocument = firestore.collection("users").document(email).get().await()
@@ -51,7 +51,7 @@ class AuthServiceImpl @Inject constructor(
                     "name" to name,
                     "nickname" to "",
                     "email" to email,
-                    "profilePicUrl" to profilePicUrl
+                    "profilePicPath" to profilePicPath
                 )
                 firestore.collection("users").document(email).set(userData).await()
             }

@@ -6,8 +6,8 @@ data class FirebaseUserEntity(
     val name: String,
     val nickname: String,
     val email: String,
-    val profilePicUrl: String,
+    val profilePicPath: String,
 ) {
     fun toDomain(): FirebaseUser =
-        FirebaseUser(name, nickname, email, profilePicUrl)
+        FirebaseUser(name, nickname, email, profilePicPath)
 }

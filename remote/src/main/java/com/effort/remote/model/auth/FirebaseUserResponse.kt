@@ -16,8 +16,8 @@ data class FirebaseUserResponse(
     val email: String = "",
 
     @SerialName("profilePic")
-    val profilePicUrl: String = "",
+    val profilePicPath: String = "",
 ) {
     fun toData(): FirebaseUserEntity =
-        FirebaseUserEntity(name, nickname, email, profilePicUrl)
+        FirebaseUserEntity(name, nickname, email, profilePicPath)
 }

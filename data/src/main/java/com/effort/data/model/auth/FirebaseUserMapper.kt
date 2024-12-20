@@ -8,6 +8,6 @@ fun FirebaseUser.toEntity(): FirebaseUserEntity {
         name = this.name,
         nickname = this.nickname,
         email = this.email,
-        profilePicUrl = this.profilePicUrl
+        profilePicPath = this.profilePicPath
     )
 }

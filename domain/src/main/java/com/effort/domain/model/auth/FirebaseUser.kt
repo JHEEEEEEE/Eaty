@@ -4,5 +4,5 @@ data class FirebaseUser(
     val name: String,
     val nickname: String,
     val email: String,
-    val profilePicUrl: String
+    val profilePicPath: String
 )

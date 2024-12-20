@@ -7,4 +7,6 @@ interface EditProfileRemoteDataSource {
     suspend fun updateNickname(nickname: String): Boolean
 
     fun checkNicknameDuplicated(nickname: String): Flow<Boolean>
+
+    suspend fun updateProfilePic(profilePicPath: String): Boolean
 }
