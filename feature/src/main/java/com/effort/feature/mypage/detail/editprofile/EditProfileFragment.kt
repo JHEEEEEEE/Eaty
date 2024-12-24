@@ -15,11 +15,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.effort.feature.R
+import com.effort.feature.auth.AuthActivity
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.showLoading
 import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentEditprofileBinding
 import com.effort.presentation.UiState
+import com.effort.presentation.viewmodel.auth.AuthViewModel
 import com.effort.presentation.viewmodel.mypage.detail.editprofile.EditProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -28,7 +30,8 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class EditProfileFragment :
     BaseFragment<FragmentEditprofileBinding>(FragmentEditprofileBinding::inflate) {
-    private val viewModel: EditProfileViewModel by viewModels()
+    private val editProfileViewModel: EditProfileViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
     private val args: EditProfileFragmentArgs by navArgs() //SafeArgs로 데이터 받기
     private lateinit var photoPickerLauncher: ActivityResultLauncher<Intent>
 
@@ -54,6 +57,9 @@ class EditProfileFragment :
         saveButtonClickListener()
         setPhotoPickerClickListener()
         initializeUserProfile()
+
+        signOutButtonClickListener()   // SignOut 클릭 리스너
+        observeSignOutState()          // SignOut 상태 관찰
     }
 
     private fun initializeUserProfile() {
@@ -77,7 +83,7 @@ class EditProfileFragment :
         val progressIndicator = binding.progressCircular.progressBar
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.updateState.collectLatest { state ->
+            editProfileViewModel.updateState.collectLatest { state ->
                 when (state) {
                     is UiState.Loading -> {
                         progressIndicator.showLoading(true)
@@ -103,7 +109,7 @@ class EditProfileFragment :
 
     private fun observeCheckNicknameDuplicated() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.checkNicknameDuplicatedState.collectLatest { state ->
+            editProfileViewModel.checkNicknameDuplicatedState.collectLatest { state ->
                 when (state) {
                     is UiState.Loading -> {
                         binding.greenButtonSave.isEnabled = false // 로딩 중 비활성화
@@ -157,18 +163,18 @@ class EditProfileFragment :
     private fun setupNicknameInputListener() {
         binding.tagEdittextNickname.doAfterTextChanged { text ->
             text?.toString()?.trim()?.takeIf { it.isNotBlank() }
-                ?.let { viewModel.checkNicknameDuplicated(it) }
-                ?: viewModel.setEmptyNicknameState() // 비어있을 경우 Empty 상태로 전환
+                ?.let { editProfileViewModel.checkNicknameDuplicated(it) }
+                ?: editProfileViewModel.setEmptyNicknameState() // 비어있을 경우 Empty 상태로 전환
         }
     }
 
     private fun saveButtonClickListener() {
         binding.greenButtonSave.setOnClickListener {
             val newNickname = binding.tagEdittextNickname.getText().trim()
-            val profilePictureUri = viewModel.selectedImageUri.value // 선택된 이미지의 URI
+            val profilePictureUri = editProfileViewModel.selectedImageUri.value // 선택된 이미지의 URI
 
             if (newNickname.isNotBlank() || !profilePictureUri.isNullOrEmpty()) {
-                viewModel.updateProfile(
+                editProfileViewModel.updateProfile(
                     nickname = newNickname.takeIf { it.isNotBlank() },
                     profilePictureUri = profilePictureUri
                 )
@@ -186,7 +192,7 @@ class EditProfileFragment :
                     val selectedImageUri: Uri? = result.data?.data
                     if (selectedImageUri != null) {
                         val imagePath = selectedImageUri.toString() // URI를 String으로 변환
-                        viewModel.setSelectedImageUri(imagePath) // ViewModel로 전달
+                        editProfileViewModel.setSelectedImageUri(imagePath) // ViewModel로 전달
                         binding.circularImageviewProfile.setImageUri(selectedImageUri)
                     } else {
                         showToast(getString(R.string.need_select_image))
@@ -206,5 +212,49 @@ class EditProfileFragment :
         binding.circularImageviewEditProfile.setOnClickListener {
             launchPhotoPicker()
         }
+    }
+
+    private fun signOutButtonClickListener() {
+        binding.signOut.setOnClickListener {
+            authViewModel.signOut()
+        }
+    }
+
+    private fun observeSignOutState() {
+        val progressIndicator = binding.progressCircular.progressBar
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            authViewModel.signOutState.collectLatest { state ->
+                when (state) {
+                    is UiState.Loading -> {
+                        // 로딩 중 UI 표시
+                        progressIndicator.showLoading(true)
+                    }
+
+                    is UiState.Success -> {
+                        // 로그아웃 성공 시 화면 전환
+                        progressIndicator.showLoading(false)
+                        navigateToAuthActivity()
+                    }
+
+                    is UiState.Error -> {
+                        // 로그아웃 실패 시 메시지 표시
+                        progressIndicator.showLoading(false)
+                        showToast(getString(R.string.sign_out_failed_message))
+                    }
+
+                    is UiState.Empty -> {
+                        progressIndicator.showLoading(false)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun navigateToAuthActivity() {
+        val intent = Intent(requireContext(), AuthActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        requireActivity().finish() // 현재 Fragment가 있는 Activity 종료
     }
 }

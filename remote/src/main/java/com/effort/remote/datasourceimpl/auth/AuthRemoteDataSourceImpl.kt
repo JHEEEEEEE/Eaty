@@ -16,4 +16,8 @@ class AuthRemoteDataSourceImpl @Inject constructor(
     override suspend fun checkUserLoggedIn(): Boolean {
         return authService.checkUserLoggedIn()
     }
+
+    override suspend fun signOut(): Boolean {
+        return authService.signOut()
+    }
 }

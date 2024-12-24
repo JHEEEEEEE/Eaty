@@ -7,4 +7,6 @@ interface AuthRepository {
     suspend fun authenticateUser(idToken: String): DataResource<Boolean>
 
     suspend fun checkUserLoggedIn(): DataResource<Boolean>
+
+    suspend fun signOut(): DataResource<Boolean>
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.effort.domain.DataResource
 import com.effort.domain.usecase.auth.AuthenticateUserUseCase
 import com.effort.domain.usecase.auth.CheckUserLoggedInUseCase
+import com.effort.domain.usecase.auth.SignOutUseCase
 import com.effort.presentation.UiState
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -20,11 +21,15 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val authenticateUserUseCase: AuthenticateUserUseCase,
     private val checkUserLoggedInUseCase: CheckUserLoggedInUseCase,
+    private val signOutUseCase: SignOutUseCase,
     private val googleSignInClient: GoogleSignInClient
 ) : ViewModel() {
 
     private val _authenticateState = MutableStateFlow<UiState<Unit>>(UiState.Empty)
     val authenticateState get() = _authenticateState.asStateFlow()
+
+    private val _signOutState = MutableStateFlow<UiState<Boolean>>(UiState.Empty)
+    val signOutState get() = _signOutState.asStateFlow()
 
     fun getGoogleSignInIntent() = googleSignInClient.signInIntent
 
@@ -53,34 +58,63 @@ class AuthViewModel @Inject constructor(
             try {
                 _authenticateState.value = UiState.Loading // 로딩 상태 설정
 
-                when (val dataResource = authenticateUserUseCase(account.idToken!!)) {
-                    is DataResource.Success -> {
-                        if (dataResource.data) {
-                            // 인증 성공 처리
-                            _authenticateState.value = UiState.Success(Unit)
-                        } else {
-                            // 인증 실패 처리
-                            _authenticateState.value =
+                _authenticateState.value =
+                    when (val dataResource = authenticateUserUseCase(account.idToken!!)) {
+                        is DataResource.Success -> {
+                            if (dataResource.data) {
+                                // 인증 성공 처리
+                                UiState.Success(Unit)
+                            } else {
+                                // 인증 실패 처리
                                 UiState.Error(Exception("Authentication failed"))
+                            }
                         }
+
+                        is DataResource.Error -> {
+                            // 인증 중 에러 발생 처리
+                            UiState.Error(dataResource.throwable)
+                        }
+
+                        is DataResource.Loading -> {
+                            // 로딩 상태 유지
+                            UiState.Loading
+                        }
+                    }
+            } catch (e: Exception) {
+                UiState.Error(e) // 예외 처리
+            } finally {
+                if (_authenticateState.value is UiState.Loading) {
+                    UiState.Empty // 상태 초기화
+                }
+            }
+        }
+    }
+
+
+    fun signOut() {
+        viewModelScope.launch {
+            try {
+                _signOutState.value = UiState.Loading
+
+                _signOutState.value = when (val dataResource = signOutUseCase()) {
+                    is DataResource.Success -> {
+                        // Google 로그아웃 및 권한 해제 처리
+                        googleSignInClient.signOut()
+                        googleSignInClient.revokeAccess()
+
+                        UiState.Success(true)
                     }
 
                     is DataResource.Error -> {
-                        // 인증 중 에러 발생 처리
-                        _authenticateState.value = UiState.Error(dataResource.throwable)
+                        UiState.Error(dataResource.throwable)
                     }
 
                     is DataResource.Loading -> {
-                        // 로딩 상태 유지
-                        _authenticateState.value = UiState.Loading
+                        UiState.Loading
                     }
                 }
             } catch (e: Exception) {
-                _authenticateState.value = UiState.Error(e) // 예외 처리
-            } finally {
-                if (_authenticateState.value is UiState.Loading) {
-                    _authenticateState.value = UiState.Empty // 상태 초기화
-                }
+                UiState.Error(e)
             }
         }
     }

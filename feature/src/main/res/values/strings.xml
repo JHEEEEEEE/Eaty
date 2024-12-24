@@ -70,6 +70,7 @@
     <string name="update_failed_message">프로필 업데이트에 실패하였습니다. 잠시 후 다시 시도해주세요.</string>
     <string name="need_select_image">이미지를 선택하지 않았습니다.</string>
     <string name="error">Error: %1$s</string>
+    <string name="sign_out_failed_message">로그아웃에 실패했습니다.</string>
 
 
 </resources>

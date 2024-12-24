@@ -28,4 +28,15 @@ class AuthRepositoryImpl @Inject constructor(
             DataResource.error(e)
         }
     }
+
+    override suspend fun signOut(): DataResource<Boolean> {
+        return try {
+            DataResource.Loading<Boolean>()
+
+            val isSignedOut = authRemoteDataSource.signOut()
+            DataResource.success(isSignedOut)
+        } catch (e: Exception) {
+            DataResource.error(e)
+        }
+    }
 }

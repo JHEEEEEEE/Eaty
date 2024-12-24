@@ -60,4 +60,13 @@ class AuthServiceImpl @Inject constructor(
             throw Exception("Failed to save user: ${e.message}", e)
         }
     }
+
+    override suspend fun signOut(): Boolean {
+        return try {
+            auth.signOut()
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 }
