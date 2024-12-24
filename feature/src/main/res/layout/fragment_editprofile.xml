@@ -45,10 +45,11 @@
         app:layout_constraintBottom_toTopOf="@+id/green_button_save"
         app:layout_constraintTop_toBottomOf="@+id/circular_imageview_profile"
         app:layout_constraintVertical_chainStyle="packed"
+        app:hint="@string/nickname_empty_message"
         app:text="@string/nickname" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/nicknameErrorTextView"
+        android:id="@+id/nickname_state_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -67,13 +68,13 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/textview_sign_out"
+        app:layout_constraintBottom_toTopOf="@+id/sign_out"
         app:layout_constraintTop_toBottomOf="@+id/tag_edittext_nickname"
         app:layout_constraintVertical_chainStyle="packed"
         app:text="@string/save" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/textview_sign_out"
+        android:id="@+id/sign_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
@@ -82,5 +83,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/green_button_save" />
+
+    <include
+        android:id="@+id/progress_circular"
+        layout="@layout/progress_indicator" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

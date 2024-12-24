@@ -25,6 +25,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/faq_logo" />
 
-    <include layout="@layout/progress_indicator" />
+    <include
+        android:id="@+id/progress_circular"
+        layout="@layout/progress_indicator" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

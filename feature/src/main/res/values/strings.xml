@@ -47,4 +47,30 @@
     <string name="recy_meetup_description">환경에 진심인 크루들의 모임의 장! 함께 모여 플로깅을 하며 건강과 환경을 지켜요🌱</string>
     <string name="play">실행</string>
 
+    <!-- FAQ, Notice   -->
+    <string name="category">카테고리</string>
+    <string name="title">제목</string>
+    <string name="question">질문</string>
+
+    <!-- SignInActivity    -->
+    <string name="welcome_message">반가워요 회원님!</string>
+    <string name="default_web_client_id">470817209530-40d10pr00gntk355qel6ojgtvb9cefco.apps.googleusercontent.com</string>
+
+    <!-- MyPage  -->
+    <string name="guest">Guest</string>
+    <string name="needLogin">로그인이 필요합니다.</string>
+
+    <!-- EditProfile   -->
+    <string name="nickname_available_message">사용 가능한 닉네임입니다.</string>
+    <string name="nickname_duplicate_message">이미 존재하는 닉네임입니다.</string>
+    <string name="nickname_error_message">잘못된 닉네임입니다.</string>
+    <string name="nickname_empty_message">닉네임을 입력해주세요.</string>
+
+    <string name="no_input_message">변경된 점이 없습니다.</string>
+    <string name="update_failed_message">프로필 업데이트에 실패하였습니다. 잠시 후 다시 시도해주세요.</string>
+    <string name="need_select_image">이미지를 선택하지 않았습니다.</string>
+    <string name="error">Error: %1$s</string>
+    <string name="sign_out_failed_message">로그아웃에 실패했습니다.</string>
+
+
 </resources>

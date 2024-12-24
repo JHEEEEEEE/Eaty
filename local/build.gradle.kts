@@ -44,9 +44,13 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     //hilt
-    // hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    //room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     implementation(project(":data"))
 }

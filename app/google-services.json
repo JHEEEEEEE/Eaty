@@ -12,7 +12,20 @@
           "package_name": "com.effort.recycrew"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "470817209530-40d10pr00gntk355qel6ojgtvb9cefco.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.effort.recycrew",
+            "certificate_hash": "42775c81d836acd74bd170725d25c9018c13e279"
+          }
+        },
+        {
+          "client_id": "470817209530-8s302fjtc8qsfpg9fl6qch0cs333dcoq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCNtN1KB6nZ-gpsVpTWJQ4ChqV9LywA5Nk"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "470817209530-8s302fjtc8qsfpg9fl6qch0cs333dcoq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

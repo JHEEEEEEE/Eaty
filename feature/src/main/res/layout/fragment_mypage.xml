@@ -137,6 +137,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:drawableEnd="@drawable/ic_right_arrow_24"
+        android:focusable="true"
         android:paddingVertical="8dp"
         android:text="@string/profile_settings"
         app:layout_constraintEnd_toEndOf="parent"
@@ -150,11 +151,16 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:drawableEnd="@drawable/ic_right_arrow_24"
+        android:focusable="true"
         android:paddingVertical="8dp"
         android:text="@string/notification_settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profile_settings" />
+
+    <include
+        android:id="@+id/progress_circular"
+        layout="@layout/progress_indicator" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

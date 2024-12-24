@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 android {
@@ -46,6 +47,15 @@ dependencies {
     // hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    // firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.storage)
+
+    // Serialize
+    implementation(libs.kotlin.serialization.json)
 
     implementation(project(":data"))
 }

@@ -7,7 +7,6 @@ buildscript {
     dependencies {
         classpath(libs.hilt.plugin)
         classpath(libs.agp)
-        classpath(libs.androidx.navigation.safe.args)
     }
 }
 
@@ -19,4 +18,5 @@ plugins {
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.hilt.android) apply false
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.kotlinx.serialization) apply false
 }

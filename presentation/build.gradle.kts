@@ -47,5 +47,11 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    // viewModel lifecycle
+    implementation(libs.lifecycle.viewmodel)
+
+    //auth
+    implementation(libs.play.services.auth)
+
     implementation(project(":domain"))
 }
