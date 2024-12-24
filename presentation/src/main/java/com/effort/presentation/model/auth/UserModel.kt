@@ -1,6 +1,6 @@
 package com.effort.presentation.model.auth
 
-import com.effort.domain.model.auth.FirebaseUser
+import com.effort.domain.model.auth.User
 
 data class FirebaseUserModel(
     val name: String,
@@ -9,6 +9,6 @@ data class FirebaseUserModel(
     val profilePicPath: String
 )
 
-fun FirebaseUser.toPresentation(): FirebaseUserModel {
+fun User.toPresentation(): FirebaseUserModel {
     return FirebaseUserModel(name, nickname, email, profilePicPath)
 }

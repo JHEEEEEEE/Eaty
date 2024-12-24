@@ -1,10 +1,10 @@
 package com.effort.data.model.auth
 
-import com.effort.domain.model.auth.FirebaseUser
+import com.effort.domain.model.auth.User
 
 // Domain → Data 변환
-fun FirebaseUser.toEntity(): FirebaseUserEntity {
-    return FirebaseUserEntity(
+fun User.toEntity(): UserEntity {
+    return UserEntity(
         name = this.name,
         nickname = this.nickname,
         email = this.email,

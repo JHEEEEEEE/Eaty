@@ -2,7 +2,7 @@ package com.effort.remote.service.mypage
 
 import android.net.Uri
 import android.util.Log
-import com.effort.remote.model.auth.FirebaseUserResponse
+import com.effort.remote.model.auth.UserResponse
 import com.effort.remote.model.mypage.detail.faq.FaqResponse
 import com.effort.remote.model.mypage.detail.faq.FaqWrapperResponse
 import com.effort.remote.model.mypage.detail.notice.NoticeResponse
@@ -135,7 +135,7 @@ class FirebaseServiceImpl @Inject constructor(
     }
 
 
-    override fun observeUserUpdate(): Flow<FirebaseUserResponse> = callbackFlow {
+    override fun observeUserUpdate(): Flow<UserResponse> = callbackFlow {
         val email = auth.currentUser?.email.orEmpty()
         if (email.isEmpty()) {
             close(IllegalStateException("User email is null or empty")) // 이메일이 없으면 예외 처리
@@ -149,7 +149,7 @@ class FirebaseServiceImpl @Inject constructor(
                     close(exception)
                     return@addSnapshotListener
                 }
-                snapshot?.toObject(FirebaseUserResponse::class.java)?.let {
+                snapshot?.toObject(UserResponse::class.java)?.let {
                     trySend(it)
                 }
             }

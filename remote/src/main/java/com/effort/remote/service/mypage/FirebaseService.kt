@@ -1,6 +1,6 @@
 package com.effort.remote.service.mypage
 
-import com.effort.remote.model.auth.FirebaseUserResponse
+import com.effort.remote.model.auth.UserResponse
 import com.effort.remote.model.mypage.detail.faq.FaqWrapperResponse
 import com.effort.remote.model.mypage.detail.notice.NoticeWrapperResponse
 import kotlinx.coroutines.flow.Flow
@@ -18,5 +18,5 @@ interface FirebaseService {
 
     suspend fun updateProfilePic(profilePicPath: String): Boolean
 
-    fun observeUserUpdate(): Flow<FirebaseUserResponse>
+    fun observeUserUpdate(): Flow<UserResponse>
 }

@@ -1,11 +1,11 @@
 package com.effort.remote.model.auth
 
-import com.effort.data.model.auth.FirebaseUserEntity
+import com.effort.data.model.auth.UserEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FirebaseUserResponse(
+data class UserResponse(
     @SerialName("name")
     val name: String = "",
 
@@ -18,6 +18,6 @@ data class FirebaseUserResponse(
     @SerialName("profilePic")
     val profilePicPath: String = "",
 ) {
-    fun toData(): FirebaseUserEntity =
-        FirebaseUserEntity(name, nickname, email, profilePicPath)
+    fun toData(): UserEntity =
+        UserEntity(name, nickname, email, profilePicPath)
 }
