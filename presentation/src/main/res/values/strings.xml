@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="user_not_logged_in">User not logged in</string>
+    <string name="authentication_failed">Authentication failed</string>
+    <string name="updates_failed">No updates were made</string>
+</resources>

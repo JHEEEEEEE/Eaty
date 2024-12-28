@@ -2,9 +2,11 @@ package com.effort.presentation.viewmodel.mypage.detail.faq
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.effort.domain.DataResource
 import com.effort.domain.usecase.mypage.detail.faq.GetFaqListUseCase
 import com.effort.presentation.UiState
+import com.effort.presentation.core.util.handleCompletionState
+import com.effort.presentation.core.util.setLoadingState
+import com.effort.presentation.core.util.toUiStateList
 import com.effort.presentation.model.mypage.detail.faq.FaqModel
 import com.effort.presentation.model.mypage.detail.faq.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,30 +35,14 @@ class FaqViewModel @Inject constructor(
             getFaqListUseCase()
                 .onStart {
                     // 로딩 상태로 업데이트
-                    _getFaqState.value = UiState.Loading
+                    setLoadingState(_getFaqState)
                 }
-                .onCompletion {
+                .onCompletion { cause ->
                     // 로딩 종료
-                    if (_getFaqState.value is UiState.Loading) {
-                        _getFaqState.value = UiState.Empty
-                    }
+                    handleCompletionState(_getFaqState, cause)
                 }
                 .collectLatest { dataResource ->
-                    _getFaqState.value = when (dataResource) {
-                        is DataResource.Success -> {
-                            val data = dataResource.data.map { it.toPresentation() }
-                            UiState.Success(data)
-                        }
-
-                        is DataResource.Error -> {
-                            UiState.Error(dataResource.throwable)
-                        }
-
-                        is DataResource.Loading -> {
-                            // 로딩 상태 처리 (추가적인 로딩 상태가 필요하면 사용 가능)
-                            UiState.Loading
-                        }
-                    }
+                    _getFaqState.value = dataResource.toUiStateList { it.toPresentation() }
                 }
         }
     }

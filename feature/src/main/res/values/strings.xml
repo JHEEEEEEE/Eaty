@@ -54,7 +54,7 @@
 
     <!-- SignInActivity    -->
     <string name="welcome_message">반가워요 회원님!</string>
-    <string name="default_web_client_id">470817209530-40d10pr00gntk355qel6ojgtvb9cefco.apps.googleusercontent.com</string>
+
 
     <!-- MyPage  -->
     <string name="guest">Guest</string>
@@ -71,6 +71,10 @@
     <string name="need_select_image">이미지를 선택하지 않았습니다.</string>
     <string name="error">Error: %1$s</string>
     <string name="sign_out_failed_message">로그아웃에 실패했습니다.</string>
+
+
+    <!-- homeFragment    -->
+    <string name="label">Label</string>
 
 
 </resources>

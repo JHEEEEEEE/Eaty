@@ -1,4 +1,4 @@
-package com.effort.local.di
+package com.effort.local.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

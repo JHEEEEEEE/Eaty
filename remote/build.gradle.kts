@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -15,6 +17,13 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        // properties 선언 후 local.properties 파일을 읽어온다
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+
+        buildConfigField("String", "NAVER_CLIENT_ID", properties["NAVER_CLIENT_ID"].toString())
+        buildConfigField("String", "NAVER_CLIENT_SECRET", properties["NAVER_CLIENT_SECRET"].toString())
     }
 
     buildTypes {
@@ -32,6 +41,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 
@@ -56,6 +69,16 @@ dependencies {
 
     // Serialize
     implementation(libs.kotlin.serialization.json)
+
+    // Retrofit
+    implementation (libs.retrofit)
+
+    // Gson
+    implementation (libs.converter.gson)
+
+    // OkHttp
+    implementation(platform(libs.okhttp.bom))
+    implementation (libs.okhttp.logging.interceptor)
 
     implementation(project(":data"))
 }

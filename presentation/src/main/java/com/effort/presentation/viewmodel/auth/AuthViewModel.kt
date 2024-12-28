@@ -8,7 +8,9 @@ import com.effort.domain.DataResource
 import com.effort.domain.usecase.auth.AuthenticateUserUseCase
 import com.effort.domain.usecase.auth.CheckUserLoggedInUseCase
 import com.effort.domain.usecase.auth.SignOutUseCase
+import com.effort.presentation.R
 import com.effort.presentation.UiState
+import com.effort.presentation.core.util.setLoadingState
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,19 +37,20 @@ class AuthViewModel @Inject constructor(
 
     fun checkUserLoggedIn() {
         viewModelScope.launch {
-            _authenticateState.value = UiState.Loading
+            setLoadingState(_authenticateState)
 
             _authenticateState.value = when (val dataResource = checkUserLoggedInUseCase()) {
-                is DataResource.Loading -> UiState.Loading
                 is DataResource.Success -> {
                     if (dataResource.data) {
                         UiState.Success(Unit) // 성공 시 상태 업데이트
                     } else {
-                        UiState.Error(Throwable("User not logged in"))
+                        UiState.Error(Throwable(R.string.user_not_logged_in.toString()))
                     }
                 }
 
                 is DataResource.Error -> UiState.Error(dataResource.throwable)
+
+                is DataResource.Loading -> UiState.Loading
             }
         }
     }
@@ -56,7 +59,7 @@ class AuthViewModel @Inject constructor(
     fun handleSignInResult(account: GoogleSignInAccount) {
         viewModelScope.launch {
             try {
-                _authenticateState.value = UiState.Loading // 로딩 상태 설정
+                setLoadingState(_authenticateState)
 
                 _authenticateState.value =
                     when (val dataResource = authenticateUserUseCase(account.idToken!!)) {
@@ -66,7 +69,7 @@ class AuthViewModel @Inject constructor(
                                 UiState.Success(Unit)
                             } else {
                                 // 인증 실패 처리
-                                UiState.Error(Exception("Authentication failed"))
+                                UiState.Error(Exception(R.string.authentication_failed.toString()))
                             }
                         }
 
@@ -94,7 +97,7 @@ class AuthViewModel @Inject constructor(
     fun signOut() {
         viewModelScope.launch {
             try {
-                _signOutState.value = UiState.Loading
+                setLoadingState(_signOutState)
 
                 _signOutState.value = when (val dataResource = signOutUseCase()) {
                     is DataResource.Success -> {

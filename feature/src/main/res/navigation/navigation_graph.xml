@@ -22,6 +22,9 @@
             android:id="@+id/action_homeFragment_to_myPageFragment"
             app:destination="@id/myPage_fragment"
             app:launchSingleTop="true"/>
+        <action
+            android:id="@+id/action_home_fragment_to_restaurantFragment"
+            app:destination="@id/restaurantFragment" />
     </fragment>
 
 
@@ -87,5 +90,14 @@
         android:name="com.effort.feature.mypage.detail.notice.NoticeFragment"
         android:label="NoticeFragment"
         tools:layout="@layout/fragment_notice" />
+    <fragment
+        android:id="@+id/restaurantFragment"
+        android:name="com.effort.feature.home.RestaurantFragment"
+        android:label="RestaurantFragment"
+        tools:layout="@layout/fragment_restaurant">
+        <argument
+            android:name="query"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

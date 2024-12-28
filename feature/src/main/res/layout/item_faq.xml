@@ -8,7 +8,7 @@
     <!-- 질문 텍스트 -->
     <!-- 콘텐츠 영역 Flow -->
     <androidx.constraintlayout.helper.widget.Flow
-        android:id="@+id/flowContent"
+        android:id="@+id/flow_faq"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -42,7 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="#CCCCCC"
-        app:layout_constraintTop_toBottomOf="@id/flowContent"
+        app:layout_constraintTop_toBottomOf="@id/flow_faq"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

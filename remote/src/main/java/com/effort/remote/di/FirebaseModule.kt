@@ -36,7 +36,6 @@ object FirebaseModule {
         return FirebaseStorage.getInstance()
     }
 
-
     // FirebaseService 인터페이스와 FirebaseServiceImpl 구현체를 연결
     // Hilt가 FirebaseService 의존성을 주입할 때 FirebaseServiceImpl 인스턴스를 제공
     @Provides

@@ -1,13 +1,14 @@
 package com.effort.presentation.viewmodel.mypage.detail.editprofile
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.effort.domain.DataResource
 import com.effort.domain.usecase.mypage.detail.editprofile.CheckNicknameDuplicatedUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateNicknameUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateProfilePicUseCase
+import com.effort.presentation.R
 import com.effort.presentation.UiState
+import com.effort.presentation.core.util.setLoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,7 +44,7 @@ class EditProfileViewModel @Inject constructor(
 
     fun updateProfile(nickname: String?, profilePictureUri: String?) {
         viewModelScope.launch {
-            _updateState.value = UiState.Loading
+            setLoadingState(_updateState)
             var nicknameUpdated = false
             var profileUpdated = false
 
@@ -61,7 +62,7 @@ class EditProfileViewModel @Inject constructor(
                 if (nicknameUpdated || profileUpdated) {
                     _updateState.value = UiState.Success(true)
                 } else {
-                    _updateState.value = UiState.Error(Throwable("No updates were made"))
+                    _updateState.value = UiState.Error(Throwable(R.string.updates_failed.toString()))
                 }
             } catch (e: Exception) {
                 _updateState.value = UiState.Error(e)
@@ -73,7 +74,7 @@ class EditProfileViewModel @Inject constructor(
         viewModelScope.launch {
             checkNicknameDuplicatedUseCase(nickname)
                 .onStart {
-                    _checkNicknameDuplicatedState.value = UiState.Loading
+                    setLoadingState(_checkNicknameDuplicatedState)
                 }
                 .catch { exception ->
                     _checkNicknameDuplicatedState.value = UiState.Error(exception)
