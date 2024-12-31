@@ -31,14 +31,16 @@ class AuthActivity : AppCompatActivity() {
 
     private val googleSignInLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            Log.d("AuthActivity", "Google Sign-In 결과 수신")
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
                 val account = task.getResult(ApiException::class.java)
                 account?.let {
+                    Log.d("AuthActivity", "Google Sign-In 성공: ${it.email}")
                     viewModel.handleSignInResult(it)
                 }
             } catch (e: ApiException) {
-                Log.e(TAG, "Google Sign-In 실패: ${e.message}")
+                Log.e("AuthActivity", "Google Sign-In 실패: ${e.message}")
             }
         }
 
@@ -50,13 +52,13 @@ class AuthActivity : AppCompatActivity() {
 
         setupUI()
         observeAuthenticatedState()
-
-        // 로그인 상태 확인
+        Log.d("AuthActivity", "로그인 상태 확인 시작")
         viewModel.checkUserLoggedIn()
     }
 
     private fun setupUI() {
         binding.googleSignIn.setOnClickListener {
+            Log.d("AuthActivity", "Google Sign-In 버튼 클릭")
             val signInIntent = viewModel.getGoogleSignInIntent()
             googleSignInLauncher.launch(signInIntent)
         }
@@ -69,17 +71,23 @@ class AuthActivity : AppCompatActivity() {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.authenticateState.collectLatest { state ->
                     when (state) {
-                        is UiState.Loading -> progressIndicator.showLoading(true)
+                        is UiState.Loading -> {
+                            Log.d("AuthActivity", "로딩 상태")
+                            progressIndicator.showLoading(true)
+                        }
                         is UiState.Success -> {
+                            Log.d("AuthActivity", "로그인 성공")
                             progressIndicator.showLoading(false)
                             navigateToMainActivity()
                         }
-
                         is UiState.Error -> {
+                            Log.e("AuthActivity", "로그인 실패: ${state.exception.message}")
                             progressIndicator.showLoading(false)
                         }
-
-                        is UiState.Empty -> progressIndicator.showLoading(false)
+                        is UiState.Empty -> {
+                            Log.d("AuthActivity", "빈 상태")
+                            progressIndicator.showLoading(false)
+                        }
                     }
                 }
             }
@@ -87,6 +95,7 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun navigateToMainActivity() {
+        Log.d("AuthActivity", "메인 화면으로 이동")
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }

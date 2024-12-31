@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
-import com.effort.feature.R
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.databinding.FragmentMapBinding
 import com.naver.maps.geometry.LatLng
@@ -37,7 +36,6 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
 
         // 위치 권한 요청 코드
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-
     }
 
     override fun initView() {

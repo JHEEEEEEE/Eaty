@@ -1,9 +1,14 @@
 package com.effort.feature.home
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -13,22 +18,33 @@ import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.showLoading
 import com.effort.feature.databinding.FragmentRestaurantBinding
 import com.effort.presentation.UiState
+import com.effort.presentation.model.home.SortTypeModel
 import com.effort.presentation.viewmodel.home.RestaurantViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class RestaurantFragment: BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate) {
+class RestaurantFragment : BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate) {
     private val viewModel: RestaurantViewModel by viewModels()
-    private val args: RestaurantFragmentArgs by navArgs() //SafeArgs로 데이터 받기
+    private val args: RestaurantFragmentArgs by navArgs() // SafeArgs로 데이터 받기
     private lateinit var restaurantListAdapter: RestaurantListAdapter
 
-    override fun initView() {
-        viewModel.fetchRestaurants(args.query)
+    // 권한 요청 코드
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
+    }
 
+    override fun initView() {
         initRecyclerView()
         observeGetRestaurantState()
+
+        // 권한 확인 및 요청 처리
+        if (checkLocationPermission()) {
+            viewModel.fetchRestaurants(args.query) // 권한 허용 시 데이터 로드
+        } else {
+            requestLocationPermission() // 권한 요청
+        }
     }
 
     override fun onCreateView(
@@ -51,8 +67,6 @@ class RestaurantFragment: BaseFragment<FragmentRestaurantBinding>(FragmentRestau
             adapter = restaurantListAdapter
         }
     }
-
-    //받은 category라는 args를 이제 viewmodel로 넘겨주고 받아야됨, 그거를 짜야되는데, observe와 viewmodel.()이런식으로 실행해야함.
 
     private fun observeGetRestaurantState() {
         val progressIndicator = binding.progressCircular.progressBar
@@ -83,6 +97,42 @@ class RestaurantFragment: BaseFragment<FragmentRestaurantBinding>(FragmentRestau
                         }
                     }
                 }
+            }
+        }
+    }
+
+    // 위치 권한 확인
+    private fun checkLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    // 권한 요청
+    private fun requestLocationPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
+    }
+
+    // 권한 요청 결과 처리
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한 허용 시 위치 기반으로 데이터 조회
+                viewModel.fetchRestaurants(args.query)
+            } else {
+                // 권한 거부 시 일반 데이터 조회
+                viewModel.fetchRestaurants(args.query)
+                Toast.makeText(requireContext(), "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
             }
         }
     }

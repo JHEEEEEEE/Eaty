@@ -9,8 +9,7 @@ interface RestaurantService {
     @GET("/v1/search/local.json")
     suspend fun getRestaurantList(
         @Query("query") query: String,
-        @Query("display") display: Int = 20,
+        @Query("display") display: Int = 5,
         @Query("start") start: Int = 1,
-        @Query("sort") sort: String = "random"
     ): Response<RestaurantWrapperResponse>
 }

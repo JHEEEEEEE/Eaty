@@ -15,6 +15,10 @@ data class RestaurantResponse(
     @SerialName("mapy") val mapy: String = ""
 ) {
     fun toData(): RestaurantEntity {
-        return RestaurantEntity(title)
+        return RestaurantEntity(
+            title = this.title,
+            mapx = this.mapx,
+            mapy = this.mapy,
+        )
     }
 }

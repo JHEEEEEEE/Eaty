@@ -37,11 +37,9 @@
             android:name="com.effort.feature.auth.AuthActivity"
             android:exported="false" />
 
-
-
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="hte2cv12jt" />
+            android:value="${NAVER_MAP_CLIENT_ID}" />
 
     </application>
 

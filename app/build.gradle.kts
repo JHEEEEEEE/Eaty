@@ -1,4 +1,4 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -21,7 +21,13 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "GOOGLE_SIGN_IN_WEB_CLIENT_ID", getApiKey("GOOGLE_SIGN_IN_WEB_CLIENT_ID"))
+        // properties 선언 후 local.properties 파일을 읽어온다
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+
+        buildConfigField("String", "GOOGLE_SIGN_IN_WEB_CLIENT_ID", properties["GOOGLE_SIGN_IN_WEB_CLIENT_ID"].toString())
+
+        addManifestPlaceholders(mapOf("NAVER_MAP_CLIENT_ID" to properties.getProperty("NAVER_MAP_CLIENT_ID")))
     }
 
     buildTypes {
@@ -76,8 +82,4 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":local"))
     implementation(project(":remote"))
-}
-
-fun getApiKey(propertyKey: String): String {
-    return gradleLocalProperties(rootDir, providers).getProperty(propertyKey)
 }
