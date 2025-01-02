@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface RestaurantRepository {
 
-    fun getRestaurantList(query: String, sortType: SortType): Flow<DataResource<List<Restaurant>>>
+    fun getRestaurantList(query: String): Flow<DataResource<List<Restaurant>>>
 }

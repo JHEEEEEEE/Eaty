@@ -22,6 +22,5 @@ class GetFaqListUseCaseImpl @Inject constructor(
 
                 else -> dataResource// 상태 그대로 전달
             }
-
         }
 }

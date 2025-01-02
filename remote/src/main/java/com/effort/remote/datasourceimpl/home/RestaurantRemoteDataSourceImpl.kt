@@ -3,12 +3,10 @@ package com.effort.remote.datasourceimpl.home
 import com.effort.data.datasource.home.RestaurantRemoteDataSource
 import com.effort.data.model.home.RestaurantEntity
 import com.effort.remote.service.home.RestaurantService
-import com.effort.remote.service.location.LocationService
 import javax.inject.Inject
 
 class RestaurantRemoteDataSourceImpl @Inject constructor(
     private val restaurantService: RestaurantService,
-    private val locationService: LocationService
 ): RestaurantRemoteDataSource {
 
     override suspend fun getRestaurants(query: String): List<RestaurantEntity> {

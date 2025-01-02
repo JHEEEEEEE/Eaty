@@ -1,7 +1,9 @@
 package com.effort.presentation.viewmodel.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.effort.domain.DataResource
 import com.effort.domain.model.home.SortType
 import com.effort.domain.usecase.home.GetRestaurantListUseCase
 import com.effort.presentation.UiState
@@ -28,28 +30,28 @@ class RestaurantViewModel @Inject constructor(
 ) : ViewModel() {
 
     // 상태 관리
-    private val _getRestaurantState = MutableStateFlow<UiState<List<RestaurantModel>>>(UiState.Empty)
-    val getRestaurantState = _getRestaurantState.asStateFlow()
+    private val _getRestaurantState =
+        MutableStateFlow<UiState<List<RestaurantModel>>>(UiState.Empty)
+    val getRestaurantState get() = _getRestaurantState.asStateFlow()
 
     // 기본 정렬 기준: 거리순 (Presentation 모델 사용)
     private val _sortType = MutableStateFlow(SortTypeModel.DISTANCE) // Presentation Model로 변경
-    val sortType = _sortType.asStateFlow() // 외부 접근 제한
+    val sortType get() = _sortType.asStateFlow() // 외부 접근 제한
 
     // 식당 조회 메서드
     fun fetchRestaurants(query: String) {
         viewModelScope.launch {
-            // sortType 변경 시 최신 상태 반영
-            _sortType.flatMapLatest { currentSortType ->
-                // UseCase에 Domain Model로 변환하여 전달
-                getRestaurantListUseCase(query, currentSortType.toDomain())
-            }.onStart {
-                setLoadingState(_getRestaurantState) // 로딩 상태 처리
-            }.onCompletion { cause ->
-                handleCompletionState(_getRestaurantState, cause) // 완료 상태 처리
-            }.collectLatest { dataResource ->
-                // 결과를 UI 상태로 변환하여 업데이트
-                _getRestaurantState.value = dataResource.toUiStateList { it.toPresentation() }
-            }
+            getRestaurantListUseCase(query, _sortType.value.toDomain()) // 최신 정렬 타입 반영
+                .onStart {
+                    // 로딩 상태 처리
+                    setLoadingState(_getRestaurantState)
+                }.onCompletion { cause ->
+                    // 완료 상태 처리 (에러 또는 성공 처리)
+                    handleCompletionState(_getRestaurantState, cause)
+                }.collectLatest { dataResource ->
+                    // 결과에 따른 UI 상태 처리
+                    _getRestaurantState.value = dataResource.toUiStateList { it.toPresentation() }
+                }
         }
     }
 
