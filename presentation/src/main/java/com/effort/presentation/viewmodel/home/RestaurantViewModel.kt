@@ -1,5 +1,6 @@
 package com.effort.presentation.viewmodel.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.effort.domain.DataResource
@@ -64,6 +65,8 @@ class RestaurantViewModel @Inject constructor(
                     is DataResource.Success -> {
                         // 3. 데이터와 메타 정보 분리
                         val (restaurants, meta) = dataResource.data
+
+                        Log.d("RestaurantViewModel", "${dataResource.data.first}")
 
                         // 4. 데이터 결합 및 상태 업데이트
                         val currentData = if (loadMore) {

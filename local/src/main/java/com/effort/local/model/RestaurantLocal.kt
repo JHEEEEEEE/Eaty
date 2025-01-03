@@ -8,25 +8,40 @@ import com.effort.data.model.home.RestaurantEntity
 data class RestaurantLocal(
     @PrimaryKey
     val title: String,
-    val latitude: String,
+    val lotNumberAddress: String,
+    val roadNameAddress: String,
+    val phoneNumber: String,
+    val placeUrl: String,
+    val distance: String,
     val longitude: String,
+    val latitude: String,
 ) {
     // Local -> Data 변환 함수 (단일 객체 변환 지원)
     fun toData(): RestaurantEntity {
         return RestaurantEntity(
-            title = this.title,
-            latitude = this.latitude,
-            longitude = this.longitude,
-        ) // 변환 로직
+            title,
+            lotNumberAddress,
+            roadNameAddress,
+            phoneNumber,
+            placeUrl,
+            distance,
+            longitude,
+            latitude
+        )
     }
 }
 
 // Data -> Local 변환 함수 (단일 객체 변환 지원)
 fun RestaurantEntity.toLocal(): RestaurantLocal {
     return RestaurantLocal(
-        title = this.title,
-        latitude = this.latitude,
-        longitude = this.longitude,
+        title,
+        lotNumberAddress,
+        roadNameAddress,
+        phoneNumber,
+        placeUrl,
+        distance,
+        longitude,
+        latitude
     )
 }
 

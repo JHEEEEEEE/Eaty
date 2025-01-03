@@ -16,7 +16,16 @@ class RestaurantListAdapter: ListAdapter<RestaurantModel, RestaurantListAdapter.
 
         fun bind(item: RestaurantModel) {
             // 아이템 데이터 설정
-            binding.restaurantName.text = item.title
+
+            with(binding) {
+                name.text = item.title
+                lotNumberAddress.text = item.lotNumberAddress
+                roadNameAddress.text = item.roadNameAddress
+                distance.text = "${item.distance}m"
+                phoneNumber.text = item.phoneNumber
+                placeUrl.text = item.placeUrl
+            }
+
             //binding.restaurantImage.setImageResource(item.imageResId) // 이미지 설정
         }
     }

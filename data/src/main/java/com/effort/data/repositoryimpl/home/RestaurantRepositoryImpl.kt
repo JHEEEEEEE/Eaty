@@ -51,6 +51,11 @@ class RestaurantRepositoryImpl @Inject constructor(
                     remoteRestaurants.map {
                         RestaurantEntity(
                             title = it.title,
+                            lotNumberAddress = it.lotNumberAddress,
+                            roadNameAddress = it.roadNameAddress,
+                            phoneNumber = it.phoneNumber,
+                            placeUrl = it.placeUrl,
+                            distance = it.distance,
                             latitude = it.latitude,
                             longitude = it.longitude,
                         )
