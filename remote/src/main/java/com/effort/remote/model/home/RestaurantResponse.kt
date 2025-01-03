@@ -7,18 +7,20 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RestaurantResponse(
-    @SerialName("title") val title: String = "",
-    @SerialName("category") val category: String = "",
-    @SerialName("address") val address: String = "",
-    @SerialName("roadAddress") val roadAddress: String = "",
-    @SerialName("mapx") val mapx: String = "",
-    @SerialName("mapy") val mapy: String = ""
+    @SerialName("place_name") val title: String = "",          // 장소명
+    @SerialName("category_name") val category: String = "",    // 카테고리
+    @SerialName("address_name") val address: String = "",      // 지번 주소
+    @SerialName("road_address_name") val roadAddress: String = "", // 도로명 주소
+    @SerialName("x") val longitude: String = "",              // 경도 (x 좌표)
+    @SerialName("y") val latitude: String = "",                 // 위도 (y 좌표)
 ) {
+
+    // Data Layer의 RestaurantEntity로 변환
     fun toData(): RestaurantEntity {
         return RestaurantEntity(
-            title = this.title,
-            mapx = this.mapx,
-            mapy = this.mapy,
+            title = title,
+            longitude = longitude, // 경도
+            latitude = latitude.toString()   // 위도
         )
     }
 }

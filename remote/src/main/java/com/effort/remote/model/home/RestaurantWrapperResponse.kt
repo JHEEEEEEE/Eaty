@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RestaurantWrapperResponse(
-    @SerialName("items") // JSON 필드 매핑
-    val items: List<RestaurantResponse>
+    @SerialName("documents") // JSON 필드 매핑
+    val documents: List<RestaurantResponse>
 )

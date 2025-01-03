@@ -7,8 +7,7 @@ import okhttp3.Response
 class ApiInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
-            .addHeader("X-Naver-Client-Id", BuildConfig.NAVER_CLIENT_ID)
-            .addHeader("X-Naver-Client-Secret", BuildConfig.NAVER_CLIENT_SECRET)
+            .addHeader("Authorization", "KakaoAK ${BuildConfig.KAKAO_API_KEY}")
             .build()
         return chain.proceed(request)
     }

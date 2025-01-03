@@ -1,10 +1,7 @@
 package com.effort.presentation.viewmodel.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.effort.domain.DataResource
-import com.effort.domain.model.home.SortType
 import com.effort.domain.usecase.home.GetRestaurantListUseCase
 import com.effort.presentation.UiState
 import com.effort.presentation.core.util.handleCompletionState
@@ -18,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -35,7 +31,7 @@ class RestaurantViewModel @Inject constructor(
     val getRestaurantState get() = _getRestaurantState.asStateFlow()
 
     // 기본 정렬 기준: 거리순 (Presentation 모델 사용)
-    private val _sortType = MutableStateFlow(SortTypeModel.DISTANCE) // Presentation Model로 변경
+    private val _sortType = MutableStateFlow(SortTypeModel.DEFAULT) // Presentation Model로 변경
     val sortType get() = _sortType.asStateFlow() // 외부 접근 제한
 
     // 식당 조회 메서드

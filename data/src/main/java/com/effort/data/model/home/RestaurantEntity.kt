@@ -4,13 +4,13 @@ import com.effort.domain.model.home.Restaurant
 
 data class RestaurantEntity(
     val title: String,
-    val mapx: String,
-    val mapy: String,
+    val longitude: String,
+    val latitude: String,
 ) {
     fun toDomain(): Restaurant =
         Restaurant(
             title = this.title,
-            mapx = this.mapx,
-            mapy = this.mapy,
+            longitude = this.longitude, // 경도
+            latitude = this.latitude
         )
 }

@@ -1,15 +1,11 @@
 package com.effort.data.repositoryimpl.home
 
-import android.location.Location
 import android.util.Log
-import com.effort.domain.util.LocationUtil
 import com.effort.data.datasource.home.RestaurantLocalDataSource
 import com.effort.data.datasource.home.RestaurantRemoteDataSource
-import com.effort.data.datasource.location.LocationRemoteDataSource
 import com.effort.data.model.home.RestaurantEntity
 import com.effort.domain.DataResource
 import com.effort.domain.model.home.Restaurant
-import com.effort.domain.model.home.SortType
 import com.effort.domain.repository.home.RestaurantRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -30,7 +26,7 @@ class RestaurantRepositoryImpl @Inject constructor(
             localRestaurants.forEach { restaurant ->
                 Log.d(
                     "RestaurantLog",
-                    "로컬 레스토랑 - 이름: ${restaurant.title}, 위도: ${restaurant.mapy}, 경도: ${restaurant.mapx}"
+                    "로컬 레스토랑 - 이름: ${restaurant.title}, 위도: ${restaurant.latitude}, 경도: ${restaurant.longitude}"
                 )
             }
 
@@ -45,7 +41,7 @@ class RestaurantRepositoryImpl @Inject constructor(
                 remoteRestaurants.forEach { restaurant ->
                     Log.d(
                         "RestaurantLog",
-                        "원격 레스토랑 - 이름: ${restaurant.title}, 위도: ${restaurant.mapy}, 경도: ${restaurant.mapx}"
+                        "원격 레스토랑 - 이름: ${restaurant.title}, 위도: ${restaurant.latitude}, 경도: ${restaurant.longitude}"
                     )
                 }
 
@@ -54,8 +50,8 @@ class RestaurantRepositoryImpl @Inject constructor(
                     remoteRestaurants.map {
                         RestaurantEntity(
                             title = it.title,
-                            mapx = it.mapx,
-                            mapy = it.mapy,
+                            latitude = it.latitude,
+                            longitude = it.longitude,
                         )
                     }
                 )

@@ -22,8 +22,9 @@ android {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
 
-        buildConfigField("String", "NAVER_CLIENT_ID", properties["NAVER_CLIENT_ID"].toString())
-        buildConfigField("String", "NAVER_CLIENT_SECRET", properties["NAVER_CLIENT_SECRET"].toString())
+        //buildConfigField("String", "NAVER_CLIENT_ID", properties["NAVER_CLIENT_ID"].toString())
+        //buildConfigField("String", "NAVER_CLIENT_SECRET", properties["NAVER_CLIENT_SECRET"].toString())
+        buildConfigField("String", "KAKAO_API_KEY", properties["KAKAO_API_KEY"].toString())
     }
 
     buildTypes {
@@ -71,10 +72,8 @@ dependencies {
     implementation(libs.kotlin.serialization.json)
 
     // Retrofit
-    implementation (libs.retrofit)
-
-    // Gson
-    implementation (libs.converter.gson)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.kotlin.serialization.converter)
 
     // OkHttp
     implementation(platform(libs.okhttp.bom))

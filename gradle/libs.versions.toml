@@ -8,6 +8,7 @@ kotlin = "2.0.0"
 jetbrainsKotlinJvm = "2.0.0"
 kotlinx-coroutines = "1.9.0"
 kotlinx-serialization-json = "1.6.1"
+kotlinx-serialization-converter = "1.0.0"
 
 # android
 coreKtx = "1.13.1"  #1.15.0 이상은 target sdk 35이상
@@ -49,7 +50,6 @@ naverMap = "3.20.0"
 
 okhttp = "4.12.0"
 retrofit = "2.11.0"
-converterGson = "2.9.0"
 
 
 [libraries]
@@ -112,7 +112,7 @@ okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-intercepto
 okhttp = { module = "com.squareup.okhttp3:okhttp" }
 
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+retrofit-kotlin-serialization-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "kotlinx-serialization-converter" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

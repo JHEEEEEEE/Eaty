@@ -8,15 +8,15 @@ import com.effort.data.model.home.RestaurantEntity
 data class RestaurantLocal(
     @PrimaryKey
     val title: String,
-    val mapx: String,
-    val mapy: String,
+    val latitude: String,
+    val longitude: String,
 ) {
     // Local -> Data 변환 함수 (단일 객체 변환 지원)
     fun toData(): RestaurantEntity {
         return RestaurantEntity(
             title = this.title,
-            mapx = this.mapx,
-            mapy = this.mapy,
+            latitude = this.latitude,
+            longitude = this.longitude,
         ) // 변환 로직
     }
 }
@@ -25,8 +25,8 @@ data class RestaurantLocal(
 fun RestaurantEntity.toLocal(): RestaurantLocal {
     return RestaurantLocal(
         title = this.title,
-        mapx = this.mapx,
-        mapy = this.mapy,
+        latitude = this.latitude,
+        longitude = this.longitude,
     )
 }
 
