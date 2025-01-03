@@ -13,7 +13,8 @@ interface RestaurantService {
         @Query("x") longitude: String? = null,
         @Query("y") latitude: String? = null,
         @Query("radius") radius: Int? = 5000,
-        @Query("size") size: Int = 15, // 기본값 15로 설정
+        @Query("size") size: Int = 15,
+        @Query("page") page: Int = 1, // 페이지 번호
         @Query("sort") sort: String = "distance"
     ): RestaurantWrapperResponse
 }

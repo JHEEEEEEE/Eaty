@@ -6,6 +6,7 @@ import com.effort.data.datasource.home.RestaurantRemoteDataSource
 import com.effort.data.model.home.RestaurantEntity
 import com.effort.domain.DataResource
 import com.effort.domain.model.home.Restaurant
+import com.effort.domain.model.home.RestaurantMeta
 import com.effort.domain.repository.home.RestaurantRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,7 +17,7 @@ class RestaurantRepositoryImpl @Inject constructor(
     private val restaurantLocalDataSource: RestaurantLocalDataSource
 ) : RestaurantRepository {
 
-    override fun getRestaurantList(query: String): Flow<DataResource<List<Restaurant>>> = flow {
+    override fun getRestaurantList(query: String, page: Int): Flow<DataResource<Pair<List<Restaurant>, RestaurantMeta?>>> = flow {
         emit(DataResource.loading())
         try {
             // 1. 로컬 데이터 조회
@@ -32,10 +33,10 @@ class RestaurantRepositoryImpl @Inject constructor(
 
             // 로컬 데이터 반환
             if (localRestaurants.isNotEmpty()) {
-                emit(DataResource.success(localRestaurants.map { it.toDomain() }))
+                emit(DataResource.success(Pair(localRestaurants.map { it.toDomain() }, null)))
             } else {
                 // 2. 원격 데이터 조회
-                val remoteRestaurants = restaurantRemoteDataSource.getRestaurants(query).map { it.toDomain() }
+                val (remoteRestaurants, meta) = restaurantRemoteDataSource.getRestaurants(query, page)
 
                 // **원격 데이터의 위경도 로그 출력**
                 remoteRestaurants.forEach { restaurant ->
@@ -57,7 +58,7 @@ class RestaurantRepositoryImpl @Inject constructor(
                 )
 
                 // 4. 원격 데이터 반환
-                emit(DataResource.success(remoteRestaurants))
+                emit(DataResource.success(Pair(remoteRestaurants.map { it.toDomain() }, meta.toDomain())))
             }
         } catch (e: Exception) {
             emit(DataResource.error(e))

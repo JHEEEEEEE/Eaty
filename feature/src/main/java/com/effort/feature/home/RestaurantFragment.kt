@@ -14,11 +14,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.showLoading
 import com.effort.feature.databinding.FragmentRestaurantBinding
 import com.effort.presentation.UiState
-import com.effort.presentation.model.home.SortTypeModel
 import com.effort.presentation.viewmodel.home.RestaurantViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -45,6 +46,8 @@ class RestaurantFragment : BaseFragment<FragmentRestaurantBinding>(FragmentResta
         } else {
             requestLocationPermission() // 권한 요청
         }
+
+        setupInfiniteScrollListener(binding.recyclerviewRestaurant)
     }
 
     override fun onCreateView(
@@ -135,5 +138,38 @@ class RestaurantFragment : BaseFragment<FragmentRestaurantBinding>(FragmentResta
                 Toast.makeText(requireContext(), "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun setupInfiniteScrollListener(recyclerView: RecyclerView) {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                // 스크롤 방향이 아래로 이동할 때만 동작
+                if (dy <= 0) return
+
+                // 무한 스크롤 조건 검사 및 페이지 로딩
+                if (shouldLoadMoreData(recyclerView)) {
+                    viewModel.fetchRestaurants(query = args.query, loadMore = true)
+                }
+            }
+        })
+    }
+
+    // 무한 스크롤 로딩 조건 검사 함수
+    private fun shouldLoadMoreData(recyclerView: RecyclerView): Boolean {
+        // LayoutManager 타입 체크
+        val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+            ?: return false
+
+        // 스크롤 항목 개수 및 위치 계산
+        val visibleItemCount = layoutManager.childCount
+        val totalItemCount = layoutManager.itemCount
+        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+        // 무한 스크롤 조건 반환
+        return !viewModel.isLoading && !viewModel.isLastPage &&
+                (visibleItemCount + firstVisibleItemPosition) >= totalItemCount &&
+                firstVisibleItemPosition >= 0
     }
 }
