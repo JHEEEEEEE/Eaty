@@ -2,9 +2,9 @@ package com.effort.remote.datasourceimpl.home
 
 import android.util.Log
 import com.effort.data.datasource.home.RestaurantRemoteDataSource
-import com.effort.data.model.home.RestaurantEntity
-import com.effort.data.model.home.RestaurantMetaEntity
-import com.effort.remote.service.home.RestaurantService
+import com.effort.data.model.home.restaurant.RestaurantEntity
+import com.effort.data.model.home.restaurant.RestaurantMetaEntity
+import com.effort.remote.service.home.restaurant.RestaurantService
 import com.effort.remote.service.location.LocationService
 import javax.inject.Inject
 

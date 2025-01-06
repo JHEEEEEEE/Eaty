@@ -1,7 +1,8 @@
 package com.effort.remote.di
 
 import com.effort.remote.interceptor.ApiInterceptor
-import com.effort.remote.service.home.RestaurantService
+import com.effort.remote.service.home.blog.BlogReviewService
+import com.effort.remote.service.home.restaurant.RestaurantService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -44,6 +45,12 @@ object NetworkModule {
     @Singleton
     fun provideRestaurantService(retrofit: Retrofit): RestaurantService {
         return retrofit.create(RestaurantService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBlogReviewService(retrofit: Retrofit): BlogReviewService {
+        return retrofit.create(BlogReviewService::class.java)
     }
 
     @Provides

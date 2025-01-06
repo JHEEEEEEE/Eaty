@@ -5,7 +5,8 @@ import com.effort.domain.usecase.auth.CheckUserLoggedInUseCase
 import com.effort.domain.usecase.mypage.ObserveUserUpdateUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.CheckNicknameDuplicatedUseCase
 import com.effort.domain.usecase.auth.SignOutUseCase
-import com.effort.domain.usecase.home.GetRestaurantListUseCase
+import com.effort.domain.usecase.home.blog.GetBlogReviewListUseCase
+import com.effort.domain.usecase.home.restaurant.GetRestaurantListUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateNicknameUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateProfilePicUseCase
 import com.effort.domain.usecase.mypage.detail.faq.GetFaqListUseCase
@@ -15,7 +16,8 @@ import com.effort.domain.usecaseimpl.auth.CheckUserLoggedInUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.ObserveUserUpdateUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.CheckNicknameDuplicatedUseCaseImpl
 import com.effort.domain.usecaseimpl.auth.SignOutUseCaseImpl
-import com.effort.domain.usecaseimpl.home.GetRestaurantListUseCaseImpl
+import com.effort.domain.usecaseimpl.home.blog.GetBlogReviewListUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.GetRestaurantListUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.UpdateNicknameUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.UpdateProfilePicUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.faq.GetFaqListUseCaseImpl
@@ -75,6 +77,10 @@ abstract class DomainModule {
     // Home
     @Binds
     @Singleton
-    abstract fun bindGetRestaurantListUseCase(restaurantListUseCaseImpl: GetRestaurantListUseCaseImpl): GetRestaurantListUseCase
+    abstract fun bindGetRestaurantListUseCase(getRestaurantListUseCaseImpl: GetRestaurantListUseCaseImpl): GetRestaurantListUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindGetBlogReviewListUseCase(getBlogReviewListUseCaseImpl: GetBlogReviewListUseCaseImpl): GetBlogReviewListUseCase
 }
 

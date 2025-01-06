@@ -2,7 +2,7 @@ package com.effort.local.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.effort.data.model.home.RestaurantEntity
+import com.effort.data.model.home.restaurant.RestaurantEntity
 
 @Entity(tableName = "restaurants")
 data class RestaurantLocal(

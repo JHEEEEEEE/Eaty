@@ -1,6 +1,7 @@
 package com.effort.data.di
 
 import com.effort.data.repositoryimpl.auth.AuthRepositoryImpl
+import com.effort.data.repositoryimpl.home.RestaurantDetailRepositoryImpl
 import com.effort.data.repositoryimpl.home.RestaurantRepositoryImpl
 import com.effort.data.repositoryimpl.location.LocationRepositoryImpl
 import com.effort.data.repositoryimpl.mypage.MyPageRepositoryImpl
@@ -8,6 +9,7 @@ import com.effort.data.repositoryimpl.mypage.detail.editprofile.EditProfileRepos
 import com.effort.data.repositoryimpl.mypage.detail.faq.FaqRepositoryImpl
 import com.effort.data.repositoryimpl.mypage.detail.notice.NoticeRepositoryImpl
 import com.effort.domain.repository.auth.AuthRepository
+import com.effort.domain.repository.home.RestaurantDetailRepository
 import com.effort.domain.repository.home.RestaurantRepository
 import com.effort.domain.repository.location.LocationRepository
 import com.effort.domain.repository.mypage.MyPageRepository
@@ -52,4 +54,8 @@ internal abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindLocationRepository(locationRepositoryImpl: LocationRepositoryImpl): LocationRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRestaurantDetailRepository(restaurantDetailRepositoryImpl: RestaurantDetailRepositoryImpl): RestaurantDetailRepository
 }

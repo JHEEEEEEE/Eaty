@@ -7,21 +7,21 @@
 
     <fragment
         android:id="@+id/home_fragment"
-        android:name="com.effort.feature.home.HomeFragment"
+        android:name="com.effort.feature.home.main.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_communityFragment"
             app:destination="@id/community_fragment"
-            app:launchSingleTop="true"/>
+            app:launchSingleTop="true" />
         <action
             android:id="@+id/action_homeFragment_to_mapFragment"
             app:destination="@id/map_fragment"
-            app:launchSingleTop="true"/>
+            app:launchSingleTop="true" />
         <action
             android:id="@+id/action_homeFragment_to_myPageFragment"
             app:destination="@id/myPage_fragment"
-            app:launchSingleTop="true"/>
+            app:launchSingleTop="true" />
         <action
             android:id="@+id/action_home_fragment_to_restaurantFragment"
             app:destination="@id/restaurantFragment" />
@@ -53,15 +53,15 @@
         <action
             android:id="@+id/action_myPageFragment_to_editProfileFragment"
             app:destination="@id/editProfile_fragment"
-            app:launchSingleTop="true"/>
+            app:launchSingleTop="true" />
         <action
             android:id="@+id/action_myPageFragment_to_noticeFragment"
             app:destination="@id/notice_fragment"
-            app:launchSingleTop="true"/>
+            app:launchSingleTop="true" />
         <action
             android:id="@+id/action_myPageFragment_to_FAQFragment"
             app:destination="@id/faq_fragment"
-            app:launchSingleTop="true"/>
+            app:launchSingleTop="true" />
     </fragment>
 
     <fragment
@@ -77,12 +77,12 @@
         tools:layout="@layout/fragment_editprofile">
         <argument
             android:name="profilePicUrl"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:defaultValue=""
+            app:argType="string" />
         <argument
             android:name="nickname"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -92,12 +92,58 @@
         tools:layout="@layout/fragment_notice" />
     <fragment
         android:id="@+id/restaurantFragment"
-        android:name="com.effort.feature.home.RestaurantFragment"
+        android:name="com.effort.feature.home.restaurant.RestaurantFragment"
         android:label="RestaurantFragment"
         tools:layout="@layout/fragment_restaurant">
         <argument
             android:name="query"
             app:argType="string" />
+        <action
+            android:id="@+id/action_restaurantFragment_to_restaurantDetailFragment"
+            app:destination="@id/restaurantDetailFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/restaurantDetailFragment"
+        android:name="com.effort.feature.home.restaurant.detail.RestaurantDetailFragment"
+        android:label="RestaurantDetailFragment"
+        tools:layout="@layout/fragment_restaurant_detail">
+
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="lotNumberAddress"
+            app:argType="string" />
+        <argument
+            android:name="roadNameAddress"
+            app:argType="string" />
+        <argument
+            android:name="distance"
+            app:argType="string" />
+        <argument
+            android:name="phoneNumber"
+            app:argType="string" />
+        <argument
+            android:name="placeUrl"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_restaurantDetailFragment_to_restaurantInfoFragment"
+            app:destination="@id/restaurantInfoFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/restaurantInfoFragment"
+        android:name="com.effort.feature.home.restaurant.detail.info.RestaurantInfoFragment"
+        android:label="RestaurantInfoFragment"
+        tools:layout="@layout/fragment_restaurant_info">
+
+        <argument
+            android:name="title"
+            app:argType="string" />
+
     </fragment>
 
 </navigation>

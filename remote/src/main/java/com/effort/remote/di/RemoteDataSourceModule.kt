@@ -1,6 +1,7 @@
 package com.effort.remote.di
 
 import com.effort.data.datasource.auth.AuthRemoteDataSource
+import com.effort.data.datasource.home.RestaurantDetailRemoteDataSource
 import com.effort.data.datasource.home.RestaurantRemoteDataSource
 import com.effort.data.datasource.location.LocationRemoteDataSource
 import com.effort.data.datasource.mypage.MyPageRemoteDataSource
@@ -8,6 +9,7 @@ import com.effort.data.datasource.mypage.detail.editprofile.EditProfileRemoteDat
 import com.effort.data.datasource.mypage.detail.faq.FaqRemoteDataSource
 import com.effort.data.datasource.mypage.detail.notice.NoticeRemoteDataSource
 import com.effort.remote.datasourceimpl.auth.AuthRemoteDataSourceImpl
+import com.effort.remote.datasourceimpl.home.RestaurantDetailRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.home.RestaurantRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.location.LocationRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.mypage.MyPageRemoteDataSourceImpl
@@ -54,4 +56,9 @@ internal abstract class RemoteDataSourceModule {
     @Binds
     @Singleton
     abstract fun bindLocationRemoteDataSource(locationRemoteDataSourceImpl: LocationRemoteDataSourceImpl): LocationRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindRestaurantDetailRemoteDataSource(restaurantDetailRemoteDataSourceImpl: RestaurantDetailRemoteDataSourceImpl): RestaurantDetailRemoteDataSource
+
 }

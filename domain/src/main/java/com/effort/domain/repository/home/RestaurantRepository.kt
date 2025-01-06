@@ -1,9 +1,8 @@
 package com.effort.domain.repository.home
 
 import com.effort.domain.DataResource
-import com.effort.domain.model.home.Restaurant
-import com.effort.domain.model.home.RestaurantMeta
-import com.effort.domain.model.home.SortType
+import com.effort.domain.model.home.restaurant.Restaurant
+import com.effort.domain.model.home.restaurant.RestaurantMeta
 import kotlinx.coroutines.flow.Flow
 
 interface RestaurantRepository {

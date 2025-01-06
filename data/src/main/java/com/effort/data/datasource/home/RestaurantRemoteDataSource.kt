@@ -1,7 +1,7 @@
 package com.effort.data.datasource.home
 
-import com.effort.data.model.home.RestaurantEntity
-import com.effort.data.model.home.RestaurantMetaEntity
+import com.effort.data.model.home.restaurant.RestaurantEntity
+import com.effort.data.model.home.restaurant.RestaurantMetaEntity
 
 interface RestaurantRemoteDataSource {
 

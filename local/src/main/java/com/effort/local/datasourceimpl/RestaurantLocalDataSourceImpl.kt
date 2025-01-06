@@ -2,7 +2,7 @@ package com.effort.local.datasourceimpl
 
 import android.util.Log
 import com.effort.data.datasource.home.RestaurantLocalDataSource
-import com.effort.data.model.home.RestaurantEntity
+import com.effort.data.model.home.restaurant.RestaurantEntity
 import com.effort.local.dao.RestaurantDao
 import com.effort.local.model.toData
 import com.effort.local.model.toLocal

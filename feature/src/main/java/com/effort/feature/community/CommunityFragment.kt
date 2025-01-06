@@ -10,15 +10,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.databinding.FragmentCommunityBinding
+import com.effort.feature.databinding.FragmentRestaurantInfoBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class CommunityFragment :
-    BaseFragment<FragmentCommunityBinding>(FragmentCommunityBinding::inflate) {
+    BaseFragment<FragmentRestaurantInfoBinding>(FragmentRestaurantInfoBinding::inflate) {
     private lateinit var navController: NavController
 
     override fun initView() {
-        setupTabLayoutAndViewPager()
+        //setupTabLayoutAndViewPager()
     }
 
 
@@ -26,7 +27,7 @@ class CommunityFragment :
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentCommunityBinding.inflate(inflater, container, false)
+        _binding = FragmentRestaurantInfoBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -37,7 +38,7 @@ class CommunityFragment :
     }
 
 
-    private fun setupTabLayoutAndViewPager() {
+    /*private fun setupTabLayoutAndViewPager() {
         // NavController 연결
         try {
             navController = findNavController()  // 부모 Fragment의 NavController를 찾음
@@ -54,10 +55,10 @@ class CommunityFragment :
         // TabLayout과 ViewPager 연결
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             when (position) {
-                0 -> tab.text = "질문"
-                1 -> tab.text = "나눔"
-                2 -> tab.text = "모임"
+                0 -> tab.text = "정보"
+                1 -> tab.text = "리뷰"
+                2 -> tab.text = "날씨"
             }
         }.attach()
-    }
+    }*/
 }
