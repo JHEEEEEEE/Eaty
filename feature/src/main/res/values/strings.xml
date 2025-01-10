@@ -84,4 +84,16 @@
     <string name="place_url">업체 링크</string>
     <string name="meter">%1$s m</string>
 
+    <!-- ParkingLot(SurroundingFragment) -->
+    <string name="parking_lot_id">주차장ID</string>
+    <string name="address">주소</string>
+    <string name="latitude">위도</string>
+    <string name="longitude">경도</string>
+    <string name="capacity">주차구획수</string>
+
+
+    <!-- Weather(SurroundingFragment) -->
+    <string name="time">시간</string>
+    <string name="temperature">기온</string>
+
 </resources>

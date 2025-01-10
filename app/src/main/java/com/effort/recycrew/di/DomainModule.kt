@@ -6,7 +6,9 @@ import com.effort.domain.usecase.mypage.ObserveUserUpdateUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.CheckNicknameDuplicatedUseCase
 import com.effort.domain.usecase.auth.SignOutUseCase
 import com.effort.domain.usecase.home.blog.GetBlogReviewListUseCase
+import com.effort.domain.usecase.home.parkinglot.GetParkingLotListUseCase
 import com.effort.domain.usecase.home.restaurant.GetRestaurantListUseCase
+import com.effort.domain.usecase.home.weather.GetWeatherDataUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateNicknameUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateProfilePicUseCase
 import com.effort.domain.usecase.mypage.detail.faq.GetFaqListUseCase
@@ -17,7 +19,9 @@ import com.effort.domain.usecaseimpl.mypage.ObserveUserUpdateUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.CheckNicknameDuplicatedUseCaseImpl
 import com.effort.domain.usecaseimpl.auth.SignOutUseCaseImpl
 import com.effort.domain.usecaseimpl.home.blog.GetBlogReviewListUseCaseImpl
+import com.effort.domain.usecaseimpl.home.parkinglot.GetParkingLotListUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.GetRestaurantListUseCaseImpl
+import com.effort.domain.usecaseimpl.home.weather.GetWeatherDataUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.UpdateNicknameUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.UpdateProfilePicUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.faq.GetFaqListUseCaseImpl
@@ -27,8 +31,6 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-
-
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -82,5 +84,13 @@ abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindGetBlogReviewListUseCase(getBlogReviewListUseCaseImpl: GetBlogReviewListUseCaseImpl): GetBlogReviewListUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindGetParkingLotListUseCase(getParkingLotListUseCaseImpl: GetParkingLotListUseCaseImpl): GetParkingLotListUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindGetWeatherDataUseCase(getWeatherDataUseCaseImpl: GetWeatherDataUseCaseImpl): GetWeatherDataUseCase
 }
 

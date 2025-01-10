@@ -43,6 +43,4 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="2024-01-05" />
 
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -76,6 +76,9 @@ dependencies {
     // auth
     implementation(libs.play.services.auth)
 
+    // conscrypt
+    implementation(libs.conscrypt)
+
     implementation(project(":feature"))
     implementation(project(":presentation"))
     implementation(project(":data"))

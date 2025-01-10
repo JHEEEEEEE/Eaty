@@ -37,7 +37,9 @@ class RestaurantListAdapter: ListAdapter<RestaurantModel, RestaurantListAdapter.
                             roadNameAddress = item.roadNameAddress,
                             distance = item.distance,
                             phoneNumber = item.phoneNumber,
-                            placeUrl = item.placeUrl
+                            placeUrl = item.placeUrl,
+                            latitude = item.latitude,
+                            longitude = item.longitude
                         )
                     it.findNavController().navigate(action)
                 }

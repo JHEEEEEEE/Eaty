@@ -1,7 +1,7 @@
 package com.effort.remote.di
 
 import com.effort.data.datasource.auth.AuthRemoteDataSource
-import com.effort.data.datasource.home.RestaurantDetailRemoteDataSource
+import com.effort.data.datasource.home.detail.RestaurantDetailRemoteDataSource
 import com.effort.data.datasource.home.RestaurantRemoteDataSource
 import com.effort.data.datasource.location.LocationRemoteDataSource
 import com.effort.data.datasource.mypage.MyPageRemoteDataSource

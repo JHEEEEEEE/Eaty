@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.showLoading
 import com.effort.feature.databinding.FragmentRestaurantInfoBinding
-import com.effort.feature.home.restaurant.detail.SharedRestaurantViewModel
+import com.effort.presentation.viewmodel.home.SharedRestaurantViewModel
 import com.effort.presentation.UiState
 import com.effort.presentation.viewmodel.home.RestaurantInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,6 +65,7 @@ class RestaurantInfoFragment :
         binding.recyclerviewBlogReview.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = blogReviewListAdapter
+            setHasFixedSize(true) // 성능 최적화
         }
     }
 

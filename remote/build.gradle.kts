@@ -24,7 +24,11 @@ android {
 
         //buildConfigField("String", "NAVER_CLIENT_ID", properties["NAVER_CLIENT_ID"].toString())
         //buildConfigField("String", "NAVER_CLIENT_SECRET", properties["NAVER_CLIENT_SECRET"].toString())
+        buildConfigField("String", "KAKAO_BASE_URL", properties["KAKAO_BASE_URL"].toString())
         buildConfigField("String", "KAKAO_API_KEY", properties["KAKAO_API_KEY"].toString())
+
+        buildConfigField("String", "OPEN_WEATHER_BASE_URL", properties["OPEN_WEATHER_BASE_URL"].toString())
+        buildConfigField("String", "OPEN_WEATHER_API_KEY", properties["OPEN_WEATHER_API_KEY"].toString())
     }
 
     buildTypes {

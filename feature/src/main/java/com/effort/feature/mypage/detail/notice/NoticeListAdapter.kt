@@ -1,5 +1,6 @@
 package com.effort.feature.mypage.detail.notice
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,7 @@ class NoticeListAdapter: ListAdapter<NoticeModel, NoticeListAdapter.NoticeViewHo
                         .error(R.drawable.error_image) // 로드 실패 시 보여줄 이미지
                         .into(noticeImageView)
                 }
+                Log.d("NoticeModel", "URL: ${item.imageUrl}") // NoticeModel
 
                 // 펼침 상태에 따라 답변 컨테이너 표시/숨김
                 noticeContainer.visibility = if (isExpanded) View.VISIBLE else View.GONE

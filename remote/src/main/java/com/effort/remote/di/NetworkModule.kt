@@ -1,8 +1,9 @@
 package com.effort.remote.di
 
-import com.effort.remote.interceptor.ApiInterceptor
+import com.effort.remote.interceptor.KakaoApiInterceptor
 import com.effort.remote.service.home.blog.BlogReviewService
 import com.effort.remote.service.home.restaurant.RestaurantService
+import com.effort.remote.service.home.weather.WeatherService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -32,24 +33,33 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
+    @KakaoRetrofit
+    fun provideKakaoRetrofit(
+        okHttpClient: OkHttpClient, // 공통 클라이언트 사용
+        kakaoApiInterceptor: KakaoApiInterceptor,
+        json: Json
+    ): Retrofit {
+        val client = okHttpClient.newBuilder()
+            .addInterceptor(kakaoApiInterceptor) // 인증 인터셉터 추가
+            .build()
+
         val contentType = "application/json".toMediaType()
         return Retrofit.Builder()
             .baseUrl("https://dapi.kakao.com/") // API 기본 URL
-            .client(okHttpClient)
-            .addConverterFactory(json.asConverterFactory(contentType)) // Json 인스턴스 재사용
+            .client(client)
+            .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideRestaurantService(retrofit: Retrofit): RestaurantService {
+    fun provideRestaurantService(@KakaoRetrofit retrofit: Retrofit): RestaurantService {
         return retrofit.create(RestaurantService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideBlogReviewService(retrofit: Retrofit): BlogReviewService {
+    fun provideBlogReviewService(@KakaoRetrofit retrofit: Retrofit): BlogReviewService {
         return retrofit.create(BlogReviewService::class.java)
     }
 
@@ -61,11 +71,32 @@ object NetworkModule {
         }
 
         return OkHttpClient.Builder()
-            .addInterceptor(ApiInterceptor()) // 인증 인터셉터 추가
-            .addInterceptor(logging)         // 로깅 인터셉터 추가
+            .addInterceptor(logging) // 로깅 인터셉터 추가
             .connectTimeout(30, TimeUnit.SECONDS) // 타임아웃 설정
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+    }
+
+    //Weather Service
+    @Provides
+    @Singleton
+    fun provideWeatherService(@WeatherRetrofit retrofit: Retrofit): WeatherService {
+        return retrofit.create(WeatherService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @WeatherRetrofit
+    fun provideWeatherRetrofit(
+        okHttpClient: OkHttpClient, // 공통 클라이언트 사용
+        json: Json // JSON 직렬화 라이브러리 주입
+    ): Retrofit {
+        val contentType = "application/json".toMediaType()
+        return Retrofit.Builder()
+            .baseUrl("https://api.openweathermap.org/data/2.5/")
+            .client(okHttpClient) // 공통 클라이언트 적용
+            .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
 }

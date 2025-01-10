@@ -129,6 +129,14 @@
             android:name="placeUrl"
             app:argType="string" />
 
+        <argument
+            android:name="latitude"
+            app:argType="string" />
+
+        <argument
+            android:name="longitude"
+            app:argType="string" />
+
         <action
             android:id="@+id/action_restaurantDetailFragment_to_restaurantInfoFragment"
             app:destination="@id/restaurantInfoFragment" />

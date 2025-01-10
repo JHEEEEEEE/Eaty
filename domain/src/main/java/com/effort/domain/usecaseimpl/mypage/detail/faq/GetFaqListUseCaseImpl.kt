@@ -11,7 +11,7 @@ import javax.inject.Inject
 class GetFaqListUseCaseImpl @Inject constructor(
     private val faqRepository: FaqRepository
 ) : GetFaqListUseCase {
-    override operator fun invoke(): Flow<DataResource<List<Faq>>> =
+    override fun invoke(): Flow<DataResource<List<Faq>>> =
         faqRepository.getFaqs().map { dataResource ->
             when (dataResource) {
                 is DataResource.Success -> {

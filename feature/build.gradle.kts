@@ -58,6 +58,11 @@ dependencies {
 
     // glide
     implementation(libs.glide)
+    implementation(libs.glide.okhttp3.integration)
+
+    //okhttp
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp)
 
     //naverMap
     implementation(libs.naver.map)
@@ -71,3 +76,5 @@ dependencies {
 
     implementation(project(":presentation"))
 }
+
+

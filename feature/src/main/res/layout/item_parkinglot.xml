@@ -1,0 +1,88 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <!-- 콘텐츠 영역 Flow -->
+
+    <!-- 제목과 설명 텍스트 -->
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_parking_lot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="id, name, address, latitude, longitude, capacity"
+        app:flow_maxElementsWrap="2"
+        app:flow_wrapMode="chain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/parking_lot_id"
+        app:layout_constraintStart_toStartOf="@id/flow_parking_lot"
+        app:layout_constraintTop_toTopOf="@id/flow_parking_lot" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/spacing_name_to_distance"
+        android:text="@string/title"
+        android:textColor="@color/primary_color"
+        app:layout_constraintStart_toEndOf="@id/name"
+        app:layout_constraintTop_toTopOf="@id/flow_parking_lot" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/address"
+        android:textColor="@color/gray"
+        app:layout_constraintTop_toBottomOf="@id/latitude"
+        app:layout_constraintStart_toStartOf="@id/flow_parking_lot"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/latitude"
+        app:layout_constraintStart_toStartOf="@id/flow_parking_lot"
+        app:layout_constraintTop_toBottomOf="@id/name" />
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/longitude"
+        app:layout_constraintEnd_toEndOf="@id/flow_parking_lot"
+        app:layout_constraintTop_toTopOf="@id/flow_parking_lot"
+        app:layout_constraintBottom_toTopOf="@id/capacity"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/capacity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/capacity"
+        app:layout_constraintBottom_toBottomOf="@+id/flow_parking_lot"
+        app:layout_constraintEnd_toEndOf="@id/flow_parking_lot"/>
+
+
+    <!-- 구분선 -->
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        app:layout_constraintTop_toBottomOf="@id/flow_parking_lot"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
