@@ -12,10 +12,12 @@ import com.effort.feature.R
 import com.effort.feature.databinding.ItemNoticeBinding
 import com.effort.presentation.model.mypage.detail.notice.NoticeModel
 
-class NoticeListAdapter: ListAdapter<NoticeModel, NoticeListAdapter.NoticeViewHolder>(diffCallback) {
+class NoticeListAdapter :
+    ListAdapter<NoticeModel, NoticeListAdapter.NoticeViewHolder>(diffCallback) {
     private val expandedStates = mutableMapOf<Int, Boolean>()
 
-    inner class NoticeViewHolder(private val binding: ItemNoticeBinding) : RecyclerView.ViewHolder(binding.root) {
+    class NoticeViewHolder(private val binding: ItemNoticeBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: NoticeModel, isExpanded: Boolean, onItemClicked: () -> Unit) {
             with(binding) {
@@ -24,7 +26,7 @@ class NoticeListAdapter: ListAdapter<NoticeModel, NoticeListAdapter.NoticeViewHo
                 noticeDescription.text = item.description
 
                 // Glide를 사용하여 이미지 로드
-                if (item.imageUrl.isNullOrEmpty()) {
+                if (item.imageUrl.isEmpty()) {
                     noticeImageView.visibility = View.GONE // 이미지 URL이 없을 경우 숨김
                 } else {
                     noticeImageView.visibility = View.VISIBLE

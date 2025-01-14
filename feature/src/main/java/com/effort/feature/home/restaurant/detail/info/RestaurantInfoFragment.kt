@@ -15,9 +15,10 @@ import com.effort.feature.core.util.showLoading
 import com.effort.feature.databinding.FragmentRestaurantInfoBinding
 import com.effort.presentation.viewmodel.home.SharedRestaurantViewModel
 import com.effort.presentation.UiState
-import com.effort.presentation.viewmodel.home.RestaurantInfoViewModel
+import com.effort.presentation.viewmodel.home.detail.info.RestaurantInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -34,16 +35,7 @@ class RestaurantInfoFragment :
         setupRecyclerView()
         observeGetBlogReviewState()
         setupInfiniteScrollListener(binding.recyclerviewBlogReview)
-
-        // SharedViewModel에서 title을 받아온 후 사용
-        viewLifecycleOwner.lifecycleScope.launch {
-            sharedViewModel.title.collectLatest { title ->
-                if (title.isNotEmpty()) {
-                    Log.d("RestaurantInfoFragment", "$title")
-                    viewModel.fetchBlogReviews(title)
-                }
-            }
-        }
+        observeSharedViewModelData()
     }
 
     override fun onCreateView(
@@ -111,7 +103,11 @@ class RestaurantInfoFragment :
 
                 // 무한 스크롤 조건 검사 및 페이지 로딩
                 if (shouldLoadMoreData(recyclerView)) {
-                    viewModel.fetchBlogReviews(query = "맛집", loadMore = true)
+                    viewModel.fetchBlogReviews(
+                        query = sharedViewModel.title.value,
+                        region = sharedViewModel.region.value,
+                        loadMore = true
+                    )
                 }
             }
         })
@@ -132,5 +128,21 @@ class RestaurantInfoFragment :
         return !viewModel.isLoading && !viewModel.isLastPage &&
                 (visibleItemCount + firstVisibleItemPosition) >= totalItemCount &&
                 firstVisibleItemPosition >= 0
+    }
+
+    private fun observeSharedViewModelData() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            combine(
+                sharedViewModel.title,
+                sharedViewModel.region
+            ) { title, region ->
+                title to region
+            }.collectLatest { (title, region) ->
+                if (title.isNotEmpty() && region.isNotEmpty()) {
+                    Log.d("RestaurantInfoFragment", "Title: $title, Region: $region")
+                    viewModel.fetchBlogReviews(title, region)
+                }
+            }
+        }
     }
 }

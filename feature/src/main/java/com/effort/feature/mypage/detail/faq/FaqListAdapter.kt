@@ -13,7 +13,8 @@ class FaqListAdapter : ListAdapter<FaqModel, FaqListAdapter.FaqViewHolder>(diffC
 
     private val expandedStates = mutableMapOf<Int, Boolean>()
 
-    inner class FaqViewHolder(private val binding: ItemFaqBinding) : RecyclerView.ViewHolder(binding.root) {
+    class FaqViewHolder(private val binding: ItemFaqBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: FaqModel, isExpanded: Boolean, onItemClicked: () -> Unit) {
             with(binding) {

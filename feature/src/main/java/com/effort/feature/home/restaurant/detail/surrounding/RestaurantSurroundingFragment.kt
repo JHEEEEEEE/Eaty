@@ -15,7 +15,7 @@ import com.effort.feature.core.util.showLoading
 import com.effort.feature.databinding.FragmentRestaurantSurroundingBinding
 import com.effort.presentation.viewmodel.home.SharedRestaurantViewModel
 import com.effort.presentation.UiState
-import com.effort.presentation.viewmodel.home.RestaurantSurroundingViewModel
+import com.effort.presentation.viewmodel.home.detail.surrounding.RestaurantSurroundingViewModel
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.MultiBrowseCarouselStrategy
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,7 +70,10 @@ class RestaurantSurroundingFragment :
     private fun setupRecyclerView() {
         weatherCarouselAdapter = WeatherCarouselAdapter()
         binding.recyclerviewWeather.apply {
-            layoutManager = CarouselLayoutManager(MultiBrowseCarouselStrategy(), CarouselLayoutManager.HORIZONTAL)
+            layoutManager = CarouselLayoutManager(
+                MultiBrowseCarouselStrategy(),
+                CarouselLayoutManager.HORIZONTAL
+            )
             adapter = weatherCarouselAdapter
             setHasFixedSize(true) // 성능 최적화
         }
@@ -90,7 +93,7 @@ class RestaurantSurroundingFragment :
         val progressIndicator = binding.progressCircular.progressBar
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getParkingLotState.collect { state ->
+            viewModel.getParkingLotState.collectLatest { state ->
                 when (state) {
                     is UiState.Loading -> progressIndicator.showLoading(true)
                     is UiState.Success -> {

@@ -13,7 +13,7 @@ import com.effort.presentation.model.home.blog.BlogReviewModel
 class BlogReviewListAdapter :
     ListAdapter<BlogReviewModel, BlogReviewListAdapter.BlogReviewViewHolder>(DiffCallback) {
 
-    inner class BlogReviewViewHolder(private val binding: ItemBlogReviewBinding) :
+    class BlogReviewViewHolder(private val binding: ItemBlogReviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: BlogReviewModel) {
@@ -28,7 +28,8 @@ class BlogReviewListAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BlogReviewViewHolder {
-        val binding = ItemBlogReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemBlogReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return BlogReviewViewHolder(binding)
     }
 

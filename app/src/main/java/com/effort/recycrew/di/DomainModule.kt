@@ -5,10 +5,12 @@ import com.effort.domain.usecase.auth.CheckUserLoggedInUseCase
 import com.effort.domain.usecase.mypage.ObserveUserUpdateUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.CheckNicknameDuplicatedUseCase
 import com.effort.domain.usecase.auth.SignOutUseCase
-import com.effort.domain.usecase.home.blog.GetBlogReviewListUseCase
-import com.effort.domain.usecase.home.parkinglot.GetParkingLotListUseCase
+import com.effort.domain.usecase.home.restaurant.detail.blog.GetBlogReviewListUseCase
+import com.effort.domain.usecase.home.restaurant.detail.comment.AddCommentUseCase
+import com.effort.domain.usecase.home.restaurant.detail.comment.GetCommentUseCase
+import com.effort.domain.usecase.home.restaurant.detail.parkinglot.GetParkingLotListUseCase
 import com.effort.domain.usecase.home.restaurant.GetRestaurantListUseCase
-import com.effort.domain.usecase.home.weather.GetWeatherDataUseCase
+import com.effort.domain.usecase.home.restaurant.detail.weather.GetWeatherDataUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateNicknameUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateProfilePicUseCase
 import com.effort.domain.usecase.mypage.detail.faq.GetFaqListUseCase
@@ -19,6 +21,8 @@ import com.effort.domain.usecaseimpl.mypage.ObserveUserUpdateUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.CheckNicknameDuplicatedUseCaseImpl
 import com.effort.domain.usecaseimpl.auth.SignOutUseCaseImpl
 import com.effort.domain.usecaseimpl.home.blog.GetBlogReviewListUseCaseImpl
+import com.effort.domain.usecaseimpl.home.comment.AddCommentUseCaseImpl
+import com.effort.domain.usecaseimpl.home.comment.GetCommentUseCaseImpl
 import com.effort.domain.usecaseimpl.home.parkinglot.GetParkingLotListUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.GetRestaurantListUseCaseImpl
 import com.effort.domain.usecaseimpl.home.weather.GetWeatherDataUseCaseImpl
@@ -76,21 +80,34 @@ abstract class DomainModule {
     @Singleton
     abstract fun bindSignOutUseCase(signOutUseCaseImpl: SignOutUseCaseImpl): SignOutUseCase
 
-    // Home
+    // RestaurantList
     @Binds
     @Singleton
     abstract fun bindGetRestaurantListUseCase(getRestaurantListUseCaseImpl: GetRestaurantListUseCaseImpl): GetRestaurantListUseCase
 
+
+    // BlogReview
     @Binds
     @Singleton
     abstract fun bindGetBlogReviewListUseCase(getBlogReviewListUseCaseImpl: GetBlogReviewListUseCaseImpl): GetBlogReviewListUseCase
 
+    // ParkingLot
     @Binds
     @Singleton
     abstract fun bindGetParkingLotListUseCase(getParkingLotListUseCaseImpl: GetParkingLotListUseCaseImpl): GetParkingLotListUseCase
 
+    // Weather
     @Binds
     @Singleton
     abstract fun bindGetWeatherDataUseCase(getWeatherDataUseCaseImpl: GetWeatherDataUseCaseImpl): GetWeatherDataUseCase
+
+    // Comment
+    @Binds
+    @Singleton
+    abstract fun bindGetCommentUseCase(getCommentUseCaseImpl: GetCommentUseCaseImpl): GetCommentUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindAddCommentUseCase(addCommentUseCaseImpl: AddCommentUseCaseImpl): AddCommentUseCase
 }
 

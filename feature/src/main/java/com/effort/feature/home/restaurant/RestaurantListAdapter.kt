@@ -9,12 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.databinding.ItemRestaurantBinding
 import com.effort.presentation.model.home.restaurant.RestaurantModel
 
-class RestaurantListAdapter: ListAdapter<RestaurantModel, RestaurantListAdapter.RestaurantViewHolder>(
-    diffCallback
-) {
+class RestaurantListAdapter :
+    ListAdapter<RestaurantModel, RestaurantListAdapter.RestaurantViewHolder>(
+        diffCallback
+    ) {
 
     // 뷰 홀더 정의
-    inner class RestaurantViewHolder(private val binding: ItemRestaurantBinding) :
+    class RestaurantViewHolder(private val binding: ItemRestaurantBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: RestaurantModel) {
@@ -65,11 +66,17 @@ class RestaurantListAdapter: ListAdapter<RestaurantModel, RestaurantListAdapter.
     companion object {
         // DiffUtil을 사용한 아이템 변경 감지 최적화
         val diffCallback = object : DiffUtil.ItemCallback<RestaurantModel>() {
-            override fun areItemsTheSame(oldItem: RestaurantModel, newItem: RestaurantModel): Boolean {
+            override fun areItemsTheSame(
+                oldItem: RestaurantModel,
+                newItem: RestaurantModel
+            ): Boolean {
                 return oldItem.title == newItem.title // ID가 같으면 동일한 아이템으로 간주
             }
 
-            override fun areContentsTheSame(oldItem: RestaurantModel, newItem: RestaurantModel): Boolean {
+            override fun areContentsTheSame(
+                oldItem: RestaurantModel,
+                newItem: RestaurantModel
+            ): Boolean {
                 return oldItem == newItem // 내용이 동일하면 동일한 아이템으로 간주
             }
         }

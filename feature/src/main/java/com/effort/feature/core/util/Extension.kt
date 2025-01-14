@@ -49,3 +49,10 @@ fun ProgressBar.showLoading(isLoading: Boolean) {
 fun Fragment.showToast(message: String) {
     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 }
+
+fun extractGuFromSeoulAddress(address: String): String {
+    // "구"로 끝나는 단어를 찾기
+    val regex = Regex(" ([가-힣]+구)")
+    val matchResult = regex.find(address)
+    return matchResult?.groups?.get(1)?.value ?: "" // 첫 번째 그룹 반환
+}

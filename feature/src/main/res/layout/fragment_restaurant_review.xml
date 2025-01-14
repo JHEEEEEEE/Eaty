@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_bottom_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary_color"
+        app:constraint_referenced_ids="send_file,edittext_msg,send_msg"
+        app:flow_maxElementsWrap="3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/send_file"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="5dp"
+        android:padding="6dp"
+        android:src="@drawable/ic_baseline_add_24" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edittext_msg"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:background="@drawable/shape_round_white_chat"
+        android:hint="@string/edittext_hint"
+        android:maxLines="3"
+        android:padding="8dp"
+        android:textSize="12sp"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/send_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/add"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_recyclerview_comment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:constraint_referenced_ids="recyclerview_comment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/flow_bottom_edittext" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_comment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+
+    <include
+        android:id="@+id/progress_circular"
+        layout="@layout/progress_indicator" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

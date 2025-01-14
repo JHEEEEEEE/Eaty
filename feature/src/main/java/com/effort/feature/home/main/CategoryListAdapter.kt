@@ -17,18 +17,21 @@ class CategoryListAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: CategoryModel) {
-            binding.categoryName.text = item.title
-            binding.categoryImage.setImageResource(item.imageResId)
+            with(binding) {
+                categoryName.text = item.title
+                categoryImage.setImageResource(item.imageResId)
 
-            binding.root.setOnClickListener {
-                onClick(item.title)
+                root.setOnClickListener {
+                    onClick(item.title)
+                }
             }
         }
     }
 
     // 뷰 홀더 생성
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CategoryViewHolder(binding) // 올바른 타입 반환
     }
 

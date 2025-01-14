@@ -8,13 +8,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class SharedRestaurantViewModel @Inject constructor(): ViewModel() {
+class SharedRestaurantViewModel @Inject constructor() : ViewModel() {
 
     private val _title = MutableStateFlow("")
     val title get() = _title.asStateFlow()
 
     private val _location = MutableStateFlow<Pair<String, String>?>(null)
     val location get() = _location.asStateFlow()
+
+    private val _region = MutableStateFlow("")
+    val region get() = _region.asStateFlow()
 
     fun setTitle(newTitle: String) {
         if (newTitle.isNotEmpty()) {
@@ -32,6 +35,14 @@ class SharedRestaurantViewModel @Inject constructor(): ViewModel() {
             }
         } catch (e: NumberFormatException) {
             Log.e("SharedViewModel", "위경도 변환 오류: ${e.message}")
+        }
+    }
+
+    fun setRegion(region: String) {
+        if (region.isNotEmpty()) {
+            _region.value = region
+        } else {
+            Log.e("SharedViewModel", "Title 값이 비어있습니다.")
         }
     }
 }

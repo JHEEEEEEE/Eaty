@@ -1,12 +1,12 @@
 package com.effort.local.di
 
 import com.effort.data.datasource.auth.AuthLocalDataSource
-import com.effort.data.datasource.home.detail.RestaurantDetailLocalDataSource
+import com.effort.data.datasource.home.detail.surrounding.RestaurantSurroundingLocalDataSource
 import com.effort.data.datasource.home.RestaurantLocalDataSource
 import com.effort.data.datasource.mypage.MyPageLocalDataSource
 import com.effort.local.datasourceimpl.user.AuthLocalDataSourceImpl
 import com.effort.local.datasourceimpl.user.MyPageLocalDataSourceImpl
-import com.effort.local.datasourceimpl.restaurant.RestaurantDetailLocalDataSourceImpl
+import com.effort.local.datasourceimpl.restaurant.RestaurantSurroundingLocalDataSourceImpl
 import com.effort.local.datasourceimpl.restaurant.RestaurantLocalDataSourceImpl
 import dagger.Binds
 import dagger.Module
@@ -32,5 +32,5 @@ internal abstract class LocalDataSourceModule {
 
     @Binds
     @Singleton
-    abstract fun bindRestaurantDetailLocalDataSource(restaurantDetailLocalDataSourceImpl: RestaurantDetailLocalDataSourceImpl): RestaurantDetailLocalDataSource
+    abstract fun bindRestaurantSurroundingLocalDataSource(restaurantSurroundingLocalDataSourceImpl: RestaurantSurroundingLocalDataSourceImpl): RestaurantSurroundingLocalDataSource
 }

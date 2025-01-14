@@ -12,7 +12,7 @@ import com.effort.presentation.model.home.parkinglot.ParkingLotModel
 class ParkingLotListAdapter :
     ListAdapter<ParkingLotModel, ParkingLotListAdapter.ParkingLotViewHolder>(DiffCallback) {
 
-    inner class ParkingLotViewHolder(private val binding: ItemParkinglotBinding) :
+    class ParkingLotViewHolder(private val binding: ItemParkinglotBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ParkingLotModel) {
@@ -33,7 +33,8 @@ class ParkingLotListAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParkingLotViewHolder {
-        val binding = ItemParkinglotBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemParkinglotBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ParkingLotViewHolder(binding)
     }
 

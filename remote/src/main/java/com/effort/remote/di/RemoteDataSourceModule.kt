@@ -1,16 +1,20 @@
 package com.effort.remote.di
 
 import com.effort.data.datasource.auth.AuthRemoteDataSource
-import com.effort.data.datasource.home.detail.RestaurantDetailRemoteDataSource
 import com.effort.data.datasource.home.RestaurantRemoteDataSource
+import com.effort.data.datasource.home.detail.info.RestaurantInfoRemoteDataSource
+import com.effort.data.datasource.home.detail.review.RestaurantReviewRemoteDataSource
+import com.effort.data.datasource.home.detail.surrounding.RestaurantSurroundingRemoteDataSource
 import com.effort.data.datasource.location.LocationRemoteDataSource
 import com.effort.data.datasource.mypage.MyPageRemoteDataSource
 import com.effort.data.datasource.mypage.detail.editprofile.EditProfileRemoteDataSource
 import com.effort.data.datasource.mypage.detail.faq.FaqRemoteDataSource
 import com.effort.data.datasource.mypage.detail.notice.NoticeRemoteDataSource
 import com.effort.remote.datasourceimpl.auth.AuthRemoteDataSourceImpl
-import com.effort.remote.datasourceimpl.home.RestaurantDetailRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.home.RestaurantRemoteDataSourceImpl
+import com.effort.remote.datasourceimpl.home.detail.info.RestaurantInfoRemoteDataSourceImpl
+import com.effort.remote.datasourceimpl.home.detail.review.RestaurantReviewRemoteDataSourceImpl
+import com.effort.remote.datasourceimpl.home.detail.surrounding.RestaurantSurroundingRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.location.LocationRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.mypage.MyPageRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.mypage.detail.editprofile.EditProfileRemoteDataSourceImpl
@@ -59,6 +63,13 @@ internal abstract class RemoteDataSourceModule {
 
     @Binds
     @Singleton
-    abstract fun bindRestaurantDetailRemoteDataSource(restaurantDetailRemoteDataSourceImpl: RestaurantDetailRemoteDataSourceImpl): RestaurantDetailRemoteDataSource
+    abstract fun bindRestaurantInfoRemoteDataSource(restaurantInfoRemoteDataSourceImpl: RestaurantInfoRemoteDataSourceImpl): RestaurantInfoRemoteDataSource
 
+    @Binds
+    @Singleton
+    abstract fun bindRestaurantReviewRemoteDataSource(restaurantReviewRemoteDataSourceImpl: RestaurantReviewRemoteDataSourceImpl): RestaurantReviewRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindRestaurantSurroundingRemoteDataSource(restaurantSurroundingRemoteDataSourceImpl: RestaurantSurroundingRemoteDataSourceImpl): RestaurantSurroundingRemoteDataSource
 }

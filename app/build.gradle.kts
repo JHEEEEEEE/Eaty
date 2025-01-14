@@ -25,7 +25,11 @@ android {
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
 
-        buildConfigField("String", "GOOGLE_SIGN_IN_WEB_CLIENT_ID", properties["GOOGLE_SIGN_IN_WEB_CLIENT_ID"].toString())
+        buildConfigField(
+            "String",
+            "GOOGLE_SIGN_IN_WEB_CLIENT_ID",
+            properties["GOOGLE_SIGN_IN_WEB_CLIENT_ID"].toString()
+        )
 
         addManifestPlaceholders(mapOf("NAVER_MAP_CLIENT_ID" to properties.getProperty("NAVER_MAP_CLIENT_ID")))
     }
@@ -67,7 +71,6 @@ dependencies {
     // hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-
 
     // firebase
     implementation(platform(libs.firebase.bom))

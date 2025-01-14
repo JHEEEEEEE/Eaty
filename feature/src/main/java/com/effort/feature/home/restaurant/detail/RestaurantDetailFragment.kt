@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.effort.feature.community.CommunityDetailAdapter
 import com.effort.feature.core.base.BaseFragment
+import com.effort.feature.core.util.extractGuFromSeoulAddress
 import com.effort.feature.databinding.FragmentRestaurantDetailBinding
 import com.effort.presentation.viewmodel.home.SharedRestaurantViewModel
 import com.google.android.material.tabs.TabLayout
@@ -29,10 +30,8 @@ class RestaurantDetailFragment :
         bindRestaurantDetails(args)
 
         // 데이터 공유 설정
-        sharedViewModel.setTitle(args.title) // ViewModel에 title 저장
-        sharedViewModel.setLocation(args.latitude, args.longitude)
+        setupSharedViewModelData()
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,6 +78,14 @@ class RestaurantDetailFragment :
             restaurantRoadNameAddress.text = "${args.distance}m"
             restaurantNumber.text = args.phoneNumber
             restaurantWebpage.text = args.placeUrl
+        }
+    }
+
+    private fun setupSharedViewModelData() {
+        with(sharedViewModel) {
+            setTitle(args.title) // ViewModel에 title 저장
+            setLocation(args.latitude, args.longitude)
+            setRegion(extractGuFromSeoulAddress(args.lotNumberAddress))
         }
     }
 }
