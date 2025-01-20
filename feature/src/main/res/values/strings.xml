@@ -45,7 +45,7 @@
 
     <string name="recy_meetup">Recy-Meetup</string>
     <string name="recy_meetup_description">환경에 진심인 크루들의 모임의 장! 함께 모여 플로깅을 하며 건강과 환경을 지켜요🌱</string>
-    <string name="play">실행</string>
+    <string name="play">더보기</string>
 
     <!-- FAQ, Notice   -->
     <string name="category">카테고리</string>
@@ -98,5 +98,8 @@
     <string name="edittext_hint">다른 이용자를 위한 솔직한 리뷰를 남겨주세요!</string>
     <string name="add">등록</string>
     <string name="comment">이것은 댓글 내용입니다. 여러 줄로 작성될 수 있습니다.</string>
+
+    <!--    Map     -->
+    <string name="filter">Filter</string>
 
 </resources>

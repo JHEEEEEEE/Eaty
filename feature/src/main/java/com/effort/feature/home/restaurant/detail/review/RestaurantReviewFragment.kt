@@ -58,7 +58,7 @@ class RestaurantReviewFragment :
     private fun setupRecyclerView() {
         commentAdapter = CommentAdapter()
         binding.recyclerviewComment.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapter = commentAdapter
             setHasFixedSize(true) // 성능 최적화
         }

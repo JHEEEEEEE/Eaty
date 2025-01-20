@@ -66,7 +66,7 @@ class RestaurantDetailFragment :
             when (position) {
                 0 -> tab.text = "정보"
                 1 -> tab.text = "리뷰"
-                2 -> tab.text = "날씨"
+                2 -> tab.text = "주변"
             }
         }.attach()
     }

@@ -42,6 +42,9 @@
         <argument
             android:name="applyPadding"
             android:defaultValue="false" />
+        <action
+            android:id="@+id/action_map_fragment_to_restaurantDetailFragment"
+            app:destination="@id/restaurantDetailFragment" />
     </fragment>
 
 
@@ -103,7 +106,6 @@
             app:destination="@id/restaurantDetailFragment" />
     </fragment>
 
-
     <fragment
         android:id="@+id/restaurantDetailFragment"
         android:name="com.effort.feature.home.restaurant.detail.RestaurantDetailFragment"
@@ -142,6 +144,7 @@
             app:destination="@id/restaurantInfoFragment" />
 
     </fragment>
+
     <fragment
         android:id="@+id/restaurantInfoFragment"
         android:name="com.effort.feature.home.restaurant.detail.info.RestaurantInfoFragment"

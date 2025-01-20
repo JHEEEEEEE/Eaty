@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.android.material.chip.Chip
 
 
 inline fun ImageView.load(
@@ -55,4 +56,18 @@ fun extractGuFromSeoulAddress(address: String): String {
     val regex = Regex(" ([가-힣]+구)")
     val matchResult = regex.find(address)
     return matchResult?.groups?.get(1)?.value ?: "" // 첫 번째 그룹 반환
+}
+
+fun updateChipStyle(chip: Chip, isChecked: Boolean) {
+    if (isChecked) {
+        // 눌린 상태: 약간 움푹 들어간 것처럼 보이도록 크기 축소
+        chip.elevation = 40f // 그림자 효과
+        chip.scaleX = 0.85f
+        chip.scaleY = 0.85f
+    } else {
+        // 기본 상태
+        chip.elevation = 0f
+        chip.scaleX = 1f
+        chip.scaleY = 1f
+    }
 }
