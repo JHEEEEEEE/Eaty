@@ -1,7 +1,6 @@
 package com.effort.presentation.viewmodel.home
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,8 +11,8 @@ import com.effort.presentation.core.util.handleCompletionState
 import com.effort.presentation.core.util.setLoadingState
 import com.effort.presentation.model.home.restaurant.SortTypeModel
 import com.effort.presentation.model.home.restaurant.toDomain
-import com.effort.presentation.model.home.restaurant.toPresentation
 import com.effort.presentation.model.home.restaurant.RestaurantModel
+import com.effort.presentation.model.home.restaurant.toPresentation
 import com.effort.presentation.model.map.FilterModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +28,6 @@ class RestaurantViewModel @Inject constructor(
     private val getRestaurantListUseCase: GetRestaurantListUseCase
 ) : ViewModel() {
 
-    // 상태 관리
     private val _getRestaurantState =
         MutableStateFlow<UiState<List<RestaurantModel>>>(UiState.Empty)
     val getRestaurantState get() = _getRestaurantState.asStateFlow()
@@ -48,9 +46,11 @@ class RestaurantViewModel @Inject constructor(
     private val _sortType = MutableStateFlow(SortTypeModel.DEFAULT)
     val sortType get() = _sortType.asStateFlow()
 
-    // ViewModel에서 LiveData 사용
     private val _newItemLiveData = MutableLiveData<String>()
-    val newItemLiveData: LiveData<String> = _newItemLiveData
+    val newItemLiveData get() = _newItemLiveData
+
+    private val _cachedData = MutableStateFlow<List<RestaurantModel>>(emptyList())
+    val cachedData get() = _cachedData.asStateFlow() // 캐시된 데이터를 외부에서 관찰 가능
 
     // 페이지네이션 상태 관리
     private var currentPage = 1
@@ -65,6 +65,7 @@ class RestaurantViewModel @Inject constructor(
             currentPage = 1
             lastQuery = query
             isLastPage = false
+            _cachedData.value = emptyList() // 캐시 초기화
             _getRestaurantState.value = UiState.Success(emptyList()) // 기존 데이터 초기화
         }
 
@@ -83,21 +84,20 @@ class RestaurantViewModel @Inject constructor(
                     when (dataResource) {
                         is DataResource.Success -> {
                             val (restaurants, meta) = dataResource.data
-                            val currentData = (_getRestaurantState.value as? UiState.Success)?.data.orEmpty()
-                            val newItems = restaurants.size
+                            val newItems = restaurants.map { it.toPresentation() }
+                            val newItemSize = restaurants.size
 
                             // 새로 로드된 데이터 개수 저장
-                            Log.d("MapViewModel", "새로 로드된 데이터 개수: $newItems")
-                            sendNewItemMessage(newItems)
+                            Log.d("MapViewModel", "새로 로드된 데이터 개수: $newItemSize")
+                            sendNewItemMessage(newItemSize)
 
-                            // 기존 데이터와 결합
-                            val combinedData = if (loadMore) {
-                                currentData + restaurants.map { it.toPresentation() }
+                            // 기존 데이터와 결합하여 캐시 업데이트
+                            if (loadMore) {
+                                addPageData(newItems)  // 추가 데이터 로드 시 addPageData 사용
                             } else {
-                                restaurants.map { it.toPresentation() }
+                                _cachedData.value = newItems  // 첫 페이지 로드 시 캐시 초기화
+                                _getRestaurantState.value = UiState.Success(newItems)
                             }
-
-                            _getRestaurantState.value = UiState.Success(combinedData)
 
 
                             if (meta?.isEnd == true) {
@@ -155,5 +155,18 @@ class RestaurantViewModel @Inject constructor(
             Log.d("MapViewModel", "필터 선택됨: ${it.query}")  // 필터 선택 로그
             fetchRestaurants(it.query) // 필터 변경 시 데이터 로드
         }
+    }
+
+    fun loadCachedData() {
+        // 캐시된 데이터를 UI 상태로 전달
+        if (_cachedData.value.isNotEmpty()) {
+            _getRestaurantState.value = UiState.Success(_cachedData.value)
+        }
+    }
+
+    fun addPageData(newData: List<RestaurantModel>) {
+        val updatedData = _cachedData.value + newData
+        _cachedData.value = updatedData
+        _getRestaurantState.value = UiState.Success(updatedData)
     }
 }
