@@ -1,12 +1,13 @@
-package com.effort.feature.model.map
+package com.effort.feature.map
 
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.clustering.ClusteringKey
 
-data class RestaurantKey(
-    val title: String, // 고유 식별자
+class RestaurantKey(
+    val title: String,
     private val position: LatLng
-) : ClusteringKey {
+): ClusteringKey {
+
     override fun getPosition(): LatLng = position
 
     override fun equals(other: Any?): Boolean {

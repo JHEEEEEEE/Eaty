@@ -28,9 +28,15 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMap.OnLocationChangeListener
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.clustering.ClusterMarkerInfo
+import com.naver.maps.map.clustering.Clusterer
+import com.naver.maps.map.clustering.DefaultClusterMarkerUpdater
+import com.naver.maps.map.clustering.DefaultLeafMarkerUpdater
+import com.naver.maps.map.clustering.LeafMarkerInfo
 import com.naver.maps.map.overlay.LocationOverlay
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.FusedLocationSource
+import com.naver.maps.map.util.MarkerIcons
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
 
@@ -48,8 +54,8 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     // 네비게이션 컨트롤러
     private lateinit var navController: NavController
 
-    // 지도에 표시된 마커를 관리하기 위한 리스트
-    private val markers = mutableListOf<Marker>()
+    // 클러스터링 객체 Clusterer
+    private lateinit var clusterer: Clusterer<RestaurantKey>
 
     // 위치 추적 소스와 지도 객체
     private lateinit var locationSource: FusedLocationSource
@@ -172,12 +178,14 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
             is UiState.Loading -> progressIndicator.showLoading(true)
             is UiState.Success -> {
                 progressIndicator.showLoading(false)
-                updateMapMarkers(state.data) // 지도에 마커 업데이트
+                setupClusterer(state.data) // 지도에 마커 업데이트
             }
+
             is UiState.Error -> {
                 progressIndicator.showLoading(false)
                 showToast("Error: ${state.exception.message}")
             }
+
             is UiState.Empty -> progressIndicator.showLoading(false)
         }
     }
@@ -186,43 +194,77 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
      * 필터 변경 처리
      */
     private fun handleFilterChange(selectedFilter: FilterModel?) {
-        clearMarkers() // 기존 마커 제거
         selectedFilter?.let { filter ->
             Log.d("MapFragment", "선택된 필터: ${filter.query}")
         }
     }
 
-    /**
-     * 지도에 마커를 업데이트
-     */
-    private fun updateMapMarkers(restaurantList: List<RestaurantModel>) {
-        if (!::naverMap.isInitialized) {
-            Log.e("MapFragment", "NaverMap이 초기화되지 않았습니다.")
-            return
-        }
+    private fun setupClusterer(restaurantList: List<RestaurantModel>) {
+        clearClusterer()
 
-        val existingCoordinates = mutableListOf<LatLng>() // 기존 마커 좌표 저장
+        clusterer = Clusterer.Builder<RestaurantKey>()
+            .screenDistance(50.0) // 같은 건물 정도의 거리로 클러스터링
+            .minZoom(8) // 줌 레벨 8 이하에서는 클러스터링 적용 안 함
+            .maxZoom(14) // 줌 레벨 14 이상에서는 클러스터링 해제
+            .animate(true) // 줌 변화 시 애니메이션 적용
+            .clusterMarkerUpdater(object : DefaultClusterMarkerUpdater() {
+                override fun updateClusterMarker(info: ClusterMarkerInfo, marker: Marker) {
+                    super.updateClusterMarker(info, marker)
+                    // 클러스터 크기에 따라 아이콘 변경
+                    marker.icon = when {
+                        info.size <= 7 -> MarkerIcons.CLUSTER_LOW_DENSITY
+                        info.size in 8..15 -> MarkerIcons.CLUSTER_MEDIUM_DENSITY
+                        else -> MarkerIcons.CLUSTER_HIGH_DENSITY
+                    }
+                    marker.captionText = "${info.size}개의 장소" // 클러스터 크기 표시
+                }
+            })
+            .leafMarkerUpdater(object : DefaultLeafMarkerUpdater() {
+                override fun updateLeafMarker(info: LeafMarkerInfo, marker: Marker) {
+                    super.updateLeafMarker(info, marker)
+                    val key = info.key as RestaurantKey
 
+                    // 기존 마커 좌표를 저장하여 중복 방지
+                    val existingCoordinates = mutableListOf<LatLng>()
+
+                    // 마커의 위치를 조정하여 중복 방지 처리
+                    marker.position = getAdjustedLatLng(
+                        key.position,
+                        existingCoordinates,
+                        key.hashCode()
+                    )
+
+                    // 마커 설정
+                    marker.captionText = key.title
+                    marker.icon = MarkerIcons.GREEN
+
+                    // 마커 클릭 시 상세 페이지로 이동
+                    marker.setOnClickListener {
+                        navigateToDetailFragment(
+                            restaurantList.first { it.title == key.title } // key.title로 레스토랑 찾기
+                        )
+                        true
+                    }
+                }
+            })
+            .build()
+
+        // 클러스터러에 데이터 추가
+        val keyTagMap = mutableMapOf<RestaurantKey, Any?>()
+
+        // RestaurantModel의 데이터를 RestaurantKey로 변환 후 추가
         restaurantList.forEachIndexed { index, restaurant ->
             val adjustedLatLng = getAdjustedLatLng(
                 LatLng(restaurant.latitude.toDouble(), restaurant.longitude.toDouble()),
-                existingCoordinates,
+                mutableListOf(), // 기존 좌표와 비교
                 index
             )
 
-            existingCoordinates.add(adjustedLatLng)
-
-            Marker().apply {
-                position = adjustedLatLng
-                map = naverMap
-                captionText = restaurant.title
-                setOnClickListener {
-                    navigateToDetailFragment(restaurant) // 마커 클릭 시 상세 페이지로 이동
-                    true
-                }
-                markers.add(this)
-            }
+            keyTagMap[RestaurantKey(restaurant.title, adjustedLatLng)] = null
         }
+
+        clusterer.addAll(keyTagMap) // 클러스터러에 데이터 추가
+        clusterer.map = naverMap // 클러스터러를 지도와 연결
     }
 
     /**
@@ -243,7 +285,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     /**
      * 근사값 중복 여부를 확인
      */
-    private fun isCloseToExistingCoordinates(existingCoordinates: List<LatLng>, target: LatLng): Boolean {
+    private fun isCloseToExistingCoordinates(
+        existingCoordinates: List<LatLng>,
+        target: LatLng
+    ): Boolean {
         val threshold = 0.0001 // 근사값 범위
         return existingCoordinates.any { coord ->
             abs(coord.latitude - target.latitude) <= threshold &&
@@ -252,11 +297,21 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     }
 
     /**
-     * 마커 위치를 약간 조정
+     * 마커 위치를 약간 조정 (랜덤성과 더 넓은 오차값 추가)
      */
     private fun adjustMarkerPosition(latitude: Double, longitude: Double, index: Int): LatLng {
-        val offset = 0.0001 * (index % 5) // 마커 간 오차 적용
-        return LatLng(latitude + offset, longitude + offset)
+        // 기본 오차값
+        val baseOffset = 0.0002 // 기존 0.0001에서 두 배로 증가
+
+        // 랜덤값 추가 (0.0 ~ 0.0001 범위)
+        val randomOffset = (0..10).random() * 0.00001 // 0.00001씩 랜덤으로 더함
+
+        // 인덱스를 활용해 마커를 여러 방향으로 분산
+        val latOffset = baseOffset * (index % 5) + randomOffset // 위도 오차
+        val lngOffset = baseOffset * ((index + 2) % 5) + randomOffset // 경도 오차
+
+        // 조정된 LatLng 반환
+        return LatLng(latitude + latOffset, longitude + lngOffset)
     }
 
     /**
@@ -267,7 +322,8 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
             viewModel.selectFilter(selectedFilter) // 필터 선택 처리
         }
         binding.recyclerViewFilter.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = filterAdapter
         }
     }
@@ -304,11 +360,13 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     }
 
     /**
-     * 마커 리스트 초기화
+     * 클러스터 초기화
      */
-    private fun clearMarkers() {
-        markers.forEach { it.map = null }
-        markers.clear()
+    private fun clearClusterer() {
+        // 클러스터러 데이터 초기화
+        if (::clusterer.isInitialized) {
+            clusterer.clear() // 클러스터러 데이터 초기화
+        }
     }
 
     /**
