@@ -6,11 +6,11 @@ import android.util.Log
 import android.view.View
 import androidx.annotation.UiThread
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.effort.feature.core.base.BaseFragment
+import com.effort.feature.core.util.collectFlow
 import com.effort.feature.core.util.showLoading
 import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentMapBinding
@@ -32,8 +32,6 @@ import com.naver.maps.map.overlay.LocationOverlay
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 
@@ -41,209 +39,232 @@ import kotlin.math.abs
 class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate),
     OnMapReadyCallback {
 
+    // ViewModel을 Hilt를 통해 주입받음
     private val viewModel: RestaurantViewModel by viewModels()
+
+    // 필터 리스트 어댑터
     private lateinit var filterAdapter: FilterAdapter
+
+    // 네비게이션 컨트롤러
     private lateinit var navController: NavController
-    private val markers = mutableListOf<Marker>() // 기존 마커를 관리할 리스트
 
+    // 지도에 표시된 마커를 관리하기 위한 리스트
+    private val markers = mutableListOf<Marker>()
 
+    // 위치 추적 소스와 지도 객체
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
+
+    // 현재 위치를 표시하는 오버레이
     private lateinit var locationOverlay: LocationOverlay
 
     companion object {
+        // 위치 권한 요청 코드
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
+    /**
+     * 초기 UI 설정을 담당하는 메서드
+     */
     override fun initView() {
-        setupMapFragment()
-        initRecyclerView()
-        setFilterList()
-        observeSelectedFilter()
-        setupFabClickListener()
-        observeNewItemLiveData()
+        setupMapFragment() // 네이버 지도 초기화
+        initRecyclerView() // 필터 리스트 RecyclerView 초기화
+        setFilterList() // 필터 데이터 설정
+        setupFabClickListener() // FAB 버튼 클릭 리스너 설정
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        initView() // 초기화 로직 실행
     }
 
+    /**
+     * 네이버 지도(MapFragment)를 초기화
+     */
     private fun setupMapFragment() {
         val mapFragment = childFragmentManager.findFragmentById(binding.map.id) as MapFragment?
             ?: MapFragment.newInstance(
                 NaverMapOptions()
                     .camera(
                         CameraPosition(
-                            LatLng(37.5112, 127.0590),
-                            14.0
+                            LatLng(37.5112, 127.0590), // 초기 카메라 위치 (서울 강남)
+                            14.0 // 줌 레벨
                         )
                     )
-                    .indoorEnabled(true)
-                    .locationButtonEnabled(true)
+                    .indoorEnabled(true) // 실내 지도 활성화
+                    .locationButtonEnabled(true) // 위치 버튼 활성화
             ).also {
                 childFragmentManager.beginTransaction()
                     .replace(binding.map.id, it)
                     .commit()
             }
 
-        mapFragment.getMapAsync(this)
+        mapFragment.getMapAsync(this) // 지도가 준비되었을 때 콜백 호출
     }
 
+    /**
+     * 네이버 지도 준비 완료 시 호출되는 콜백
+     */
     @UiThread
     override fun onMapReady(naverMap: NaverMap) {
-        this.naverMap = naverMap
-        initializeMap()
+        this.naverMap = naverMap // 네이버 지도 객체 저장
+        initializeMap() // 지도 초기화 로직 실행
 
-        viewModel.fetchRestaurants("")
+        // 네이버 지도가 준비된 후 ViewModel 상태 관찰 시작
+        observeViewModel()
+
+        viewModel.fetchRestaurants("") // 초기 레스토랑 데이터 로드
     }
 
+    /**
+     * 지도 초기화: 위치 소스 설정, 오버레이 및 상태 관찰
+     */
     private fun initializeMap() {
-        locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
+        locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE) // 위치 소스 설정
         naverMap.locationSource = locationSource
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow
-        setOverlay()
-        observeCameraInitialization()
-        observeObtainRestaurantState()
+        naverMap.locationTrackingMode = LocationTrackingMode.Follow // 위치 추적 모드 활성화
+        setOverlay() // 현재 위치 오버레이 설정
     }
 
-    private fun observeObtainRestaurantState() {
-        val progressIndicator = binding.progressCircular.progressBar
+    /**
+     * ViewModel 상태를 관찰
+     */
+    private fun observeViewModel() {
+        // 레스토랑 데이터 상태 관찰
+        collectFlow(viewModel.getRestaurantState) { state ->
+            handleRestaurantState(state)
+        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getRestaurantState.collectLatest { state ->
-                when (state) {
-                    is UiState.Loading -> progressIndicator.showLoading(true)
-                    is UiState.Success -> {
-                        progressIndicator.showLoading(false)
-                        updateMapMarkers(state.data) // state.data가 List<RestaurantModel> 리스트 형태이다 (여기에서 list를 받아와서 restaurant.전체 데이터 넘기면 될듯)
-                    }
+        // 카메라 초기화 상태 관찰
+        collectFlow(viewModel.isCameraInitialized) { isInitialized ->
+            if (!isInitialized) {
+                enableLocationTrackingOnce()
+            }
+        }
 
-                    is UiState.Error -> {
-                        progressIndicator.showLoading(false)
-                        showToast("Error: ${state.exception.message}")
-                    }
+        // 필터 선택 상태 관찰
+        collectFlow(viewModel.selectedFilter) { selectedFilter ->
+            handleFilterChange(selectedFilter)
+        }
 
-                    is UiState.Empty -> progressIndicator.showLoading(false)
-                }
+        // 필터 리스트 관찰
+        collectFlow(viewModel.filters) { filters ->
+            filterAdapter.submitList(filters)
+        }
+
+        // 새로운 아이템 관찰
+        viewModel.newItemLiveData.observe(viewLifecycleOwner) { message ->
+            if (viewModel.isLastPage) {
+                showToast("모든 데이터가 출력되었습니다.")
+            } else {
+                showToast(message)
             }
         }
     }
 
+    /**
+     * 레스토랑 상태를 처리
+     */
+    private fun handleRestaurantState(state: UiState<List<RestaurantModel>>) {
+        val progressIndicator = binding.progressCircular.progressBar
+
+        when (state) {
+            is UiState.Loading -> progressIndicator.showLoading(true)
+            is UiState.Success -> {
+                progressIndicator.showLoading(false)
+                updateMapMarkers(state.data) // 지도에 마커 업데이트
+            }
+            is UiState.Error -> {
+                progressIndicator.showLoading(false)
+                showToast("Error: ${state.exception.message}")
+            }
+            is UiState.Empty -> progressIndicator.showLoading(false)
+        }
+    }
+
+    /**
+     * 필터 변경 처리
+     */
+    private fun handleFilterChange(selectedFilter: FilterModel?) {
+        clearMarkers() // 기존 마커 제거
+        selectedFilter?.let { filter ->
+            Log.d("MapFragment", "선택된 필터: ${filter.query}")
+        }
+    }
+
+    /**
+     * 지도에 마커를 업데이트
+     */
     private fun updateMapMarkers(restaurantList: List<RestaurantModel>) {
         if (!::naverMap.isInitialized) {
             Log.e("MapFragment", "NaverMap이 초기화되지 않았습니다.")
             return
         }
 
-        val existingCoordinates = mutableListOf<LatLng>() // 기존 좌표 저장
+        val existingCoordinates = mutableListOf<LatLng>() // 기존 마커 좌표 저장
 
         restaurantList.forEachIndexed { index, restaurant ->
-            val originalLatLng = LatLng(restaurant.latitude.toDouble(), restaurant.longitude.toDouble())
+            val adjustedLatLng = getAdjustedLatLng(
+                LatLng(restaurant.latitude.toDouble(), restaurant.longitude.toDouble()),
+                existingCoordinates,
+                index
+            )
 
-            // 근사값 중복 여부 확인
-            val adjustedLatLng = if (isCloseToExistingCoordinates(existingCoordinates, originalLatLng)) {
-                // 근사값 중복된 경우 오차를 적용
-                adjustMarkerPosition(originalLatLng.latitude, originalLatLng.longitude, index)
-            } else {
-                // 중복되지 않은 경우 원래 좌표 사용
-                originalLatLng
-            }
-
-            // 현재 좌표를 기존 좌표 목록에 추가
             existingCoordinates.add(adjustedLatLng)
 
-            // 마커 생성 및 추가
             Marker().apply {
                 position = adjustedLatLng
                 map = naverMap
                 captionText = restaurant.title
-
-                // 마커 클릭 리스너 설정
                 setOnClickListener {
-                    navigateToDetailFragment(restaurant)
+                    navigateToDetailFragment(restaurant) // 마커 클릭 시 상세 페이지로 이동
                     true
                 }
-
-                markers.add(this) // 리스트에 추가
+                markers.add(this)
             }
         }
     }
 
-    // 근사값으로 중복 여부 확인
+    /**
+     * 마커의 좌표를 조정하여 중복 방지
+     */
+    private fun getAdjustedLatLng(
+        originalLatLng: LatLng,
+        existingCoordinates: MutableList<LatLng>,
+        index: Int
+    ): LatLng {
+        return if (isCloseToExistingCoordinates(existingCoordinates, originalLatLng)) {
+            adjustMarkerPosition(originalLatLng.latitude, originalLatLng.longitude, index)
+        } else {
+            originalLatLng
+        }
+    }
+
+    /**
+     * 근사값 중복 여부를 확인
+     */
     private fun isCloseToExistingCoordinates(existingCoordinates: List<LatLng>, target: LatLng): Boolean {
-        val threshold = 0.0001 // 근사값 범위 (위도/경도 차이의 허용 범위)
+        val threshold = 0.0001 // 근사값 범위
         return existingCoordinates.any { coord ->
             abs(coord.latitude - target.latitude) <= threshold &&
                     abs(coord.longitude - target.longitude) <= threshold
         }
     }
 
-    // 마커 위치를 약간 조정
+    /**
+     * 마커 위치를 약간 조정
+     */
     private fun adjustMarkerPosition(latitude: Double, longitude: Double, index: Int): LatLng {
-        val offset = 0.0001 * (index % 5) // 중복된 마커 간 간격 조정
+        val offset = 0.0001 * (index % 5) // 마커 간 오차 적용
         return LatLng(latitude + offset, longitude + offset)
     }
 
-    private fun observeCameraInitialization() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.isCameraInitialized.collect { isInitialized ->
-                if (!isInitialized) {
-                    enableLocationTrackingOnce()
-                }
-            }
-        }
-    }
-
-    // Fragment에서 LiveData 관찰
-    private fun observeNewItemLiveData() {
-        viewModel.newItemLiveData.observe(viewLifecycleOwner) { message ->
-            // isLastPage가 true일 때 "모든 데이터가 출력되었습니다." 메시지 출력
-            if (viewModel.isLastPage) {
-                showToast("모든 데이터가 출력되었습니다.")
-            } else {
-                // 새로 로드된 데이터가 있을 경우 메시지 출력
-                showToast(message)
-            }
-        }
-    }
-
-    private fun enableLocationTrackingOnce() {
-        val locationChangeListener = createLocationChangeListener()
-        naverMap.addOnLocationChangeListener(locationChangeListener)
-    }
-
-    private fun createLocationChangeListener(): OnLocationChangeListener {
-        return object : OnLocationChangeListener {
-            override fun onLocationChange(location: Location) {
-                location.let {
-                    moveCameraToLocation(it)
-                    Log.d("MapFragment", "현재 위치: ${it.latitude}, ${it.longitude}")
-                    naverMap.locationTrackingMode = LocationTrackingMode.None
-                    naverMap.removeOnLocationChangeListener(this)
-                    viewModel.toggleCameraInitialization()
-                }
-            }
-        }
-    }
-
-    private fun moveCameraToLocation(location: Location) {
-        val cameraUpdate = CameraUpdate.toCameraPosition(
-            CameraPosition(
-                LatLng(location.latitude, location.longitude),
-                15.0
-            )
-        ).animate(CameraAnimation.Easing)
-        naverMap.moveCamera(cameraUpdate)
-    }
-
-    private fun setOverlay() {
-        locationOverlay = naverMap.locationOverlay.apply { isVisible = true }
-    }
-
+    /**
+     * RecyclerView 초기화
+     */
     private fun initRecyclerView() {
         filterAdapter = FilterAdapter { selectedFilter ->
-            viewModel.selectFilter(selectedFilter)
+            viewModel.selectFilter(selectedFilter) // 필터 선택 처리
         }
         binding.recyclerViewFilter.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -251,31 +272,9 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
         }
     }
 
-    private fun observeSelectedFilter() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.selectedFilter.collectLatest { selectedFilter ->
-                // 선택된 필터가 변경되었을 때 기존 마커 제거
-                clearMarkers()
-
-                // 필터에 따라 마커를 업데이트 (데이터는 이미 ViewModel에서 로드됨)
-                selectedFilter?.let { filter ->
-                    Log.d("MapFragment", "선택된 필터: ${filter.query}")
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.filters.collectLatest { filters ->
-                filterAdapter.submitList(filters) // 필터 목록 갱신
-            }
-        }
-    }
-
-    private fun clearMarkers() {
-        markers.forEach { it.map = null } // 기존 마커를 지도에서 제거
-        markers.clear() // 리스트 초기화
-    }
-
+    /**
+     * FAB 버튼 클릭 리스너 설정
+     */
     private fun setupFabClickListener() {
         binding.fab.setOnClickListener {
             val selectedFilter = viewModel.selectedFilter.value
@@ -287,6 +286,9 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
         }
     }
 
+    /**
+     * 필터 데이터 설정
+     */
     private fun setFilterList() {
         viewModel.setFilters(
             listOf(
@@ -301,7 +303,17 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
         )
     }
 
-    // DetailFragment로 이동하는 함수
+    /**
+     * 마커 리스트 초기화
+     */
+    private fun clearMarkers() {
+        markers.forEach { it.map = null }
+        markers.clear()
+    }
+
+    /**
+     * 상세 페이지로 이동
+     */
     private fun navigateToDetailFragment(restaurant: RestaurantModel) {
         navController = findNavController()
 
@@ -316,6 +328,49 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
             longitude = restaurant.longitude
         )
         navController.navigate(action)
+    }
+
+    /**
+     * 위치 추적을 한 번만 활성화
+     */
+    private fun enableLocationTrackingOnce() {
+        val locationChangeListener = createLocationChangeListener()
+        naverMap.addOnLocationChangeListener(locationChangeListener)
+    }
+
+    /**
+     * 위치 변경 리스너 생성
+     */
+    private fun createLocationChangeListener(): OnLocationChangeListener {
+        var isFirstLocationUpdate = true // 첫 번째 위치 업데이트 여부 확인
+
+        return OnLocationChangeListener { location ->
+            if (isFirstLocationUpdate) {
+                moveCameraToLocation(location) // 첫 번째 위치 업데이트 시 카메라 이동
+                isFirstLocationUpdate = false
+                viewModel.toggleCameraInitialization()
+            }
+        }
+    }
+
+    /**
+     * 카메라를 특정 위치로 이동
+     */
+    private fun moveCameraToLocation(location: Location) {
+        val cameraUpdate = CameraUpdate.toCameraPosition(
+            CameraPosition(
+                LatLng(location.latitude, location.longitude),
+                15.0
+            )
+        ).animate(CameraAnimation.Easing)
+        naverMap.moveCamera(cameraUpdate)
+    }
+
+    /**
+     * 현재 위치 오버레이 설정
+     */
+    private fun setOverlay() {
+        locationOverlay = naverMap.locationOverlay.apply { isVisible = true }
     }
 
 

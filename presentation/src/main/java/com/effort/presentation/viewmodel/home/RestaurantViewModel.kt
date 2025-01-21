@@ -164,7 +164,7 @@ class RestaurantViewModel @Inject constructor(
         }
     }
 
-    fun addPageData(newData: List<RestaurantModel>) {
+    private fun addPageData(newData: List<RestaurantModel>) {
         val updatedData = _cachedData.value + newData
         _cachedData.value = updatedData
         _getRestaurantState.value = UiState.Success(updatedData)

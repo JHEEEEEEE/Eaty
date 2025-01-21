@@ -7,11 +7,14 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 inline fun ImageView.load(
@@ -69,5 +72,14 @@ fun updateChipStyle(chip: Chip, isChecked: Boolean) {
         chip.elevation = 0f
         chip.scaleX = 1f
         chip.scaleY = 1f
+    }
+}
+
+/**
+ * Flow를 간단히 수집할 수 있는 유틸 함수
+ */
+fun <T> Fragment.collectFlow(flow: kotlinx.coroutines.flow.Flow<T>, collector: suspend (T) -> Unit) {
+    viewLifecycleOwner.lifecycleScope.launch {
+        flow.collectLatest(collector)
     }
 }
