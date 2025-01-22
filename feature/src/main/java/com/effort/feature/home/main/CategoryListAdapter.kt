@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.databinding.ItemCategoryBinding
-import com.effort.feature.model.category.CategoryModel
+import com.effort.presentation.model.category.CategoryModel
 
 class CategoryListAdapter(
     private val onClick: (String) -> Unit

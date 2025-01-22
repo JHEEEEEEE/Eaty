@@ -9,15 +9,18 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.effort.feature.R
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.collectFlow
 import com.effort.feature.core.util.showLoading
 import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentMapBinding
+import com.effort.feature.model.map.RestaurantKey
 import com.effort.presentation.UiState
+import com.effort.presentation.model.category.CategoryModel
 import com.effort.presentation.model.home.restaurant.RestaurantModel
 import com.effort.presentation.model.map.FilterModel
-import com.effort.presentation.viewmodel.home.RestaurantViewModel
+import com.effort.presentation.viewmodel.home.restaurant.RestaurantViewModel
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraPosition
@@ -353,8 +356,13 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
                 FilterModel(3, "양식", "양식"),
                 FilterModel(4, "일식", "일식"),
                 FilterModel(5, "아시아음식", "아시아음식"),
-                FilterModel(6, "카페", "카페"),
-                FilterModel(7, "베이커리", "베이커리"),
+                FilterModel(6, "분식", "분식"),
+                FilterModel(7, "치킨", "치킨"),
+                FilterModel(8, "국밥", "국밥"),
+                FilterModel(9, "고기", "고기"),
+                FilterModel(10, "회/해물", "회/해물"),
+                FilterModel(11, "뷔페", "뷔페"),
+                FilterModel(12, "패스트푸드", "패스트푸드"),
             )
         )
     }

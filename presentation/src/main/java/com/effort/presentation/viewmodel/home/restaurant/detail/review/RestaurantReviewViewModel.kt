@@ -1,4 +1,4 @@
-package com.effort.presentation.viewmodel.home.detail.review
+package com.effort.presentation.viewmodel.home.restaurant.detail.review
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

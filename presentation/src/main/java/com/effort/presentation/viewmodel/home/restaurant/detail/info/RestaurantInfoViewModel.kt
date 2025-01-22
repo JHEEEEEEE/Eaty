@@ -1,4 +1,4 @@
-package com.effort.presentation.viewmodel.home.detail.info
+package com.effort.presentation.viewmodel.home.restaurant.detail.info
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

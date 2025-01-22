@@ -1,4 +1,4 @@
-package com.effort.presentation.viewmodel.home
+package com.effort.presentation.viewmodel.home.restaurant
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData

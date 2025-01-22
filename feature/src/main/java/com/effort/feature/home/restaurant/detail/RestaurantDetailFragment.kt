@@ -12,9 +12,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.effort.feature.community.CommunityDetailAdapter
 import com.effort.feature.core.base.BaseFragment
-import com.effort.feature.core.util.extractGuFromSeoulAddress
+import com.effort.feature.core.util.extractGuDongFromSeoulAddress
 import com.effort.feature.databinding.FragmentRestaurantDetailBinding
-import com.effort.presentation.viewmodel.home.SharedRestaurantViewModel
+import com.effort.presentation.viewmodel.home.restaurant.SharedRestaurantViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -85,7 +85,9 @@ class RestaurantDetailFragment :
         with(sharedViewModel) {
             setTitle(args.title) // ViewModel에 title 저장
             setLocation(args.latitude, args.longitude)
-            setRegion(extractGuFromSeoulAddress(args.lotNumberAddress))
+            Log.d("gudong", "${args.lotNumberAddress}")
+            Log.d("gudong", "${extractGuDongFromSeoulAddress(args.lotNumberAddress)}")
+            setRegion(extractGuDongFromSeoulAddress(args.lotNumberAddress))
         }
     }
 }

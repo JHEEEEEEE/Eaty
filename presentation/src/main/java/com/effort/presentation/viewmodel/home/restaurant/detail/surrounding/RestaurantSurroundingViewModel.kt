@@ -1,4 +1,4 @@
-package com.effort.presentation.viewmodel.home.detail.surrounding
+package com.effort.presentation.viewmodel.home.restaurant.detail.surrounding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

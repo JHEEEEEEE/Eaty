@@ -1,4 +1,4 @@
-package com.effort.feature.model.category
+package com.effort.presentation.model.category
 
 data class CategoryModel(
     val title: String,

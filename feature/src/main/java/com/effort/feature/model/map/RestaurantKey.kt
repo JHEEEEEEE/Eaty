@@ -1,4 +1,4 @@
-package com.effort.feature.map
+package com.effort.feature.model.map
 
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.clustering.ClusteringKey

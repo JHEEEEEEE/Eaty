@@ -54,11 +54,12 @@ fun Fragment.showToast(message: String) {
     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 }
 
-fun extractGuFromSeoulAddress(address: String): String {
-    // "구"로 끝나는 단어를 찾기
-    val regex = Regex(" ([가-힣]+구)")
-    val matchResult = regex.find(address)
-    return matchResult?.groups?.get(1)?.value ?: "" // 첫 번째 그룹 반환
+fun extractGuDongFromSeoulAddress(address: String): String {
+    if (!address.contains("서울")) return "" // "서울"이 포함되지 않으면 빈 문자열 반환
+
+    val regex = Regex("([가-힣]+구|[가-힣]+동)")
+    return regex.findAll(address)
+        .joinToString(" ") { it.value }
 }
 
 fun updateChipStyle(chip: Chip, isChecked: Boolean) {

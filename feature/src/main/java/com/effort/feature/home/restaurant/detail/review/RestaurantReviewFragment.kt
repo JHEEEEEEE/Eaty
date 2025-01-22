@@ -13,8 +13,8 @@ import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.showLoading
 import com.effort.feature.databinding.FragmentRestaurantReviewBinding
 import com.effort.presentation.UiState
-import com.effort.presentation.viewmodel.home.SharedRestaurantViewModel
-import com.effort.presentation.viewmodel.home.detail.review.RestaurantReviewViewModel
+import com.effort.presentation.viewmodel.home.restaurant.SharedRestaurantViewModel
+import com.effort.presentation.viewmodel.home.restaurant.detail.review.RestaurantReviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

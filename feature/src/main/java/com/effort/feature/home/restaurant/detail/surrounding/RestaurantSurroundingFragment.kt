@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.showLoading
 import com.effort.feature.databinding.FragmentRestaurantSurroundingBinding
-import com.effort.presentation.viewmodel.home.SharedRestaurantViewModel
+import com.effort.presentation.viewmodel.home.restaurant.SharedRestaurantViewModel
 import com.effort.presentation.UiState
-import com.effort.presentation.viewmodel.home.detail.surrounding.RestaurantSurroundingViewModel
+import com.effort.presentation.viewmodel.home.restaurant.detail.surrounding.RestaurantSurroundingViewModel
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.MultiBrowseCarouselStrategy
 import dagger.hilt.android.AndroidEntryPoint

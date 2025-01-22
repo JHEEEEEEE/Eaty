@@ -30,5 +30,4 @@ class RestaurantInfoRepositoryImpl @Inject constructor(
             DataResource.error(e)
         }
     }
-
 }

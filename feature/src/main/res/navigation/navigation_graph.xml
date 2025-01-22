@@ -95,14 +95,14 @@
         tools:layout="@layout/fragment_notice" />
     <fragment
         android:id="@+id/restaurantFragment"
-        android:name="com.effort.feature.home.restaurant.RestaurantFragment"
+        android:name="com.effort.feature.home.restaurant.RestaurantListFragment"
         android:label="RestaurantFragment"
         tools:layout="@layout/fragment_restaurant">
         <argument
             android:name="query"
             app:argType="string" />
         <action
-            android:id="@+id/action_restaurantFragment_to_restaurantDetailFragment"
+            android:id="@+id/action_restaurantListFragment_to_restaurantDetailFragment"
             app:destination="@id/restaurantDetailFragment" />
     </fragment>
 

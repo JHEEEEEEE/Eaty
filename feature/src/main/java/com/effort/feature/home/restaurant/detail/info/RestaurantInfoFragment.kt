@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.showLoading
 import com.effort.feature.databinding.FragmentRestaurantInfoBinding
-import com.effort.presentation.viewmodel.home.SharedRestaurantViewModel
+import com.effort.presentation.viewmodel.home.restaurant.SharedRestaurantViewModel
 import com.effort.presentation.UiState
-import com.effort.presentation.viewmodel.home.detail.info.RestaurantInfoViewModel
+import com.effort.presentation.viewmodel.home.restaurant.detail.info.RestaurantInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine

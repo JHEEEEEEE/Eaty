@@ -16,12 +16,12 @@ class RestaurantInfoRemoteDataSourceImpl @Inject constructor(
         region: String,
         page: Int
     ): Pair<List<BlogReviewEntity>, BlogReviewMetaEntity?> {
-        val realQuery = "서울 $region $query 식당"
+        val searchQuery = "$region \"$query\""
 
-        Log.e("RestaurantDetailRemote", "realQuery: $realQuery")
+        Log.e("RestaurantDetailRemote", "searchQuery: $searchQuery")
 
         return try {
-            val response = blogReviewService.getBlogReviewList(realQuery, page)
+            val response = blogReviewService.getBlogReviewList(searchQuery, page)
             val data = response.documents.map { it.toData() }
             val meta = response.meta.toData()
 
@@ -32,5 +32,4 @@ class RestaurantInfoRemoteDataSourceImpl @Inject constructor(
             throw e // 예외 전파
         }
     }
-
 }

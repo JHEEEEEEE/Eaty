@@ -32,7 +32,7 @@ class RestaurantListAdapter :
                 // 클릭 이벤트 추가
                 root.setOnClickListener {
                     val action =
-                        RestaurantFragmentDirections.actionRestaurantFragmentToRestaurantDetailFragment(
+                        RestaurantListFragmentDirections.actionRestaurantListFragmentToRestaurantDetailFragment(
                             title = item.title,
                             lotNumberAddress = item.lotNumberAddress,
                             roadNameAddress = item.roadNameAddress,

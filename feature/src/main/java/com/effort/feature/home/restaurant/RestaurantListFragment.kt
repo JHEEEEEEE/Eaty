@@ -21,16 +21,16 @@ import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.showLoading
 import com.effort.feature.databinding.FragmentRestaurantBinding
 import com.effort.presentation.UiState
-import com.effort.presentation.viewmodel.home.RestaurantViewModel
+import com.effort.presentation.viewmodel.home.restaurant.RestaurantViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class RestaurantFragment :
+class RestaurantListFragment :
     BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate){
     private val viewModel: RestaurantViewModel by viewModels()
-    private val args: RestaurantFragmentArgs by navArgs() // SafeArgs로 데이터 받기
+    private val args: RestaurantListFragmentArgs by navArgs() // SafeArgs로 데이터 받기
     private lateinit var restaurantListAdapter: RestaurantListAdapter
     private var layoutManagerState: Parcelable? = null
 
