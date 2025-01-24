@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.databinding.ItemCommentBinding
-import com.effort.presentation.model.home.comment.CommentModel
+import com.effort.presentation.model.home.restaurant.detail.comment.CommentModel
 
 
 class CommentAdapter : ListAdapter<CommentModel, CommentAdapter.CommentViewHolder>(DiffCallback) {

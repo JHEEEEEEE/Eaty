@@ -2,7 +2,7 @@ package com.effort.local.model.restaurant.parkinglot
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.effort.data.model.home.parkinglot.ParkingLotEntity
+import com.effort.data.model.home.restaurant.detail.parkinglot.ParkingLotEntity
 
 @Entity(tableName = "parkingLots")
 data class ParkingLotLocal(

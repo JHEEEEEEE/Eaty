@@ -5,6 +5,7 @@ import com.effort.domain.usecase.auth.CheckUserLoggedInUseCase
 import com.effort.domain.usecase.mypage.ObserveUserUpdateUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.CheckNicknameDuplicatedUseCase
 import com.effort.domain.usecase.auth.SignOutUseCase
+import com.effort.domain.usecase.home.GetSuggestionListUseCase
 import com.effort.domain.usecase.home.restaurant.detail.blog.GetBlogReviewListUseCase
 import com.effort.domain.usecase.home.restaurant.detail.comment.AddCommentUseCase
 import com.effort.domain.usecase.home.restaurant.detail.comment.GetCommentUseCase
@@ -20,12 +21,13 @@ import com.effort.domain.usecaseimpl.auth.CheckUserLoggedInUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.ObserveUserUpdateUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.CheckNicknameDuplicatedUseCaseImpl
 import com.effort.domain.usecaseimpl.auth.SignOutUseCaseImpl
-import com.effort.domain.usecaseimpl.home.blog.GetBlogReviewListUseCaseImpl
-import com.effort.domain.usecaseimpl.home.comment.AddCommentUseCaseImpl
-import com.effort.domain.usecaseimpl.home.comment.GetCommentUseCaseImpl
-import com.effort.domain.usecaseimpl.home.parkinglot.GetParkingLotListUseCaseImpl
+import com.effort.domain.usecaseimpl.home.GetSuggestionListUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.detail.blog.GetBlogReviewListUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.detail.comment.AddCommentUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.detail.comment.GetCommentUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.detail.parkinglot.GetParkingLotListUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.GetRestaurantListUseCaseImpl
-import com.effort.domain.usecaseimpl.home.weather.GetWeatherDataUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.detail.weather.GetWeatherDataUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.UpdateNicknameUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.UpdateProfilePicUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.faq.GetFaqListUseCaseImpl
@@ -109,5 +111,10 @@ abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindAddCommentUseCase(addCommentUseCaseImpl: AddCommentUseCaseImpl): AddCommentUseCase
+
+    // Home
+    @Binds
+    @Singleton
+    abstract fun bindGetSuggestionsUseCase(getSuggestionUseCaseImpl: GetSuggestionListUseCaseImpl): GetSuggestionListUseCase
 }
 

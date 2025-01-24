@@ -2,8 +2,8 @@ package com.effort.local.datasourceimpl.restaurant
 
 import android.content.Context
 import android.util.Log
-import com.effort.data.datasource.home.detail.surrounding.RestaurantSurroundingLocalDataSource
-import com.effort.data.model.home.parkinglot.ParkingLotEntity
+import com.effort.data.datasource.home.restaurant.detail.surrounding.RestaurantSurroundingLocalDataSource
+import com.effort.data.model.home.restaurant.detail.parkinglot.ParkingLotEntity
 import com.effort.local.dao.restaurant.parkinglot.ParkingLotDao
 import com.effort.local.model.restaurant.parkinglot.ParkingLotWrapperLocal
 import com.effort.local.model.restaurant.parkinglot.toData

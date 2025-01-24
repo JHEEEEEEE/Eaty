@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.databinding.ItemBlogReviewBinding
-import com.effort.presentation.model.home.blog.BlogReviewModel
+import com.effort.presentation.model.home.restaurant.detail.blog.BlogReviewModel
 
 class BlogReviewListAdapter :
     ListAdapter<BlogReviewModel, BlogReviewListAdapter.BlogReviewViewHolder>(DiffCallback) {
@@ -17,12 +17,15 @@ class BlogReviewListAdapter :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: BlogReviewModel) {
-            binding.title.text = item.title
-            binding.contents.text = item.contents
-            binding.dateTime.text = item.dateTime
-            binding.root.setOnClickListener {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.url))
-                it.context.startActivity(intent)
+            with(binding){
+                title.text = item.title
+                contents.text = item.contents
+                dateTime.text = item.dateTime
+
+                root.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.url))
+                    it.context.startActivity(intent)
+                }
             }
         }
     }

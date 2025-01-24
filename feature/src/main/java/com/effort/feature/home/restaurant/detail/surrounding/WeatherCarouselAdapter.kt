@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.effort.feature.R
 import com.effort.feature.databinding.ItemWeatherBinding
-import com.effort.presentation.model.home.weather.WeatherModel
+import com.effort.presentation.model.home.restaurant.detail.weather.WeatherModel
 
 class WeatherCarouselAdapter :
     ListAdapter<WeatherModel, WeatherCarouselAdapter.WeatherViewHolder>(DiffCallback) {

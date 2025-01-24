@@ -1,7 +1,7 @@
 package com.effort.local.datasourceimpl.restaurant
 
 import android.util.Log
-import com.effort.data.datasource.home.RestaurantLocalDataSource
+import com.effort.data.datasource.home.restaurant.RestaurantLocalDataSource
 import com.effort.data.model.home.restaurant.RestaurantEntity
 import com.effort.local.dao.restaurant.RestaurantDao
 import com.effort.local.model.restaurant.toData

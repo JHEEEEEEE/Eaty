@@ -102,4 +102,21 @@
     <!--    Map     -->
     <string name="filter">Filter</string>
 
+
+    <!-- Home    -->
+    <string name="recommended_keyword">추천검색어</string>
+    <string name="user_update_error">유저 업데이트에 실패했습니다.</string>
+    <string name="korean_food">한식</string>
+    <string name="chinese_food">중식</string>
+    <string name="western_food">양식</string>
+    <string name="japanese_food">일식</string>
+    <string name="asian_food">아시아음식</string>
+    <string name="bunsik_food">분식</string>
+    <string name="chicken">치킨</string>
+    <string name="gukbap">국밥</string>
+    <string name="grilled_meat">고기</string>
+    <string name="seafood">회/해물</string>
+    <string name="buffet">뷔페</string>
+    <string name="fastfood">패스트푸드</string>
+
 </resources>

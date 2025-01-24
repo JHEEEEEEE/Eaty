@@ -1,20 +1,22 @@
 package com.effort.data.di
 
 import com.effort.data.repositoryimpl.auth.AuthRepositoryImpl
-import com.effort.data.repositoryimpl.home.RestaurantRepositoryImpl
-import com.effort.data.repositoryimpl.home.detail.info.RestaurantInfoRepositoryImpl
-import com.effort.data.repositoryimpl.home.detail.review.RestaurantReviewRepositoryImpl
-import com.effort.data.repositoryimpl.home.detail.surrounding.RestaurantSurroundingRepositoryImpl
+import com.effort.data.repositoryimpl.home.GetSuggestionListRepositoryImpl
+import com.effort.data.repositoryimpl.home.restaurant.RestaurantRepositoryImpl
+import com.effort.data.repositoryimpl.home.restaurant.detail.info.RestaurantInfoRepositoryImpl
+import com.effort.data.repositoryimpl.home.restaurant.detail.review.RestaurantReviewRepositoryImpl
+import com.effort.data.repositoryimpl.home.restaurant.detail.surrounding.RestaurantSurroundingRepositoryImpl
 import com.effort.data.repositoryimpl.location.LocationRepositoryImpl
 import com.effort.data.repositoryimpl.mypage.MyPageRepositoryImpl
 import com.effort.data.repositoryimpl.mypage.detail.editprofile.EditProfileRepositoryImpl
 import com.effort.data.repositoryimpl.mypage.detail.faq.FaqRepositoryImpl
 import com.effort.data.repositoryimpl.mypage.detail.notice.NoticeRepositoryImpl
 import com.effort.domain.repository.auth.AuthRepository
-import com.effort.domain.repository.home.RestaurantRepository
-import com.effort.domain.repository.home.detail.info.RestaurantInfoRepository
-import com.effort.domain.repository.home.detail.review.RestaurantReviewRepository
-import com.effort.domain.repository.home.detail.surrounding.RestaurantSurroundingRepository
+import com.effort.domain.repository.home.GetSuggestionListRepository
+import com.effort.domain.repository.home.restaurant.RestaurantRepository
+import com.effort.domain.repository.home.restaurant.detail.info.RestaurantInfoRepository
+import com.effort.domain.repository.home.restaurant.detail.review.RestaurantReviewRepository
+import com.effort.domain.repository.home.restaurant.detail.surrounding.RestaurantSurroundingRepository
 import com.effort.domain.repository.location.LocationRepository
 import com.effort.domain.repository.mypage.MyPageRepository
 import com.effort.domain.repository.mypage.detail.editprofile.EditProfileRepository
@@ -70,4 +72,8 @@ internal abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindRestaurantSurroundingRepository(restaurantSurroundingRepositoryImpl: RestaurantSurroundingRepositoryImpl): RestaurantSurroundingRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindGetSuggestionListRepository(getSuggestionListRepositoryImpl: GetSuggestionListRepositoryImpl): GetSuggestionListRepository
 }

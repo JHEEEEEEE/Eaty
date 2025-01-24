@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.databinding.ItemCategoryBinding
-import com.effort.presentation.model.category.CategoryModel
+import com.effort.presentation.model.home.CategoryModel
 
 class CategoryListAdapter(
     private val onClick: (String) -> Unit
@@ -22,7 +22,8 @@ class CategoryListAdapter(
                 categoryImage.setImageResource(item.imageResId)
 
                 root.setOnClickListener {
-                    onClick(item.title)
+                    val title = item.title
+                    onClick(title)
                 }
             }
         }
@@ -55,5 +56,4 @@ class CategoryListAdapter(
             }
         }
     }
-
 }

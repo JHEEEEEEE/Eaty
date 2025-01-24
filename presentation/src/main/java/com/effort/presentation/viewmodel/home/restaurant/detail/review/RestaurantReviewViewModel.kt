@@ -10,8 +10,8 @@ import com.effort.presentation.UiState
 import com.effort.presentation.core.util.handleCompletionState
 import com.effort.presentation.core.util.setLoadingState
 import com.effort.presentation.core.util.toUiStateList
-import com.effort.presentation.model.home.comment.CommentModel
-import com.effort.presentation.model.home.comment.toPresentation
+import com.effort.presentation.model.home.restaurant.detail.comment.CommentModel
+import com.effort.presentation.model.home.restaurant.detail.comment.toPresentation
 import com.effort.presentation.model.mypage.UserModel
 import com.effort.presentation.model.mypage.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel

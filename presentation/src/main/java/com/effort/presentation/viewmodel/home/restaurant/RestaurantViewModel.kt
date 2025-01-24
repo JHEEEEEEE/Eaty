@@ -79,7 +79,10 @@ class RestaurantViewModel @Inject constructor(
         viewModelScope.launch {
             getRestaurantListUseCase(query, _sortType.value.toDomain(), currentPage)
                 .onStart { if (!loadMore) setLoadingState(_getRestaurantState) }
-                .onCompletion { handleCompletionState(_getRestaurantState, it); isLoading = false }
+                .onCompletion { cause ->
+                    handleCompletionState(_getRestaurantState, cause)
+                    isLoading = false
+                }
                 .collectLatest { dataResource ->
                     when (dataResource) {
                         is DataResource.Success -> {
@@ -106,7 +109,10 @@ class RestaurantViewModel @Inject constructor(
                                 currentPage++
                             }
                         }
-                        is DataResource.Error -> _getRestaurantState.value = UiState.Error(dataResource.throwable)
+
+                        is DataResource.Error -> _getRestaurantState.value =
+                            UiState.Error(dataResource.throwable)
+
                         is DataResource.Loading -> {}
                     }
                 }

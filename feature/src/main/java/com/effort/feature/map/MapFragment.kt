@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.effort.feature.R
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.collectFlow
 import com.effort.feature.core.util.showLoading
@@ -17,7 +16,6 @@ import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentMapBinding
 import com.effort.feature.model.map.RestaurantKey
 import com.effort.presentation.UiState
-import com.effort.presentation.model.category.CategoryModel
 import com.effort.presentation.model.home.restaurant.RestaurantModel
 import com.effort.presentation.model.map.FilterModel
 import com.effort.presentation.viewmodel.home.restaurant.RestaurantViewModel

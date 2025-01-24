@@ -1,8 +1,8 @@
 package com.effort.local.di
 
 import com.effort.data.datasource.auth.AuthLocalDataSource
-import com.effort.data.datasource.home.detail.surrounding.RestaurantSurroundingLocalDataSource
-import com.effort.data.datasource.home.RestaurantLocalDataSource
+import com.effort.data.datasource.home.restaurant.detail.surrounding.RestaurantSurroundingLocalDataSource
+import com.effort.data.datasource.home.restaurant.RestaurantLocalDataSource
 import com.effort.data.datasource.mypage.MyPageLocalDataSource
 import com.effort.local.datasourceimpl.user.AuthLocalDataSourceImpl
 import com.effort.local.datasourceimpl.user.MyPageLocalDataSourceImpl

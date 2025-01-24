@@ -6,10 +6,10 @@ import com.effort.domain.DataResource
 import com.effort.domain.usecase.home.restaurant.detail.parkinglot.GetParkingLotListUseCase
 import com.effort.domain.usecase.home.restaurant.detail.weather.GetWeatherDataUseCase
 import com.effort.presentation.UiState
-import com.effort.presentation.model.home.parkinglot.ParkingLotModel
-import com.effort.presentation.model.home.parkinglot.toPresentation
-import com.effort.presentation.model.home.weather.WeatherModel
-import com.effort.presentation.model.home.weather.toPresentation
+import com.effort.presentation.model.home.restaurant.detail.parkinglot.ParkingLotModel
+import com.effort.presentation.model.home.restaurant.detail.parkinglot.toPresentation
+import com.effort.presentation.model.home.restaurant.detail.weather.WeatherModel
+import com.effort.presentation.model.home.restaurant.detail.weather.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

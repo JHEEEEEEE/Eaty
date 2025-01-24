@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.databinding.ItemParkinglotBinding
-import com.effort.presentation.model.home.parkinglot.ParkingLotModel
+import com.effort.presentation.model.home.restaurant.detail.parkinglot.ParkingLotModel
 
 class ParkingLotListAdapter :
     ListAdapter<ParkingLotModel, ParkingLotListAdapter.ParkingLotViewHolder>(DiffCallback) {

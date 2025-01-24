@@ -2,8 +2,10 @@ package com.effort.remote.di
 
 import com.effort.remote.service.auth.AuthService
 import com.effort.remote.service.auth.AuthServiceImpl
-import com.effort.remote.service.home.comment.CommentService
-import com.effort.remote.service.home.comment.CommentServiceImpl
+import com.effort.remote.service.home.SuggestionService
+import com.effort.remote.service.home.SuggestionServiceImpl
+import com.effort.remote.service.home.restaurant.detail.comment.CommentService
+import com.effort.remote.service.home.restaurant.detail.comment.CommentServiceImpl
 import com.effort.remote.service.mypage.MyPageService
 import com.effort.remote.service.mypage.MyPageServiceImpl
 import com.google.firebase.auth.FirebaseAuth
@@ -65,5 +67,13 @@ object FirebaseModule {
         firestore: FirebaseFirestore
     ): CommentService {
         return CommentServiceImpl(firestore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSuggestionService(
+        firestore: FirebaseFirestore
+    ): SuggestionService {
+        return SuggestionServiceImpl(firestore)
     }
 }

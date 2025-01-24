@@ -7,7 +7,7 @@
 
     <!-- 로고 이미지 -->
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/community_logo"
+        android:id="@+id/home_logo"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:background="@drawable/home_logo"
@@ -16,7 +16,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- 프로필 이미지와 사용자 정보 텍스트 그룹 -->
-
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_profile"
         android:layout_width="80dp"
@@ -26,7 +25,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_points"
         app:layout_constraintEnd_toStartOf="@+id/user_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/community_logo" />
+        app:layout_constraintTop_toBottomOf="@id/home_logo" />
 
     <!-- 텍스트를 위한 FlowLayout -->
     <androidx.constraintlayout.helper.widget.Flow
@@ -74,7 +73,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:background="@drawable/green_bubble"
+        android:background="@drawable/coral_orange_bubble"
         android:gravity="center"
         android:text="@string/btn_map"
         android:textColor="@color/white"
@@ -102,7 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         app:boxBackgroundMode="outline"
-        app:boxStrokeColor="@color/black"
+        app:boxStrokeColor="@color/primary_color"
         app:endIconDrawable="@drawable/ic_search_24"
         app:endIconMode="custom"
         app:layout_constraintEnd_toEndOf="parent"
@@ -117,6 +116,19 @@
             android:inputType="text"
             android:padding="16dp" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- 추천 검색어 RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_suggestion"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@android:color/white"
+        android:visibility="gone"
+        android:elevation="30dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_view" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_category"

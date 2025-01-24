@@ -7,8 +7,8 @@ import com.effort.domain.DataResource
 import com.effort.domain.usecase.home.restaurant.detail.blog.GetBlogReviewListUseCase
 import com.effort.presentation.UiState
 import com.effort.presentation.core.util.setLoadingState
-import com.effort.presentation.model.home.blog.BlogReviewModel
-import com.effort.presentation.model.home.blog.toPresentation
+import com.effort.presentation.model.home.restaurant.detail.blog.BlogReviewModel
+import com.effort.presentation.model.home.restaurant.detail.blog.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

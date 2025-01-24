@@ -4,7 +4,7 @@ import com.effort.domain.DataResource
 import com.effort.domain.model.home.restaurant.Restaurant
 import com.effort.domain.model.home.restaurant.RestaurantMeta
 import com.effort.domain.model.home.restaurant.SortType
-import com.effort.domain.repository.home.RestaurantRepository
+import com.effort.domain.repository.home.restaurant.RestaurantRepository
 import com.effort.domain.usecase.home.restaurant.GetRestaurantListUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow

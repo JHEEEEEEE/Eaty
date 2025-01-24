@@ -1,9 +1,9 @@
 package com.effort.remote.di
 
 import com.effort.remote.interceptor.KakaoApiInterceptor
-import com.effort.remote.service.home.blog.BlogReviewService
+import com.effort.remote.service.home.restaurant.detail.blog.BlogReviewService
 import com.effort.remote.service.home.restaurant.RestaurantService
-import com.effort.remote.service.home.weather.WeatherService
+import com.effort.remote.service.home.restaurant.detail.weather.WeatherService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
