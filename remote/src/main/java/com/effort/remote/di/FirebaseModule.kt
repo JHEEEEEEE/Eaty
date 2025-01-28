@@ -6,6 +6,8 @@ import com.effort.remote.service.home.SuggestionService
 import com.effort.remote.service.home.SuggestionServiceImpl
 import com.effort.remote.service.home.restaurant.detail.comment.CommentService
 import com.effort.remote.service.home.restaurant.detail.comment.CommentServiceImpl
+import com.effort.remote.service.home.restaurant.favorites.FavoriteService
+import com.effort.remote.service.home.restaurant.favorites.FavoriteServiceImpl
 import com.effort.remote.service.mypage.MyPageService
 import com.effort.remote.service.mypage.MyPageServiceImpl
 import com.google.firebase.auth.FirebaseAuth
@@ -75,5 +77,13 @@ object FirebaseModule {
         firestore: FirebaseFirestore
     ): SuggestionService {
         return SuggestionServiceImpl(firestore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFavoriteService(
+        firestore: FirebaseFirestore
+    ): FavoriteService {
+        return FavoriteServiceImpl(firestore)
     }
 }

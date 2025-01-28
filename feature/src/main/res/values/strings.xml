@@ -36,7 +36,7 @@
     <string name="community">커뮤니티</string>
     <string name="map">지도</string>
 
-    <!-- community   -->
+    <!-- community-->
     <string name="recy_talk">Recy-Talk</string>
     <string name="recy_talk_description">환경을 사랑하는 리사이크루들의 소통의 장! 환경에 대한 자유로운 이야기로 나눠요🍀</string>
 
@@ -91,7 +91,6 @@
     <string name="longitude">경도</string>
     <string name="capacity">주차구획수</string>
 
-
     <!-- Weather(SurroundingFragment) -->
     <string name="time">시간</string>
     <string name="temperature">기온</string>
@@ -101,7 +100,6 @@
 
     <!--    Map     -->
     <string name="filter">Filter</string>
-
 
     <!-- Home    -->
     <string name="recommended_keyword">추천검색어</string>
@@ -118,5 +116,9 @@
     <string name="seafood">회/해물</string>
     <string name="buffet">뷔페</string>
     <string name="fastfood">패스트푸드</string>
+
+    <!--  restaurantDetail  -->
+    <string name="favorite">찜</string>
+
 
 </resources>

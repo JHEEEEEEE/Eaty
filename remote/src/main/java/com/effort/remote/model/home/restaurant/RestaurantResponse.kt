@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RestaurantResponse(
     @SerialName("place_name") val title: String = "",          // 장소명
-    @SerialName("category_name") val category: String = "",    // 카테고리
+    //@SerialName("category_name") val category: String = "",    // 카테고리
     @SerialName("address_name") val lotNumberAddress: String = "",      // 지번 주소
     @SerialName("road_address_name") val roadNameAddress: String = "", // 도로명 주소
     @SerialName("phone") val phoneNumber: String = "",
@@ -30,4 +30,17 @@ data class RestaurantResponse(
             latitude
         )
     }
+}
+
+fun RestaurantEntity.toRemote(): RestaurantResponse {
+    return RestaurantResponse(
+        title,
+        lotNumberAddress,
+        roadNameAddress,
+        phoneNumber,
+        placeUrl,
+        distance,
+        longitude,
+        latitude
+    )
 }

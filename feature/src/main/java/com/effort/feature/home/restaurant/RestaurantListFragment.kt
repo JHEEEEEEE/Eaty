@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RestaurantListFragment :
-    BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate){
+    BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate) {
     private val viewModel: RestaurantViewModel by viewModels()
     private val args: RestaurantListFragmentArgs by navArgs() // SafeArgs로 데이터 받기
     private lateinit var restaurantListAdapter: RestaurantListAdapter
@@ -76,7 +77,20 @@ class RestaurantListFragment :
     }
 
     private fun initRecyclerView() {
-        restaurantListAdapter = RestaurantListAdapter()
+        // 일반 레스토랑 리스트 어댑터
+        restaurantListAdapter = RestaurantListAdapter { restaurant ->
+            val action = RestaurantListFragmentDirections.actionRestaurantListFragmentToRestaurantDetailFragment(
+                title = restaurant.title,
+                lotNumberAddress = restaurant.lotNumberAddress,
+                roadNameAddress = restaurant.roadNameAddress,
+                distance = restaurant.distance,
+                phoneNumber = restaurant.phoneNumber,
+                placeUrl = restaurant.placeUrl,
+                latitude = restaurant.latitude,
+                longitude = restaurant.longitude
+            )
+            findNavController().navigate(action) // 일반 리스트에서 상세로 이동
+        }
         binding.recyclerviewRestaurant.apply {
             adapter = restaurantListAdapter
         }

@@ -6,6 +6,7 @@ import com.effort.data.datasource.home.restaurant.RestaurantRemoteDataSource
 import com.effort.data.datasource.home.restaurant.detail.info.RestaurantInfoRemoteDataSource
 import com.effort.data.datasource.home.restaurant.detail.review.RestaurantReviewRemoteDataSource
 import com.effort.data.datasource.home.restaurant.detail.surrounding.RestaurantSurroundingRemoteDataSource
+import com.effort.data.datasource.home.restaurant.favorites.RestaurantFavoritesRemoteDataSource
 import com.effort.data.datasource.location.LocationRemoteDataSource
 import com.effort.data.datasource.mypage.MyPageRemoteDataSource
 import com.effort.data.datasource.mypage.detail.editprofile.EditProfileRemoteDataSource
@@ -17,6 +18,7 @@ import com.effort.remote.datasourceimpl.home.restaurant.RestaurantRemoteDataSour
 import com.effort.remote.datasourceimpl.home.restaurant.detail.info.RestaurantInfoRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.home.restaurant.detail.review.RestaurantReviewRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.home.restaurant.detail.surrounding.RestaurantSurroundingRemoteDataSourceImpl
+import com.effort.remote.datasourceimpl.home.restaurant.favorites.RestaurantFavoritesRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.location.LocationRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.mypage.MyPageRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.mypage.detail.editprofile.EditProfileRemoteDataSourceImpl
@@ -78,4 +80,8 @@ internal abstract class RemoteDataSourceModule {
     @Binds
     @Singleton
     abstract fun bindGetSuggestionListRemoteDataSource(getSuggestionListRemoteDataSourceImpl: GetSuggestionListRemoteDataSourceImpl): GetSuggestionListRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindRestaurantFavoritesRemoteDataSource(restaurantToFavoritesDataSourceImpl: RestaurantFavoritesRemoteDataSourceImpl): RestaurantFavoritesRemoteDataSource
 }

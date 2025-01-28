@@ -2,32 +2,40 @@ package com.effort.recycrew.di
 
 import com.effort.domain.usecase.auth.AuthenticateUserUseCase
 import com.effort.domain.usecase.auth.CheckUserLoggedInUseCase
-import com.effort.domain.usecase.mypage.ObserveUserUpdateUseCase
-import com.effort.domain.usecase.mypage.detail.editprofile.CheckNicknameDuplicatedUseCase
 import com.effort.domain.usecase.auth.SignOutUseCase
 import com.effort.domain.usecase.home.GetSuggestionListUseCase
+import com.effort.domain.usecase.home.restaurant.GetRestaurantListUseCase
 import com.effort.domain.usecase.home.restaurant.detail.blog.GetBlogReviewListUseCase
 import com.effort.domain.usecase.home.restaurant.detail.comment.AddCommentUseCase
 import com.effort.domain.usecase.home.restaurant.detail.comment.GetCommentUseCase
 import com.effort.domain.usecase.home.restaurant.detail.parkinglot.GetParkingLotListUseCase
-import com.effort.domain.usecase.home.restaurant.GetRestaurantListUseCase
 import com.effort.domain.usecase.home.restaurant.detail.weather.GetWeatherDataUseCase
+import com.effort.domain.usecase.home.restaurant.favorites.AddRestaurantToFavoritesUseCase
+import com.effort.domain.usecase.home.restaurant.favorites.CheckIfRestaurantIsFavoriteUseCase
+import com.effort.domain.usecase.home.restaurant.favorites.GetFavoriteListUseCase
+import com.effort.domain.usecase.home.restaurant.favorites.RemoveRestaurantFromFavoritesUseCase
+import com.effort.domain.usecase.mypage.ObserveUserUpdateUseCase
+import com.effort.domain.usecase.mypage.detail.editprofile.CheckNicknameDuplicatedUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateNicknameUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateProfilePicUseCase
 import com.effort.domain.usecase.mypage.detail.faq.GetFaqListUseCase
 import com.effort.domain.usecase.mypage.detail.notice.GetNoticeListUseCase
 import com.effort.domain.usecaseimpl.auth.AuthenticateUserUseCaseImpl
 import com.effort.domain.usecaseimpl.auth.CheckUserLoggedInUseCaseImpl
-import com.effort.domain.usecaseimpl.mypage.ObserveUserUpdateUseCaseImpl
-import com.effort.domain.usecaseimpl.mypage.detail.editprofile.CheckNicknameDuplicatedUseCaseImpl
 import com.effort.domain.usecaseimpl.auth.SignOutUseCaseImpl
 import com.effort.domain.usecaseimpl.home.GetSuggestionListUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.GetRestaurantListUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.detail.blog.GetBlogReviewListUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.detail.comment.AddCommentUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.detail.comment.GetCommentUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.detail.parkinglot.GetParkingLotListUseCaseImpl
-import com.effort.domain.usecaseimpl.home.restaurant.GetRestaurantListUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.detail.weather.GetWeatherDataUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.favorites.AddRestaurantToFavoritesUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.favorites.CheckIfRestaurantIsFavoriteUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.favorites.GetFavoriteListUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.favorites.RemoveRestaurantFromFavoritesUseCaseImpl
+import com.effort.domain.usecaseimpl.mypage.ObserveUserUpdateUseCaseImpl
+import com.effort.domain.usecaseimpl.mypage.detail.editprofile.CheckNicknameDuplicatedUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.UpdateNicknameUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.UpdateProfilePicUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.faq.GetFaqListUseCaseImpl
@@ -116,5 +124,22 @@ abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindGetSuggestionsUseCase(getSuggestionUseCaseImpl: GetSuggestionListUseCaseImpl): GetSuggestionListUseCase
+
+    // Favorites
+    @Binds
+    @Singleton
+    abstract fun bindAddRestaurantToFavoritesUseCase(addRestaurantToFavoritesUseCaseImpl: AddRestaurantToFavoritesUseCaseImpl): AddRestaurantToFavoritesUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindRemoveRestaurantToFavoritesUseCase(removeRestaurantFromFavoritesUseCaseImpl: RemoveRestaurantFromFavoritesUseCaseImpl): RemoveRestaurantFromFavoritesUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindCheckIfRestaurantIsFavoriteUseCase(checkIfRestaurantIsFavoriteUseCaseImpl: CheckIfRestaurantIsFavoriteUseCaseImpl): CheckIfRestaurantIsFavoriteUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindGetFavoriteListUseCase(getFavoriteListUseCaseImpl: GetFavoriteListUseCaseImpl): GetFavoriteListUseCase
 }
 

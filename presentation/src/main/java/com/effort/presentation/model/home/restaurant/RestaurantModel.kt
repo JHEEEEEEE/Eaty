@@ -12,7 +12,20 @@ data class RestaurantModel(
     val distance: String,
     val longitude: String,
     val latitude: String,
-)
+) {
+    fun toDomain(): Restaurant {
+        return Restaurant(
+            title,
+            lotNumberAddress,
+            roadNameAddress,
+            phoneNumber,
+            placeUrl,
+            distance,
+            longitude,
+            latitude
+        )
+    }
+}
 
 fun Restaurant.toPresentation(): RestaurantModel {
     return RestaurantModel(
@@ -26,3 +39,5 @@ fun Restaurant.toPresentation(): RestaurantModel {
         latitude
     )
 }
+
+

@@ -70,10 +70,10 @@ class RestaurantReviewViewModel @Inject constructor(
 
         viewModelScope.launch {
             _addCommentState.value = UiState.Loading
-            val result = addCommentUseCase(restaurantId, newComment.toDomain())
-            _addCommentState.value = when (result) {
-                is DataResource.Success -> UiState.Success(result.data)
-                is DataResource.Error -> UiState.Error(result.throwable)
+            val dataResource = addCommentUseCase(restaurantId, newComment.toDomain())
+            _addCommentState.value = when (dataResource) {
+                is DataResource.Success -> UiState.Success(dataResource.data)
+                is DataResource.Error -> UiState.Error(dataResource.throwable)
                 else -> UiState.Empty
             }
         }

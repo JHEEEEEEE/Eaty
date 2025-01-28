@@ -6,6 +6,7 @@ import com.effort.data.repositoryimpl.home.restaurant.RestaurantRepositoryImpl
 import com.effort.data.repositoryimpl.home.restaurant.detail.info.RestaurantInfoRepositoryImpl
 import com.effort.data.repositoryimpl.home.restaurant.detail.review.RestaurantReviewRepositoryImpl
 import com.effort.data.repositoryimpl.home.restaurant.detail.surrounding.RestaurantSurroundingRepositoryImpl
+import com.effort.data.repositoryimpl.home.restaurant.favorites.RestaurantFavoritesRepositoryImpl
 import com.effort.data.repositoryimpl.location.LocationRepositoryImpl
 import com.effort.data.repositoryimpl.mypage.MyPageRepositoryImpl
 import com.effort.data.repositoryimpl.mypage.detail.editprofile.EditProfileRepositoryImpl
@@ -17,6 +18,7 @@ import com.effort.domain.repository.home.restaurant.RestaurantRepository
 import com.effort.domain.repository.home.restaurant.detail.info.RestaurantInfoRepository
 import com.effort.domain.repository.home.restaurant.detail.review.RestaurantReviewRepository
 import com.effort.domain.repository.home.restaurant.detail.surrounding.RestaurantSurroundingRepository
+import com.effort.domain.repository.home.restaurant.favorites.RestaurantFavoritesRepository
 import com.effort.domain.repository.location.LocationRepository
 import com.effort.domain.repository.mypage.MyPageRepository
 import com.effort.domain.repository.mypage.detail.editprofile.EditProfileRepository
@@ -76,4 +78,8 @@ internal abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindGetSuggestionListRepository(getSuggestionListRepositoryImpl: GetSuggestionListRepositoryImpl): GetSuggestionListRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRestaurantToFavoritesRepository(restaurantToFavoritesRepositoryImpl: RestaurantFavoritesRepositoryImpl): RestaurantFavoritesRepository
 }

@@ -24,3 +24,16 @@ data class RestaurantEntity(
             latitude
         )
 }
+
+fun Restaurant.toData(): RestaurantEntity {
+    return RestaurantEntity(
+        title,
+        lotNumberAddress,
+        roadNameAddress,
+        phoneNumber,
+        placeUrl,
+        distance,
+        longitude,
+        latitude
+    )
+}

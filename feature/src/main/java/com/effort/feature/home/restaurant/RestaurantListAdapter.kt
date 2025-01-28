@@ -2,25 +2,21 @@ package com.effort.feature.home.restaurant
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.databinding.ItemRestaurantBinding
 import com.effort.presentation.model.home.restaurant.RestaurantModel
 
-class RestaurantListAdapter :
-    ListAdapter<RestaurantModel, RestaurantListAdapter.RestaurantViewHolder>(
-        diffCallback
-    ) {
+class RestaurantListAdapter(
+    private val onItemClick: (RestaurantModel) -> Unit // 클릭 이벤트를 NavDirections로 반환
+) : ListAdapter<RestaurantModel, RestaurantListAdapter.RestaurantViewHolder>(diffCallback) {
 
     // 뷰 홀더 정의
-    class RestaurantViewHolder(private val binding: ItemRestaurantBinding) :
+    inner class RestaurantViewHolder(private val binding: ItemRestaurantBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: RestaurantModel) {
-            // 아이템 데이터 설정
-
             with(binding) {
                 name.text = item.title
                 lotNumberAddress.text = item.lotNumberAddress
@@ -29,21 +25,8 @@ class RestaurantListAdapter :
                 phoneNumber.text = item.phoneNumber
                 placeUrl.text = item.placeUrl
 
-                // 클릭 이벤트 추가
-                root.setOnClickListener {
-                    val action =
-                        RestaurantListFragmentDirections.actionRestaurantListFragmentToRestaurantDetailFragment(
-                            title = item.title,
-                            lotNumberAddress = item.lotNumberAddress,
-                            roadNameAddress = item.roadNameAddress,
-                            distance = item.distance,
-                            phoneNumber = item.phoneNumber,
-                            placeUrl = item.placeUrl,
-                            latitude = item.latitude,
-                            longitude = item.longitude
-                        )
-                    it.findNavController().navigate(action)
-                }
+                // 클릭 이벤트 Fragment에서 처리
+                root.setOnClickListener { onItemClick(item) }
             }
         }
     }

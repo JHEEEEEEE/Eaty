@@ -25,8 +25,10 @@
         <action
             android:id="@+id/action_home_fragment_to_restaurantFragment"
             app:destination="@id/restaurantFragment" />
+        <action
+            android:id="@+id/action_home_fragment_to_favoriteFragment"
+            app:destination="@id/favorite_fragment" />
     </fragment>
-
 
     <fragment
         android:id="@+id/community_fragment"
@@ -46,7 +48,6 @@
             android:id="@+id/action_map_fragment_to_restaurantDetailFragment"
             app:destination="@id/restaurantDetailFragment" />
     </fragment>
-
 
     <fragment
         android:id="@+id/myPage_fragment"
@@ -69,7 +70,7 @@
 
     <fragment
         android:id="@+id/faq_fragment"
-        android:name="com.effort.feature.mypage.detail.faq.FAQFragment"
+        android:name="com.effort.feature.mypage.detail.faq.FaqFragment"
         android:label="FAQFragment"
         tools:layout="@layout/fragment_faq" />
 
@@ -155,6 +156,15 @@
             android:name="title"
             app:argType="string" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/favorite_fragment"
+        android:name="com.effort.feature.home.favorites.FavoriteFragment"
+        android:label="FavoriteFragment"
+        tools:layout="@layout/fragment_restaurant">
+        <action
+            android:id="@+id/action_favoriteFragment_to_restaurantDetailFragment"
+            app:destination="@id/restaurantDetailFragment" />
     </fragment>
 
 </navigation>

@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FAQFragment :
+class FaqFragment :
     BaseFragment<FragmentFaqBinding>(FragmentFaqBinding::inflate) {
 
     private val viewModel: FaqViewModel by viewModels()
