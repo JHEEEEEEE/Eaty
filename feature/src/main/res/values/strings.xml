@@ -93,6 +93,7 @@
 
     <!-- Weather(SurroundingFragment) -->
     <string name="time">시간</string>
+    <string name="condition">상태</string>
     <string name="temperature">기온</string>
     <string name="edittext_hint">다른 이용자를 위한 솔직한 리뷰를 남겨주세요!</string>
     <string name="add">등록</string>

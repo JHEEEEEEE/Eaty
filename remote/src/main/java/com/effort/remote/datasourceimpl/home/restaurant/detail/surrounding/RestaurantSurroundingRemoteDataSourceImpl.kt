@@ -29,13 +29,10 @@ class RestaurantSurroundingRemoteDataSourceImpl @Inject constructor(
                 date == today && hour in listOf(9, 12, 15, 18, 21)
             }
 
-            filteredData.map { it.toData() }.also { weatherEntities ->
-                weatherEntities.forEach { entity ->
-                    Log.d(
-                        "WeatherEntity",
-                        "temperature: ${entity.temp}, description: ${entity.condition}, iconUrl: ${entity.iconUrl}"
-                    )
-                }
+            filteredData.map { it.toData() }.onEach { entity ->
+                Log.d(
+                    "WeatherEntity", "temperature: ${entity.temp}, description: ${entity.condition}"
+                )
             }
         } catch (e: Exception) {
             Log.e("WeatherDataError", "Failed to fetch weather data: ${e.message}")

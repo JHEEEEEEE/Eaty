@@ -22,8 +22,7 @@ data class WeatherResponse(
             dateTime = dateTimeText.substring(11, 16), // 시간만 추출 (HH:mm)
             temp = temperatureInfo.temp,
             condition = weatherConditions.firstOrNull()?.condition ?: "정보 없음",
-            iconUrl = weatherConditions.firstOrNull()?.icon ?: ""
+            id = weatherConditions.firstOrNull()?.id ?: 0,
         )
     }
 }
-
