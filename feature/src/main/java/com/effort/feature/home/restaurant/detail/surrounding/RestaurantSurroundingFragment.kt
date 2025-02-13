@@ -15,6 +15,7 @@ import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.observeState
 import com.effort.feature.core.util.observeStateLatest
 import com.effort.feature.databinding.FragmentRestaurantSurroundingBinding
+import com.effort.presentation.model.home.restaurant.detail.subway.SubwayModel
 import com.effort.presentation.viewmodel.home.restaurant.RestaurantOverviewViewModel
 import com.effort.presentation.viewmodel.home.restaurant.detail.surrounding.RestaurantSurroundingViewModel
 import com.google.android.material.carousel.CarouselLayoutManager
