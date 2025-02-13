@@ -1,6 +1,6 @@
 package com.effort.presentation.model.home.restaurant.detail.parkinglot
 
-import com.effort.domain.model.home.parkinglot.ParkingLot
+import com.effort.domain.model.home.restaurant.detail.parkinglot.ParkingLot
 
 data class ParkingLotModel(
     val id: String, // 주차장 관리 ID

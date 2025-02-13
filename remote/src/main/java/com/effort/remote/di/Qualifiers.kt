@@ -10,3 +10,7 @@ annotation class KakaoRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class WeatherRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class NaverMapRetrofit

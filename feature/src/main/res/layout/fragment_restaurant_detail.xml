@@ -1,16 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/FragmentPaddingStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/restaurant_images"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/naver_map_container"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- ProgressBar (네이버 지도 위에 오버레이) -->
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/map_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:indicatorColor="@color/primary_color"
+        app:indicatorSize="48dp"
+        app:layout_constraintBottom_toBottomOf="@id/naver_map_container"
+        app:layout_constraintEnd_toEndOf="@id/naver_map_container"
+        app:layout_constraintStart_toStartOf="@id/naver_map_container"
+        app:layout_constraintTop_toTopOf="@id/naver_map_container"
+        app:trackThickness="4dp" />
+
+    <!-- 공유 버튼 추가 -->
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/share_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:contentDescription="@string/share"
+        android:focusable="true"
+        android:src="@drawable/ic_share_24"
+        app:layout_constraintEnd_toStartOf="@id/favorite_button"
+        app:layout_constraintTop_toTopOf="@id/naver_map_container" />
 
     <!-- 하트 버튼 추가 -->
     <androidx.appcompat.widget.AppCompatImageButton
@@ -22,27 +48,31 @@
         android:contentDescription="@string/favorite"
         android:focusable="true"
         android:src="@drawable/ic_heart_empty_24"
-        app:layout_constraintEnd_toEndOf="@id/restaurant_images"
-        app:layout_constraintTop_toTopOf="@id/restaurant_images" />
+        app:layout_constraintEnd_toEndOf="@id/naver_map_container"
+        app:layout_constraintTop_toTopOf="@id/naver_map_container" />
 
     <androidx.constraintlayout.helper.widget.Flow
-        android:id="@+id/restaurant_description"
+        android:id="@+id/flow_restaurant_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="15dp"
         app:constraint_referenced_ids="restaurant_title, restaurant_distance,restaurant_lotNumber_address, restaurant_roadName_address, restaurant_number, restaurant_webpage"
+        app:flow_horizontalBias="0"
+        app:flow_horizontalStyle="packed"
         app:flow_maxElementsWrap="2"
         app:flow_wrapMode="chain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/restaurant_images" />
+        app:layout_constraintTop_toBottomOf="@id/naver_map_container" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/restaurant_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title"
-        app:layout_constraintStart_toStartOf="@id/restaurant_description"
-        app:layout_constraintTop_toTopOf="@id/restaurant_description" />
+        android:textSize="25sp"
+        app:layout_constraintStart_toStartOf="@id/flow_restaurant_description"
+        app:layout_constraintTop_toTopOf="@id/flow_restaurant_description" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/restaurant_distance"
@@ -52,7 +82,7 @@
         android:text="@string/distance"
         android:textColor="@color/primary_color"
         app:layout_constraintStart_toEndOf="@id/restaurant_title"
-        app:layout_constraintTop_toTopOf="@id/restaurant_description" />
+        app:layout_constraintTop_toTopOf="@id/flow_restaurant_description" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/restaurant_lotNumber_address"
@@ -60,33 +90,44 @@
         android:layout_height="wrap_content"
         android:text="@string/lotNumber_address"
         android:textColor="@color/gray"
-        app:layout_constraintStart_toStartOf="@id/restaurant_description"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@id/flow_restaurant_description"
         app:layout_constraintTop_toBottomOf="@id/restaurant_roadName_address" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/restaurant_roadName_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/spacing_info_to_info"
         android:text="@string/roadName_address"
-        app:layout_constraintStart_toStartOf="@id/restaurant_description"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@id/flow_restaurant_description"
         app:layout_constraintTop_toBottomOf="@id/restaurant_title" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/restaurant_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:autoLink="phone"
+        android:linksClickable="true"
         android:text="@string/phone_number"
+        android:textColor="@color/muted_purple"
+        android:textSize="17sp"
         app:layout_constraintBottom_toTopOf="@id/restaurant_webpage"
-        app:layout_constraintEnd_toEndOf="@id/restaurant_description"
-        app:layout_constraintTop_toTopOf="@id/restaurant_description" />
+        app:layout_constraintEnd_toEndOf="@id/flow_restaurant_description"
+        app:layout_constraintTop_toTopOf="@id/flow_restaurant_description" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/restaurant_webpage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:autoLink="web"
+        android:linksClickable="true"
+        android:paddingStart="@dimen/spacing_info_to_info"
         android:text="@string/place_url"
-        app:layout_constraintBottom_toBottomOf="@+id/restaurant_description"
-        app:layout_constraintEnd_toEndOf="@id/restaurant_description" />
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/flow_restaurant_description"
+        app:layout_constraintEnd_toEndOf="@id/flow_restaurant_description" />
 
     <androidx.constraintlayout.helper.widget.Flow
         android:id="@+id/flow_tab"
@@ -99,7 +140,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/restaurant_description" />
+        app:layout_constraintTop_toBottomOf="@id/flow_restaurant_description" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"

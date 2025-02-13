@@ -2,10 +2,11 @@ package com.effort.presentation.viewmodel.home.restaurant.detail.surrounding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.effort.domain.DataResource
 import com.effort.domain.usecase.home.restaurant.detail.parkinglot.GetParkingLotListUseCase
 import com.effort.domain.usecase.home.restaurant.detail.weather.GetWeatherDataUseCase
 import com.effort.presentation.UiState
+import com.effort.presentation.core.util.setLoadingState
+import com.effort.presentation.core.util.toUiStateList
 import com.effort.presentation.model.home.restaurant.detail.parkinglot.ParkingLotModel
 import com.effort.presentation.model.home.restaurant.detail.parkinglot.toPresentation
 import com.effort.presentation.model.home.restaurant.detail.weather.WeatherModel
@@ -27,28 +28,22 @@ class RestaurantSurroundingViewModel @Inject constructor(
     val getWeatherState get() = _getWeatherState.asStateFlow()
 
     // Parking Lot 상태
-    private val _getParkingLotState = MutableStateFlow<UiState<List<ParkingLotModel>>>(UiState.Empty)
+    private val _getParkingLotState =
+        MutableStateFlow<UiState<List<ParkingLotModel>>>(UiState.Empty)
     val getParkingLotState get() = _getParkingLotState.asStateFlow()
 
     // 날씨 데이터 가져오기
     fun fetchWeatherData(latitude: String, longitude: String) {
-        _getWeatherState.value = UiState.Loading
+        setLoadingState(_getWeatherState)
 
         viewModelScope.launch {
             try {
                 // UseCase를 통해 데이터 요청
-                _getWeatherState.value = when (val dataResource = getWeatherDataUseCase(latitude, longitude)) {
-                    is DataResource.Success -> {
-                        val weatherData = dataResource.data.map { it.toPresentation() }
-                        UiState.Success(weatherData)
-                    }
-                    is DataResource.Error -> {
-                        UiState.Error(dataResource.throwable)
-                    }
-                    is DataResource.Loading -> {
-                        UiState.Loading
-                    }
-                }
+                val dataResource = getWeatherDataUseCase(latitude, longitude)
+
+                // `toUiStateList()`를 사용하여 변환 간소화
+                _getWeatherState.value = dataResource.toUiStateList { it.toPresentation() }
+
             } catch (e: Exception) {
                 _getWeatherState.value = UiState.Error(e)
             }
@@ -57,23 +52,15 @@ class RestaurantSurroundingViewModel @Inject constructor(
 
     // 주차장 데이터 가져오기
     fun fetchParkingLots(latitude: String, longitude: String) {
-        _getParkingLotState.value = UiState.Loading
+        setLoadingState(_getParkingLotState)
 
         viewModelScope.launch {
             try {
                 // UseCase를 통해 데이터 요청
-                _getParkingLotState.value = when (val dataResource = getParkingLotListUseCase(latitude, longitude)) {
-                    is DataResource.Success -> {
-                        val parkingLots = dataResource.data.map { it.toPresentation() }
-                        UiState.Success(parkingLots)
-                    }
-                    is DataResource.Error -> {
-                        UiState.Error(dataResource.throwable)
-                    }
-                    is DataResource.Loading -> {
-                        UiState.Loading
-                    }
-                }
+                val dataResource = getParkingLotListUseCase(latitude, longitude)
+
+                // `toUiStateList()`를 사용하여 변환 간소화
+                _getParkingLotState.value = dataResource.toUiStateList { it.toPresentation() }
             } catch (e: Exception) {
                 _getParkingLotState.value = UiState.Error(e)
             }

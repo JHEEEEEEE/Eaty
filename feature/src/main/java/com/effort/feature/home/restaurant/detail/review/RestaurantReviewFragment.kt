@@ -13,7 +13,7 @@ import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.showLoading
 import com.effort.feature.databinding.FragmentRestaurantReviewBinding
 import com.effort.presentation.UiState
-import com.effort.presentation.viewmodel.home.restaurant.SharedRestaurantViewModel
+import com.effort.presentation.viewmodel.home.restaurant.RestaurantOverviewViewModel
 import com.effort.presentation.viewmodel.home.restaurant.detail.review.RestaurantReviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -26,7 +26,7 @@ class RestaurantReviewFragment :
     private val viewModel: RestaurantReviewViewModel by viewModels()
     private lateinit var commentAdapter: CommentAdapter
 
-    private val sharedViewModel: SharedRestaurantViewModel by activityViewModels()
+    private val sharedViewModel: RestaurantOverviewViewModel by activityViewModels()
 
     override fun initView() {
         setupRecyclerView()
@@ -58,7 +58,8 @@ class RestaurantReviewFragment :
     private fun setupRecyclerView() {
         commentAdapter = CommentAdapter()
         binding.recyclerviewComment.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapter = commentAdapter
             setHasFixedSize(true) // 성능 최적화
         }

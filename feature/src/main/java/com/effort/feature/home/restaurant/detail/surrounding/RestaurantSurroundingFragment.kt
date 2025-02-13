@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.showLoading
 import com.effort.feature.databinding.FragmentRestaurantSurroundingBinding
-import com.effort.presentation.viewmodel.home.restaurant.SharedRestaurantViewModel
+import com.effort.presentation.viewmodel.home.restaurant.RestaurantOverviewViewModel
 import com.effort.presentation.UiState
 import com.effort.presentation.viewmodel.home.restaurant.detail.surrounding.RestaurantSurroundingViewModel
 import com.google.android.material.carousel.CarouselLayoutManager
@@ -27,7 +27,7 @@ class RestaurantSurroundingFragment :
     BaseFragment<FragmentRestaurantSurroundingBinding>(FragmentRestaurantSurroundingBinding::inflate) {
 
     private val viewModel: RestaurantSurroundingViewModel by viewModels()
-    private val sharedViewModel: SharedRestaurantViewModel by activityViewModels()
+    private val sharedViewModel: RestaurantOverviewViewModel by activityViewModels()
     private lateinit var parkingLotListAdapter: ParkingLotListAdapter
     private lateinit var weatherCarouselAdapter: WeatherCarouselAdapter
 

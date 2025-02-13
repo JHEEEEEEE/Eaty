@@ -1,4 +1,4 @@
-package com.effort.domain.model.home.comment
+package com.effort.domain.model.home.restaurant.detail.comment
 
 data class Comment(
     val content: String,      // 댓글 내용

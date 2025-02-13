@@ -1,7 +1,7 @@
 package com.effort.domain.usecase.home.restaurant.detail.weather
 
 import com.effort.domain.DataResource
-import com.effort.domain.model.home.weather.Weather
+import com.effort.domain.model.home.restaurant.detail.weather.Weather
 
 interface GetWeatherDataUseCase {
 

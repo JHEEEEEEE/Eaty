@@ -31,7 +31,24 @@
 
         <activity
             android:name="com.effort.feature.MainActivity"
-            android:exported="false" />
+            android:exported="true"
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- 기본 웹 URL을 처리 -->
+                <!-- 딥링크에서 앱 실행을 위한 설정 -->
+                <data
+                    android:host="recycrew.com"
+                    android:pathPrefix="/detail"
+                    android:scheme="recycrew" />
+            </intent-filter>
+
+        </activity>
 
         <activity
             android:name="com.effort.feature.auth.AuthActivity"

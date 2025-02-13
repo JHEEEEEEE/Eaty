@@ -1,6 +1,6 @@
 package com.effort.data.model.home.restaurant.detail.blog
 
-import com.effort.domain.model.home.blog.BlogReview
+import com.effort.domain.model.home.restaurant.detail.blog.BlogReview
 
 data class BlogReviewEntity (
     val title: String,

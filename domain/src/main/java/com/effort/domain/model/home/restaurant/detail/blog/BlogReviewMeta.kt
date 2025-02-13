@@ -1,4 +1,4 @@
-package com.effort.domain.model.home.blog
+package com.effort.domain.model.home.restaurant.detail.blog
 
 data class BlogReviewMeta(
     val totalCount: Int,
