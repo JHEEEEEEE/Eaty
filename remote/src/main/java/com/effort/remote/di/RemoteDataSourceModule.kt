@@ -7,11 +7,13 @@ import com.effort.data.datasource.home.restaurant.detail.info.RestaurantInfoRemo
 import com.effort.data.datasource.home.restaurant.detail.review.RestaurantReviewRemoteDataSource
 import com.effort.data.datasource.home.restaurant.detail.surrounding.RestaurantSurroundingRemoteDataSource
 import com.effort.data.datasource.home.restaurant.favorites.RestaurantFavoritesRemoteDataSource
+import com.effort.data.datasource.home.restaurant.navigation.NavigationRemoteDataSource
 import com.effort.data.datasource.location.LocationRemoteDataSource
 import com.effort.data.datasource.mypage.MyPageRemoteDataSource
 import com.effort.data.datasource.mypage.detail.editprofile.EditProfileRemoteDataSource
 import com.effort.data.datasource.mypage.detail.faq.FaqRemoteDataSource
 import com.effort.data.datasource.mypage.detail.notice.NoticeRemoteDataSource
+import com.effort.data.datasource.share.ShareRemoteDataSource
 import com.effort.remote.datasourceimpl.auth.AuthRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.home.GetSuggestionListRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.home.restaurant.RestaurantRemoteDataSourceImpl
@@ -19,11 +21,13 @@ import com.effort.remote.datasourceimpl.home.restaurant.detail.info.RestaurantIn
 import com.effort.remote.datasourceimpl.home.restaurant.detail.review.RestaurantReviewRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.home.restaurant.detail.surrounding.RestaurantSurroundingRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.home.restaurant.favorites.RestaurantFavoritesRemoteDataSourceImpl
+import com.effort.remote.datasourceimpl.home.restaurant.navigation.NavigationRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.location.LocationRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.mypage.MyPageRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.mypage.detail.editprofile.EditProfileRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.mypage.detail.faq.FaqRemoteDataSourceImpl
 import com.effort.remote.datasourceimpl.mypage.detail.notice.NoticeRemoteDataSourceImpl
+import com.effort.remote.datasourceimpl.share.ShareRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -84,4 +88,12 @@ internal abstract class RemoteDataSourceModule {
     @Binds
     @Singleton
     abstract fun bindRestaurantFavoritesRemoteDataSource(restaurantToFavoritesDataSourceImpl: RestaurantFavoritesRemoteDataSourceImpl): RestaurantFavoritesRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindShareRemoteDataSource(shareRemoteDataSourceImpl: ShareRemoteDataSourceImpl): ShareRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindNavigationRemoteDataSource(navigationRemoteDataSourceImpl: NavigationRemoteDataSourceImpl): NavigationRemoteDataSource
 }

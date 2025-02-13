@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class SharedRestaurantViewModel @Inject constructor() : ViewModel() {
+class RestaurantOverviewViewModel @Inject constructor() : ViewModel() {
 
     private val _title = MutableStateFlow("")
     val title get() = _title.asStateFlow()

@@ -15,6 +15,8 @@ import com.effort.domain.usecase.home.restaurant.favorites.AddRestaurantToFavori
 import com.effort.domain.usecase.home.restaurant.favorites.CheckIfRestaurantIsFavoriteUseCase
 import com.effort.domain.usecase.home.restaurant.favorites.GetFavoriteListUseCase
 import com.effort.domain.usecase.home.restaurant.favorites.RemoveRestaurantFromFavoritesUseCase
+import com.effort.domain.usecase.home.restaurant.navigation.GetNavigationPathUseCase
+import com.effort.domain.usecase.share.ShareUseCase
 import com.effort.domain.usecase.mypage.ObserveUserUpdateUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.CheckNicknameDuplicatedUseCase
 import com.effort.domain.usecase.mypage.detail.editprofile.UpdateNicknameUseCase
@@ -36,6 +38,8 @@ import com.effort.domain.usecaseimpl.home.restaurant.favorites.AddRestaurantToFa
 import com.effort.domain.usecaseimpl.home.restaurant.favorites.CheckIfRestaurantIsFavoriteUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.favorites.GetFavoriteListUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.favorites.RemoveRestaurantFromFavoritesUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.navigation.GetNavigationPathUseCaseImpl
+import com.effort.domain.usecaseimpl.share.ShareUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.ObserveUserUpdateUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.CheckNicknameDuplicatedUseCaseImpl
 import com.effort.domain.usecaseimpl.mypage.detail.editprofile.UpdateNicknameUseCaseImpl
@@ -143,6 +147,16 @@ abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindGetFavoriteListUseCase(getFavoriteListUseCaseImpl: GetFavoriteListUseCaseImpl): GetFavoriteListUseCase
+
+    // Share
+    @Binds
+    @Singleton
+    abstract fun bindShareUseCase(shareUseCaseImpl: ShareUseCaseImpl): ShareUseCase
+
+    // Navigation
+    @Binds
+    @Singleton
+    abstract fun bindGetNavigationUseCase(getNavigationPathUseCaseImpl: GetNavigationPathUseCaseImpl): GetNavigationPathUseCase
 
     // SubwayStation
     @Binds

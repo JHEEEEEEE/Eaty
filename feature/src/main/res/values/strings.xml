@@ -79,7 +79,7 @@
     <!-- RestaurantFragment   -->
     <string name="lotNumber_address">지번주소</string>
     <string name="roadName_address">도로명주소</string>
-    <string name="distance">나와의 거리</string>
+    <string name="distance">나와의 거리 %1$s m</string>
     <string name="phone_number">업체 번호</string>
     <string name="place_url">업체 링크</string>
     <string name="meter">%1$s m</string>
@@ -120,6 +120,9 @@
 
     <!--  restaurantDetail  -->
     <string name="favorite">찜</string>
+    <string name="share">공유</string>
+    <string name="kakaotalk_playstorelink">market://details?id=com.kakao.talk</string>
+    <string name="kakaotalk_weblink">https://play.google.com/store/apps/details?id=com.kakao.talk</string>
     <string name="navigate">길찾기</string>
 
     <!-- Common   -->

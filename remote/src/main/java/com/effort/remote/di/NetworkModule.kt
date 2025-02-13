@@ -5,6 +5,7 @@ import com.effort.remote.service.home.restaurant.detail.blog.BlogReviewService
 import com.effort.remote.service.home.restaurant.RestaurantService
 import com.effort.remote.service.home.restaurant.detail.subway.SubwayService
 import com.effort.remote.service.home.restaurant.detail.weather.WeatherService
+import com.effort.remote.service.home.restaurant.navigation.NavigationService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -54,6 +55,42 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @WeatherRetrofit
+    fun provideWeatherRetrofit(
+        okHttpClient: OkHttpClient, // 공통 클라이언트 사용
+        json: Json // JSON 직렬화 라이브러리 주입
+    ): Retrofit {
+        val contentType = "application/json".toMediaType()
+        return Retrofit.Builder()
+            .baseUrl("https://api.openweathermap.org/data/2.5/")
+            .client(okHttpClient) // 공통 클라이언트 적용
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @NaverMapRetrofit
+    fun provideNaverMapRetrofit(
+        okHttpClient: OkHttpClient,
+        json: Json
+    ): Retrofit {
+        val contentType = "application/json".toMediaType()
+        return Retrofit.Builder()
+            .baseUrl("https://naveropenapi.apigw.ntruss.com/")
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNavigationService(@NaverMapRetrofit retrofit: Retrofit): NavigationService {
+        return retrofit.create(NavigationService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideRestaurantService(@KakaoRetrofit retrofit: Retrofit): RestaurantService {
         return retrofit.create(RestaurantService::class.java)
     }
@@ -62,6 +99,13 @@ object NetworkModule {
     @Singleton
     fun provideBlogReviewService(@KakaoRetrofit retrofit: Retrofit): BlogReviewService {
         return retrofit.create(BlogReviewService::class.java)
+    }
+
+    //Weather Service
+    @Provides
+    @Singleton
+    fun provideWeatherService(@WeatherRetrofit retrofit: Retrofit): WeatherService {
+        return retrofit.create(WeatherService::class.java)
     }
 
     @Provides
@@ -82,28 +126,6 @@ object NetworkModule {
             .connectTimeout(30, TimeUnit.SECONDS) // 타임아웃 설정
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
-    }
-
-    //Weather Service
-    @Provides
-    @Singleton
-    fun provideWeatherService(@WeatherRetrofit retrofit: Retrofit): WeatherService {
-        return retrofit.create(WeatherService::class.java)
-    }
-
-    @Provides
-    @Singleton
-    @WeatherRetrofit
-    fun provideWeatherRetrofit(
-        okHttpClient: OkHttpClient, // 공통 클라이언트 사용
-        json: Json // JSON 직렬화 라이브러리 주입
-    ): Retrofit {
-        val contentType = "application/json".toMediaType()
-        return Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/data/2.5/")
-            .client(okHttpClient) // 공통 클라이언트 적용
-            .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
 }

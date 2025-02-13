@@ -9,6 +9,7 @@ import com.effort.domain.usecase.home.restaurant.detail.weather.GetWeatherDataUs
 import com.effort.presentation.R
 import com.effort.presentation.UiState
 import com.effort.presentation.core.util.setLoadingState
+import com.effort.presentation.core.util.toUiStateList
 import com.effort.presentation.model.home.restaurant.detail.subway.SubwayModel
 import com.effort.presentation.model.home.restaurant.detail.subway.toPresentation
 import com.effort.presentation.model.home.restaurant.detail.weather.WeatherModel
@@ -58,11 +59,17 @@ class RestaurantSurroundingViewModel @Inject constructor(
                             UiState.Loading
                         }
                     }
+                val dataResource = getWeatherDataUseCase(latitude, longitude)
+
+                // `toUiStateList()`를 사용하여 변환 간소화
+                _getWeatherState.value = dataResource.toUiStateList { it.toPresentation() }
+
             } catch (e: Exception) {
                 _getWeatherState.value = UiState.Error(e)
             }
         }
     }
+
 
     fun fetchSubwayStation(latitude: String, longitude: String) {
         Log.d("SubwayViewModel", "fetchSubwayStation 호출됨: 위도=$latitude, 경도=$longitude")

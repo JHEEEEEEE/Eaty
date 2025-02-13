@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.observeStateLatest
 import com.effort.feature.databinding.FragmentRestaurantInfoBinding
-import com.effort.presentation.viewmodel.home.restaurant.SharedRestaurantViewModel
+import com.effort.presentation.viewmodel.home.restaurant.RestaurantOverviewViewModel
 import com.effort.presentation.viewmodel.home.restaurant.detail.info.RestaurantInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -25,7 +25,7 @@ class RestaurantInfoFragment :
     BaseFragment<FragmentRestaurantInfoBinding>(FragmentRestaurantInfoBinding::inflate) {
 
     private val viewModel: RestaurantInfoViewModel by viewModels()
-    private val sharedViewModel: SharedRestaurantViewModel by activityViewModels() // SharedViewModel 주입
+    private val sharedViewModel: RestaurantOverviewViewModel by activityViewModels() // SharedViewModel 주입
 
     private lateinit var blogReviewListAdapter: BlogReviewListAdapter
 

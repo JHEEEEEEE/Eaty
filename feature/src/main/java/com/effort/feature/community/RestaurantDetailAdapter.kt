@@ -6,7 +6,7 @@ import com.effort.feature.home.restaurant.detail.info.RestaurantInfoFragment
 import com.effort.feature.home.restaurant.detail.review.RestaurantReviewFragment
 import com.effort.feature.home.restaurant.detail.surrounding.RestaurantSurroundingFragment
 
-class CommunityDetailAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+class RestaurantDetailAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment {
