@@ -6,9 +6,9 @@ data class WeatherEntity(
     val dateTime: String,
     val temp: Double,
     val condition: String,
-    val iconUrl: String,
+    val id: Int,
 ) {
     fun toDomain(): Weather {
-        return Weather(dateTime, temp, condition, iconUrl)
+        return Weather(dateTime, temp, condition, id)
     }
 }

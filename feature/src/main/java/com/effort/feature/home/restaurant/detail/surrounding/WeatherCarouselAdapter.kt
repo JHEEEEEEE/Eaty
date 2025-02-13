@@ -1,13 +1,10 @@
 package com.effort.feature.home.restaurant.detail.surrounding
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.effort.feature.R
 import com.effort.feature.databinding.ItemWeatherBinding
 import com.effort.presentation.model.home.restaurant.detail.weather.WeatherModel
 
@@ -18,16 +15,11 @@ class WeatherCarouselAdapter :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: WeatherModel) {
-            val imageUrl = "https://openweathermap.org/img/wn/${item.iconUrl}@2x.png"
 
             with(binding) {
-                Glide.with(weatherIcon.context) // GlideApp 사용
-                    .load(imageUrl)
-                    .placeholder(R.drawable.ic_weather_placeholder)
-                    .error(R.drawable.ic_weather_error)
-                    .into(weatherIcon)
-
+                weatherIcon.setImageResource(item.weatherIcon)
                 weatherTime.text = item.dateTime
+                weatherCondition.text = item.condition
                 weatherTemp.text = String.format("%.1f°C", item.temp)
             }
         }
@@ -54,5 +46,3 @@ class WeatherCarouselAdapter :
         }
     }
 }
-
-

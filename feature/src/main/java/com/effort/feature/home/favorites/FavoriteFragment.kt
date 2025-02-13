@@ -6,17 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.effort.feature.core.base.BaseFragment
-import com.effort.feature.core.util.showLoading
+import com.effort.feature.core.util.observeStateLatest
 import com.effort.feature.databinding.FragmentRestaurantBinding
 import com.effort.feature.home.restaurant.RestaurantListAdapter
-import com.effort.presentation.UiState
 import com.effort.presentation.viewmodel.home.restaurant.favorites.RestaurantFavoritesViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FavoriteFragment : BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate) {
@@ -26,8 +22,7 @@ class FavoriteFragment : BaseFragment<FragmentRestaurantBinding>(FragmentRestaur
 
     override fun initView() {
         initRecyclerView()
-        observeUserState()
-        observeGetFavoriteState()
+        observeViewModel()
     }
 
     override fun onCreateView(
@@ -64,65 +59,22 @@ class FavoriteFragment : BaseFragment<FragmentRestaurantBinding>(FragmentRestaur
         }
     }
 
-    private fun observeGetFavoriteState() {
-        val progressIndicator = binding.progressCircular.progressBar
+    private fun observeViewModel() {
+        observeStateLatest(
+            stateFlow = viewModel.getFavoriteState,
+            progressView = binding.progressCircular.progressBar,
+            fragment = this
+        ) { favoriteData ->
+            favoriteAdapter.submitList(favoriteData) // 찜 목록 업데이트
+        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getFavoriteState.collectLatest { state ->
-                when (state) {
-                    is UiState.Loading -> {
-                        progressIndicator.showLoading(true)
-                        binding.recyclerviewRestaurant.visibility = View.GONE
-                    }
-
-                    is UiState.Success -> {
-                        progressIndicator.showLoading(false)
-                        binding.recyclerviewRestaurant.visibility = View.VISIBLE
-                        favoriteAdapter.submitList(state.data)
-                    }
-
-                    is UiState.Error -> {
-                        progressIndicator.showLoading(false)
-                        binding.recyclerviewRestaurant.visibility = View.GONE
-                    }
-
-                    is UiState.Empty -> {
-                        progressIndicator.showLoading(false)
-                        binding.recyclerviewRestaurant.visibility = View.GONE
-                    }
-                }
-            }
+        observeStateLatest(
+            stateFlow = viewModel.userState,
+            progressView = binding.progressCircular.progressBar,
+            fragment = this
+        ) { user ->
+            Log.d("RestaurantDetailFragment", "User updated: ${user?.email}")
+            viewModel.fetchFavorites() // 찜 목록 불러오기
         }
     }
-
-
-    private fun observeUserState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.userState.collectLatest { state ->
-                when (state) {
-                    is UiState.Success -> {
-                        val user = state.data
-                        Log.d("RestaurantDetailFragment", "User updated: ${user?.email}")
-                        viewModel.fetchFavorites() // 찜 목록 불러오기
-                    }
-
-                    is UiState.Loading -> {
-                        Log.d("RestaurantDetailFragment", "Loading user data...")
-                    }
-
-                    is UiState.Error -> {
-                        Log.e(
-                            "RestaurantDetailFragment",
-                            "Error loading user data: ${state.exception.message}"
-                        )
-                    }
-
-                    is UiState.Empty -> {
-                        Log.d("RestaurantDetailFragment", "User state is empty")
-                    }
-                }
-            }
-        }
-    }
-
 }

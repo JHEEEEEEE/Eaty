@@ -4,5 +4,5 @@ data class Weather(
     val dateTime: String,
     val temp: Double,
     val condition: String,
-    val iconUrl: String,
+    val id: Int,
 )

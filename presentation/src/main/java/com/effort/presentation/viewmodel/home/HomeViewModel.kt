@@ -3,7 +3,7 @@ package com.effort.presentation.viewmodel.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.effort.domain.usecase.home.GetSuggestionListUseCase
+import com.effort.domain.usecase.home.suggestion.GetSuggestionListUseCase
 import com.effort.presentation.UiState
 import com.effort.presentation.core.util.handleCompletionState
 import com.effort.presentation.core.util.setLoadingState

@@ -14,4 +14,3 @@ fun BlogReview.toPresentation(): BlogReviewModel {
         title, contents, url, dateTime
     )
 }
-

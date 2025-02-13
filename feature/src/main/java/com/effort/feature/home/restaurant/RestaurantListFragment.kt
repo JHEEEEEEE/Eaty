@@ -11,21 +11,15 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.core.base.BaseFragment
-import com.effort.feature.core.util.showLoading
+import com.effort.feature.core.util.observeStateContinuouslyWithLifecycle
 import com.effort.feature.databinding.FragmentRestaurantBinding
-import com.effort.presentation.UiState
 import com.effort.presentation.viewmodel.home.restaurant.RestaurantViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RestaurantListFragment :
@@ -42,10 +36,8 @@ class RestaurantListFragment :
 
     override fun initView() {
         initRecyclerView()
-        observeGetRestaurantState()
-
+        observeViewModel()
         loadData()
-
         setupInfiniteScrollListener(binding.recyclerviewRestaurant)
     }
 
@@ -96,36 +88,13 @@ class RestaurantListFragment :
         }
     }
 
-    private fun observeGetRestaurantState() {
-        val progressIndicator = binding.progressCircular.progressBar
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getRestaurantState.collectLatest { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            progressIndicator.showLoading(true)
-                            binding.recyclerviewRestaurant.visibility = View.GONE
-                        }
-
-                        is UiState.Success -> {
-                            progressIndicator.showLoading(false)
-                            binding.recyclerviewRestaurant.visibility = View.VISIBLE
-                            restaurantListAdapter.submitList(state.data)
-                        }
-
-                        is UiState.Error -> {
-                            progressIndicator.showLoading(false)
-                            binding.recyclerviewRestaurant.visibility = View.GONE
-                        }
-
-                        is UiState.Empty -> {
-                            progressIndicator.showLoading(false)
-                            binding.recyclerviewRestaurant.visibility = View.GONE
-                        }
-                    }
-                }
-            }
+    private fun observeViewModel() {
+        observeStateContinuouslyWithLifecycle(
+            stateFlow = viewModel.getRestaurantState,
+            progressView = binding.progressCircular.progressBar,
+            fragment = this
+        ) { restaurantData ->
+            restaurantListAdapter.submitList(restaurantData) // ✅ 레스토랑 리스트 업데이트
         }
     }
 

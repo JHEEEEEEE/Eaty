@@ -59,4 +59,22 @@ class RestaurantSurroundingRepositoryImpl @Inject constructor(
             DataResource.error(e)
         }
     }
+
+    override suspend fun getSubwayStation(
+        latitude: String,
+        longitude: String
+    ): DataResource<List<Subway>> {
+
+        DataResource.loading<List<Subway>>()
+
+        return try {
+            DataResource.success(
+                restaurantSurroundingRemoteDataSource.getSubwayStation(
+                    latitude, longitude
+                ).map { it.toDomain() }
+            )
+        } catch (e: Exception) {
+            DataResource.error(e)
+        }
+    }
 }

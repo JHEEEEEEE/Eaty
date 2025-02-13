@@ -15,12 +15,11 @@ import androidx.navigation.fragment.findNavController
 import com.effort.feature.R
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.collectFlow
-import com.effort.feature.core.util.showLoading
+import com.effort.feature.core.util.observeStateLatestWithLifecycle
 import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentHomeBinding
 import com.effort.presentation.model.home.CategoryModel
 import com.effort.presentation.UiState
-import com.effort.presentation.model.auth.FirebaseUserModel
 import com.effort.presentation.viewmodel.home.HomeViewModel
 import com.effort.presentation.viewmodel.mypage.MyPageViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,9 +63,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
      */
     private fun observeViewModel() {
         // 유저 업데이트 상태 관찰
-        collectFlow(myPageViewModel.userUpdateState) { state ->
-            handleUserUpdateState(state) // 유저 상태 처리 로직 분리
-        }
+        handleUserUpdateState() // 유저 상태 처리 로직 분리
 
         // 카테고리 리스트 상태 관찰
         collectFlow(homeViewModel.categories) { categories ->
@@ -77,28 +74,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     /**
      * 유저 업데이트 상태 처리
      */
-    private fun handleUserUpdateState(state: UiState<FirebaseUserModel>) {
-        val progressIndicator = binding.progressCircular.progressBar
-
-        when (state) {
-            is UiState.Loading -> {
-                progressIndicator.showLoading(true)
-            }
-
-            is UiState.Success -> {
-                progressIndicator.showLoading(false)
-                binding.userName.text =
-                    getDisplayName(state.data.nickname, state.data.name)
-            }
-
-            is UiState.Error -> {
-                progressIndicator.showLoading(false)
-                showToast(getString(R.string.user_update_error)) // 에러 메시지 표시
-            }
-
-            is UiState.Empty -> {
-                progressIndicator.showLoading(false)
-            }
+    private fun handleUserUpdateState() {
+        observeStateLatestWithLifecycle(
+            stateFlow = myPageViewModel.userUpdateState,
+            progressView = binding.progressCircular.progressBar,
+            fragment = this
+        ) { userData ->
+            binding.userName.text = getDisplayName(userData.nickname, userData.name) // ✅ UI 업데이트
         }
     }
 
@@ -121,6 +103,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
         binding.recyclerviewCategory.apply {
             adapter = categoryAdapter
+            setHasFixedSize(true)
         }
 
         suggestionAdapter = SuggestionListAdapter { selectedSuggestion ->
@@ -235,6 +218,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                         suggestionAdapter.submitList(keywordList)
                         binding.recyclerviewSuggestion.visibility = View.VISIBLE
                     }
+
                     is UiState.Error -> binding.recyclerviewSuggestion.visibility = View.GONE
                     is UiState.Empty -> binding.recyclerviewSuggestion.visibility = View.GONE
                 }
