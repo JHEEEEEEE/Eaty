@@ -2,8 +2,8 @@ package com.effort.data.repositoryimpl.home.restaurant.detail.info
 
 import com.effort.data.datasource.home.restaurant.detail.info.RestaurantInfoRemoteDataSource
 import com.effort.domain.DataResource
-import com.effort.domain.model.home.blog.BlogReview
-import com.effort.domain.model.home.blog.BlogReviewMeta
+import com.effort.domain.model.home.restaurant.detail.blog.BlogReview
+import com.effort.domain.model.home.restaurant.detail.blog.BlogReviewMeta
 import com.effort.domain.repository.home.restaurant.detail.info.RestaurantInfoRepository
 import javax.inject.Inject
 

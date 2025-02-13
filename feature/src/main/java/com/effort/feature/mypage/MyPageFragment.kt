@@ -5,22 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.effort.feature.R
 import com.effort.feature.core.base.BaseFragment
-import com.effort.feature.core.util.showLoading
+import com.effort.feature.core.util.observeStateLatestWithLifecycle
 import com.effort.feature.databinding.FragmentMypageBinding
-import com.effort.presentation.UiState
 import com.effort.presentation.model.auth.FirebaseUserModel
 import com.effort.presentation.viewmodel.mypage.MyPageViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate) {
@@ -39,7 +32,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     }
 
     override fun initView() {
-        observeUserUpdates()
+        observeViewModel()
         setNavigationClickListener()
     }
 
@@ -50,38 +43,18 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
         initView()
     }
 
-    private fun observeUserUpdates() {
-        val progressIndicator = binding.progressCircular.progressBar
-
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.userUpdateState.collectLatest { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            progressIndicator.showLoading(true)
-                        }
-
-                        is UiState.Success -> {
-                            progressIndicator.showLoading(false)
-                            updateUIWithUserProfile(state.data)
-
-                            // SafeArgs에 전달할 데이터를 초기화
-                            profilePicUrl = state.data.profilePicPath
-                            nickname = state.data.nickname
-                        }
-
-                        is UiState.Error -> {
-                            progressIndicator.showLoading(false)
-                        }
-
-                        is UiState.Empty -> {
-                            progressIndicator.showLoading(false)
-                        }
-                    }
-                }
-            }
+    private fun observeViewModel() {
+        observeStateLatestWithLifecycle(
+            stateFlow = viewModel.userUpdateState,
+            progressView = binding.progressCircular.progressBar,
+            fragment = this
+        ) { userData ->
+            updateUIWithUserProfile(userData) // ✅ UI 업데이트
+            profilePicUrl = userData.profilePicPath // ✅ 프로필 사진 업데이트
+            nickname = userData.nickname // ✅ 닉네임 업데이트
         }
     }
+
 
     private fun updateUIWithUserProfile(userProfile: FirebaseUserModel?) {
         with(binding) {

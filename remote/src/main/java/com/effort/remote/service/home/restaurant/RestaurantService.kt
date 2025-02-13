@@ -10,8 +10,8 @@ interface RestaurantService {
     suspend fun getRestaurantList(
         @Query("query") query: String,
         @Query("category_group_code") category: String = "FD6",
-        @Query("x") longitude: String? = null,
-        @Query("y") latitude: String? = null,
+        @Query("x") longitude: String,
+        @Query("y") latitude: String,
         @Query("radius") radius: Int? = 20000,
         @Query("size") size: Int = 15,
         @Query("page") page: Int = 1, // 페이지 번호

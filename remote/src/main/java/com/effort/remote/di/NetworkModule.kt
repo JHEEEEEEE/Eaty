@@ -3,6 +3,7 @@ package com.effort.remote.di
 import com.effort.remote.interceptor.KakaoApiInterceptor
 import com.effort.remote.service.home.restaurant.detail.blog.BlogReviewService
 import com.effort.remote.service.home.restaurant.RestaurantService
+import com.effort.remote.service.home.restaurant.detail.subway.SubwayService
 import com.effort.remote.service.home.restaurant.detail.weather.WeatherService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -61,6 +62,12 @@ object NetworkModule {
     @Singleton
     fun provideBlogReviewService(@KakaoRetrofit retrofit: Retrofit): BlogReviewService {
         return retrofit.create(BlogReviewService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSubwayService(@KakaoRetrofit retrofit: Retrofit): SubwayService {
+        return retrofit.create(SubwayService::class.java)
     }
 
     @Provides

@@ -18,9 +18,9 @@ class BlogReviewListAdapter :
 
         fun bind(item: BlogReviewModel) {
             with(binding){
-                title.text = item.title
-                contents.text = item.contents
-                dateTime.text = item.dateTime
+                blogTitle.text = item.title
+                blogContents.text = item.contents
+                blogDateTime.text = item.dateTime
 
                 root.setOnClickListener {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.url))

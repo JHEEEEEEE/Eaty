@@ -120,6 +120,19 @@
 
     <!--  restaurantDetail  -->
     <string name="favorite">찜</string>
+    <string name="navigate">길찾기</string>
 
+    <!-- Common   -->
+    <string name="no_data">데이터가 없습니다.</string>
+
+    <!-- SurroudingFragment.xml   -->
+    <string name="subway_description">🚇 주변 지하철역을 확인하고 이동해보세요! \n 길찾기 시스템도 있답니다.</string>
+    <string name="weather_description">☀️ 현재 날씨 정보 식당 주변 날씨를 확인해보세요! \n 계획한 하루가 완벽해질 수 있도록.</string>
+
+    <!-- ReviewFragment.xml   -->
+    <string name="review_description">💬 리뷰를 작성하고 공유하세요! \n 다른 사용자들의 후기도 확인할 수 있어요.</string>
+
+    <!-- InfoFragment.xml   -->
+    <string name="blog_info_description">🔍 블로그 리뷰를 확인하세요! \n 실제 방문자들의 경험과 유용한 팁을 만나보세요.</string>
 
 </resources>

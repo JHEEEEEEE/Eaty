@@ -1,6 +1,6 @@
 package com.effort.data.model.home.restaurant.detail.blog
 
-import com.effort.domain.model.home.blog.BlogReviewMeta
+import com.effort.domain.model.home.restaurant.detail.blog.BlogReviewMeta
 
 data class BlogReviewMetaEntity(
     val totalCount: Int,

@@ -1,6 +1,6 @@
 package com.effort.presentation.model.home.restaurant.detail.weather
 
-import com.effort.domain.model.home.weather.Weather
+import com.effort.domain.model.home.restaurant.detail.weather.Weather
 import com.effort.presentation.R
 
 data class WeatherModel(

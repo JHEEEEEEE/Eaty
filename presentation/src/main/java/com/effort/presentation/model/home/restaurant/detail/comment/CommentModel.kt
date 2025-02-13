@@ -1,6 +1,6 @@
 package com.effort.presentation.model.home.restaurant.detail.comment
 
-import com.effort.domain.model.home.comment.Comment
+import com.effort.domain.model.home.restaurant.detail.comment.Comment
 
 data class CommentModel(
     val content: String,

@@ -11,10 +11,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.core.base.BaseFragment
-import com.effort.feature.core.util.showLoading
+import com.effort.feature.core.util.observeStateLatest
 import com.effort.feature.databinding.FragmentRestaurantInfoBinding
 import com.effort.presentation.viewmodel.home.restaurant.SharedRestaurantViewModel
-import com.effort.presentation.UiState
 import com.effort.presentation.viewmodel.home.restaurant.detail.info.RestaurantInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -33,7 +32,7 @@ class RestaurantInfoFragment :
 
     override fun initView() {
         setupRecyclerView()
-        observeGetBlogReviewState()
+        observeViewModel()
         setupInfiniteScrollListener(binding.recyclerviewBlogReview)
         observeSharedViewModelData()
     }
@@ -57,39 +56,17 @@ class RestaurantInfoFragment :
         binding.recyclerviewBlogReview.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = blogReviewListAdapter
-            setHasFixedSize(true) // 성능 최적화
+            setHasFixedSize(true)
         }
     }
 
-    private fun observeGetBlogReviewState() {
-        val progressIndicator = binding.progressCircular.progressBar
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getBlogReviewState.collectLatest { state ->
-                when (state) {
-                    UiState.Loading -> {
-                        progressIndicator.showLoading(true)
-                        binding.recyclerviewBlogReview.visibility = View.GONE
-                    }
-
-                    is UiState.Success -> {
-                        progressIndicator.showLoading(false)
-                        binding.recyclerviewBlogReview.visibility = View.VISIBLE
-                        blogReviewListAdapter.submitList(state.data)
-                    }
-
-                    is UiState.Error -> {
-                        progressIndicator.showLoading(false)
-                        binding.recyclerviewBlogReview.visibility = View.GONE
-                    }
-
-                    is UiState.Empty -> {
-                        progressIndicator.showLoading(false)
-                        binding.recyclerviewBlogReview.visibility = View.GONE
-                    }
-
-                }
-            }
+    private fun observeViewModel() {
+        observeStateLatest(
+            stateFlow = viewModel.getBlogReviewState,
+            progressView = binding.progressCircular.progressBar,
+            fragment = this
+        ) { blogReviews ->
+            blogReviewListAdapter.submitList(blogReviews) // ✅ 블로그 리뷰 리스트 업데이트
         }
     }
 

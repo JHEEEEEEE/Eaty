@@ -1,7 +1,7 @@
 package com.effort.domain.usecase.home.restaurant.detail.parkinglot
 
 import com.effort.domain.DataResource
-import com.effort.domain.model.home.parkinglot.ParkingLot
+import com.effort.domain.model.home.restaurant.detail.parkinglot.ParkingLot
 
 interface GetParkingLotListUseCase {
 

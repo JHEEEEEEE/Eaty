@@ -1,14 +1,16 @@
 package com.effort.presentation.viewmodel.home.restaurant.detail.surrounding
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.effort.domain.DataResource
-import com.effort.domain.usecase.home.restaurant.detail.parkinglot.GetParkingLotListUseCase
+import com.effort.domain.usecase.home.restaurant.detail.subway.GetSubwayStationUseCase
 import com.effort.domain.usecase.home.restaurant.detail.weather.GetWeatherDataUseCase
 import com.effort.presentation.R
 import com.effort.presentation.UiState
-import com.effort.presentation.model.home.restaurant.detail.parkinglot.ParkingLotModel
-import com.effort.presentation.model.home.restaurant.detail.parkinglot.toPresentation
+import com.effort.presentation.core.util.setLoadingState
+import com.effort.presentation.model.home.restaurant.detail.subway.SubwayModel
+import com.effort.presentation.model.home.restaurant.detail.subway.toPresentation
 import com.effort.presentation.model.home.restaurant.detail.weather.WeatherModel
 import com.effort.presentation.model.home.restaurant.detail.weather.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,21 +22,20 @@ import javax.inject.Inject
 @HiltViewModel
 class RestaurantSurroundingViewModel @Inject constructor(
     private val getWeatherDataUseCase: GetWeatherDataUseCase,
-    private val getParkingLotListUseCase: GetParkingLotListUseCase
+    private val getSubwayStationUseCase: GetSubwayStationUseCase,
 ) : ViewModel() {
 
     // Weather 상태
     private val _getWeatherState = MutableStateFlow<UiState<List<WeatherModel>>>(UiState.Empty)
     val getWeatherState get() = _getWeatherState.asStateFlow()
 
-    // Parking Lot 상태
-    private val _getParkingLotState =
-        MutableStateFlow<UiState<List<ParkingLotModel>>>(UiState.Empty)
-    val getParkingLotState get() = _getParkingLotState.asStateFlow()
+    // Weather 상태
+    private val _getSubwayStationState = MutableStateFlow<UiState<List<SubwayModel>>>(UiState.Empty)
+    val getSubwayStationState get() = _getSubwayStationState.asStateFlow()
 
     // 날씨 데이터 가져오기
     fun fetchWeatherData(latitude: String, longitude: String) {
-        _getWeatherState.value = UiState.Loading
+        setLoadingState(_getWeatherState)
 
         viewModelScope.launch {
             try {
@@ -63,30 +64,39 @@ class RestaurantSurroundingViewModel @Inject constructor(
         }
     }
 
-    // 주차장 데이터 가져오기
-    fun fetchParkingLots(latitude: String, longitude: String) {
-        _getParkingLotState.value = UiState.Loading
+    fun fetchSubwayStation(latitude: String, longitude: String) {
+        Log.d("SubwayViewModel", "fetchSubwayStation 호출됨: 위도=$latitude, 경도=$longitude")
+
+        setLoadingState(_getSubwayStationState)
 
         viewModelScope.launch {
             try {
                 // UseCase를 통해 데이터 요청
-                _getParkingLotState.value =
-                    when (val dataResource = getParkingLotListUseCase(latitude, longitude)) {
+                _getSubwayStationState.value =
+                    when (val dataResource = getSubwayStationUseCase(latitude, longitude)) {
                         is DataResource.Success -> {
-                            val parkingLots = dataResource.data.map { it.toPresentation() }
-                            UiState.Success(parkingLots)
+                            val subwayStation = dataResource.data.map { it.toPresentation() }
+                            Log.d("SubwayViewModel", "API 성공: 받은 데이터 개수 = ${subwayStation.size}")
+                            if (subwayStation.isEmpty()) {
+                                UiState.Empty
+                            } else {
+                                UiState.Success(subwayStation)
+                            }
                         }
 
                         is DataResource.Error -> {
+                            Log.e("SubwayViewModel", "API 에러 발생", dataResource.throwable)
                             UiState.Error(dataResource.throwable)
                         }
 
                         is DataResource.Loading -> {
+                            Log.d("SubwayViewModel", "데이터 로딩 중...")
                             UiState.Loading
                         }
                     }
             } catch (e: Exception) {
-                _getParkingLotState.value = UiState.Error(e)
+                Log.e("SubwayViewModel", "fetchSubwayStation() 예외 발생", e)
+                _getSubwayStationState.value = UiState.Error(e)
             }
         }
     }

@@ -11,11 +11,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.collectFlow
-import com.effort.feature.core.util.showLoading
+import com.effort.feature.core.util.observeStateContinuouslyWithLifecycle
 import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentMapBinding
 import com.effort.feature.model.map.RestaurantKey
-import com.effort.presentation.UiState
 import com.effort.presentation.model.home.restaurant.RestaurantModel
 import com.effort.presentation.model.map.FilterModel
 import com.effort.presentation.viewmodel.home.restaurant.RestaurantViewModel
@@ -91,19 +90,15 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     private fun setupMapFragment() {
         val mapFragment = childFragmentManager.findFragmentById(binding.map.id) as MapFragment?
             ?: MapFragment.newInstance(
-                NaverMapOptions()
-                    .camera(
-                        CameraPosition(
-                            LatLng(37.5112, 127.0590), // 초기 카메라 위치 (서울 강남)
-                            14.0 // 줌 레벨
-                        )
+                NaverMapOptions().camera(
+                    CameraPosition(
+                        LatLng(37.5112, 127.0590), // 초기 카메라 위치 (서울 강남)
+                        14.0 // 줌 레벨
                     )
-                    .indoorEnabled(true) // 실내 지도 활성화
+                ).indoorEnabled(true) // 실내 지도 활성화
                     .locationButtonEnabled(true) // 위치 버튼 활성화
             ).also {
-                childFragmentManager.beginTransaction()
-                    .replace(binding.map.id, it)
-                    .commit()
+                childFragmentManager.beginTransaction().replace(binding.map.id, it).commit()
             }
 
         mapFragment.getMapAsync(this) // 지도가 준비되었을 때 콜백 호출
@@ -138,9 +133,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
      */
     private fun observeViewModel() {
         // 레스토랑 데이터 상태 관찰
-        collectFlow(viewModel.getRestaurantState) { state ->
-            handleRestaurantState(state)
-        }
+        handleRestaurantState()
 
         // 카메라 초기화 상태 관찰
         collectFlow(viewModel.isCameraInitialized) { isInitialized ->
@@ -172,22 +165,13 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     /**
      * 레스토랑 상태를 처리
      */
-    private fun handleRestaurantState(state: UiState<List<RestaurantModel>>) {
-        val progressIndicator = binding.progressCircular.progressBar
-
-        when (state) {
-            is UiState.Loading -> progressIndicator.showLoading(true)
-            is UiState.Success -> {
-                progressIndicator.showLoading(false)
-                setupClusterer(state.data) // 지도에 마커 업데이트
-            }
-
-            is UiState.Error -> {
-                progressIndicator.showLoading(false)
-                showToast("Error: ${state.exception.message}")
-            }
-
-            is UiState.Empty -> progressIndicator.showLoading(false)
+    private fun handleRestaurantState() {
+        observeStateContinuouslyWithLifecycle(
+            stateFlow = viewModel.getRestaurantState,
+            progressView = binding.progressCircular.progressBar,
+            fragment = this
+        ) { restaurantData ->
+            setupClusterer(restaurantData) // ✅ 지도에 마커 업데이트
         }
     }
 
@@ -203,8 +187,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     private fun setupClusterer(restaurantList: List<RestaurantModel>) {
         clearClusterer()
 
-        clusterer = Clusterer.Builder<RestaurantKey>()
-            .screenDistance(50.0) // 같은 건물 정도의 거리로 클러스터링
+        clusterer = Clusterer.Builder<RestaurantKey>().screenDistance(50.0) // 같은 건물 정도의 거리로 클러스터링
             .minZoom(8) // 줌 레벨 8 이하에서는 클러스터링 적용 안 함
             .maxZoom(14) // 줌 레벨 14 이상에서는 클러스터링 해제
             .animate(true) // 줌 변화 시 애니메이션 적용
@@ -219,8 +202,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
                     }
                     marker.captionText = "${info.size}개의 장소" // 클러스터 크기 표시
                 }
-            })
-            .leafMarkerUpdater(object : DefaultLeafMarkerUpdater() {
+            }).leafMarkerUpdater(object : DefaultLeafMarkerUpdater() {
                 override fun updateLeafMarker(info: LeafMarkerInfo, marker: Marker) {
                     super.updateLeafMarker(info, marker)
                     val key = info.key as RestaurantKey
@@ -230,9 +212,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
 
                     // 마커의 위치를 조정하여 중복 방지 처리
                     marker.position = getAdjustedLatLng(
-                        key.position,
-                        existingCoordinates,
-                        key.hashCode()
+                        key.position, existingCoordinates, key.hashCode()
                     )
 
                     // 마커 설정
@@ -241,14 +221,12 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
 
                     // 마커 클릭 시 상세 페이지로 이동
                     marker.setOnClickListener {
-                        navigateToDetailFragment(
-                            restaurantList.first { it.title == key.title } // key.title로 레스토랑 찾기
+                        navigateToDetailFragment(restaurantList.first { it.title == key.title } // key.title로 레스토랑 찾기
                         )
                         true
                     }
                 }
-            })
-            .build()
+            }).build()
 
         // 클러스터러에 데이터 추가
         val keyTagMap = mutableMapOf<RestaurantKey, Any?>()
@@ -272,9 +250,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
      * 마커의 좌표를 조정하여 중복 방지
      */
     private fun getAdjustedLatLng(
-        originalLatLng: LatLng,
-        existingCoordinates: MutableList<LatLng>,
-        index: Int
+        originalLatLng: LatLng, existingCoordinates: MutableList<LatLng>, index: Int
     ): LatLng {
         return if (isCloseToExistingCoordinates(existingCoordinates, originalLatLng)) {
             adjustMarkerPosition(originalLatLng.latitude, originalLatLng.longitude, index)
@@ -287,13 +263,11 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
      * 근사값 중복 여부를 확인
      */
     private fun isCloseToExistingCoordinates(
-        existingCoordinates: List<LatLng>,
-        target: LatLng
+        existingCoordinates: List<LatLng>, target: LatLng
     ): Boolean {
         val threshold = 0.0001 // 근사값 범위
         return existingCoordinates.any { coord ->
-            abs(coord.latitude - target.latitude) <= threshold &&
-                    abs(coord.longitude - target.longitude) <= threshold
+            abs(coord.latitude - target.latitude) <= threshold && abs(coord.longitude - target.longitude) <= threshold
         }
     }
 
@@ -423,8 +397,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     private fun moveCameraToLocation(location: Location) {
         val cameraUpdate = CameraUpdate.toCameraPosition(
             CameraPosition(
-                LatLng(location.latitude, location.longitude),
-                15.0
+                LatLng(location.latitude, location.longitude), 15.0
             )
         ).animate(CameraAnimation.Easing)
         naverMap.moveCamera(cameraUpdate)
@@ -439,9 +412,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
 
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {
         if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
             if (!locationSource.isActivated) {

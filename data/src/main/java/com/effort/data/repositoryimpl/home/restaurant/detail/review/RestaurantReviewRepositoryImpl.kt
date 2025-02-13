@@ -3,7 +3,7 @@ package com.effort.data.repositoryimpl.home.restaurant.detail.review
 import com.effort.data.datasource.home.restaurant.detail.review.RestaurantReviewRemoteDataSource
 import com.effort.data.model.home.restaurant.detail.comment.toData
 import com.effort.domain.DataResource
-import com.effort.domain.model.home.comment.Comment
+import com.effort.domain.model.home.restaurant.detail.comment.Comment
 import com.effort.domain.repository.home.restaurant.detail.review.RestaurantReviewRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow

@@ -1,4 +1,4 @@
-package com.effort.domain.usecase.home
+package com.effort.domain.usecase.home.suggestion
 
 import com.effort.domain.DataResource
 import com.effort.domain.model.home.suggestion.Keyword

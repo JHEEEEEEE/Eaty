@@ -3,12 +3,13 @@ package com.effort.recycrew.di
 import com.effort.domain.usecase.auth.AuthenticateUserUseCase
 import com.effort.domain.usecase.auth.CheckUserLoggedInUseCase
 import com.effort.domain.usecase.auth.SignOutUseCase
-import com.effort.domain.usecase.home.GetSuggestionListUseCase
+import com.effort.domain.usecase.home.suggestion.GetSuggestionListUseCase
 import com.effort.domain.usecase.home.restaurant.GetRestaurantListUseCase
 import com.effort.domain.usecase.home.restaurant.detail.blog.GetBlogReviewListUseCase
 import com.effort.domain.usecase.home.restaurant.detail.comment.AddCommentUseCase
 import com.effort.domain.usecase.home.restaurant.detail.comment.GetCommentUseCase
 import com.effort.domain.usecase.home.restaurant.detail.parkinglot.GetParkingLotListUseCase
+import com.effort.domain.usecase.home.restaurant.detail.subway.GetSubwayStationUseCase
 import com.effort.domain.usecase.home.restaurant.detail.weather.GetWeatherDataUseCase
 import com.effort.domain.usecase.home.restaurant.favorites.AddRestaurantToFavoritesUseCase
 import com.effort.domain.usecase.home.restaurant.favorites.CheckIfRestaurantIsFavoriteUseCase
@@ -29,6 +30,7 @@ import com.effort.domain.usecaseimpl.home.restaurant.detail.blog.GetBlogReviewLi
 import com.effort.domain.usecaseimpl.home.restaurant.detail.comment.AddCommentUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.detail.comment.GetCommentUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.detail.parkinglot.GetParkingLotListUseCaseImpl
+import com.effort.domain.usecaseimpl.home.restaurant.detail.subway.GetSubwayStationUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.detail.weather.GetWeatherDataUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.favorites.AddRestaurantToFavoritesUseCaseImpl
 import com.effort.domain.usecaseimpl.home.restaurant.favorites.CheckIfRestaurantIsFavoriteUseCaseImpl
@@ -141,5 +143,10 @@ abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindGetFavoriteListUseCase(getFavoriteListUseCaseImpl: GetFavoriteListUseCaseImpl): GetFavoriteListUseCase
+
+    // SubwayStation
+    @Binds
+    @Singleton
+    abstract fun bindGetSubwayStationUseCase(getSubwayStationUseCaseImpl: GetSubwayStationUseCaseImpl): GetSubwayStationUseCase
 }
 

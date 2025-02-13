@@ -1,4 +1,4 @@
-package com.effort.domain.model.home.parkinglot
+package com.effort.domain.model.home.restaurant.detail.parkinglot
 
 data class ParkingLot(
     val id: String, // 주차장 관리 ID

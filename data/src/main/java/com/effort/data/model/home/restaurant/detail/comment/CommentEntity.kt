@@ -1,6 +1,6 @@
 package com.effort.data.model.home.restaurant.detail.comment
 
-import com.effort.domain.model.home.comment.Comment
+import com.effort.domain.model.home.restaurant.detail.comment.Comment
 
 data class CommentEntity(
     val content: String,      // 댓글 내용

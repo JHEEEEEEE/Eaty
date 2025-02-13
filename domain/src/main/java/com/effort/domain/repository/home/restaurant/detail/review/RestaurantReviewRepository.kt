@@ -1,7 +1,7 @@
 package com.effort.domain.repository.home.restaurant.detail.review
 
 import com.effort.domain.DataResource
-import com.effort.domain.model.home.comment.Comment
+import com.effort.domain.model.home.restaurant.detail.comment.Comment
 import kotlinx.coroutines.flow.Flow
 
 interface RestaurantReviewRepository {

@@ -17,7 +17,7 @@ import androidx.navigation.fragment.navArgs
 import com.effort.feature.R
 import com.effort.feature.auth.AuthActivity
 import com.effort.feature.core.base.BaseFragment
-import com.effort.feature.core.util.showLoading
+import com.effort.feature.core.util.observeStateLatest
 import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentEditprofileBinding
 import com.effort.presentation.UiState
@@ -36,9 +36,7 @@ class EditProfileFragment :
     private lateinit var photoPickerLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEditprofileBinding.inflate(inflater, container, false)
         initializePhotoPickerLauncher()
@@ -51,15 +49,14 @@ class EditProfileFragment :
     }
 
     override fun initView() {
-        observeUpdateNicknameState()
+        observeViewModelState()
         observeCheckNicknameDuplicated()
         setupNicknameInputListener()
         saveButtonClickListener()
         setPhotoPickerClickListener()
         initializeUserProfile()
 
-        signOutButtonClickListener()   // SignOut 클릭 리스너
-        observeSignOutState()          // SignOut 상태 관찰
+        signOutButtonClickListener()   // SignOut 클릭 리스너     // SignOut 상태 관찰
     }
 
     private fun initializeUserProfile() {
@@ -79,30 +76,29 @@ class EditProfileFragment :
         }
     }
 
-    private fun observeUpdateNicknameState() {
-        val progressIndicator = binding.progressCircular.progressBar
+    private fun observeViewModelState() {
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            editProfileViewModel.updateState.collectLatest { state ->
-                when (state) {
-                    is UiState.Loading -> {
-                        progressIndicator.showLoading(true)
-                    }
+        observeStateLatest(
+            stateFlow = editProfileViewModel.updateState,
+            progressView = binding.progressCircular.progressBar,
+            fragment = this
+        ) { success ->
+            if (success) {
+                findNavController().navigateUp()
+            } else {
+                showToast(getString(R.string.update_failed_message))
+            }
+        }
 
-                    is UiState.Success -> {
-                        progressIndicator.showLoading(false)
-                        findNavController().navigateUp()
-                    }
-
-                    is UiState.Error -> {
-                        progressIndicator.showLoading(false)
-                        showToast(getString(R.string.update_failed_message))
-                    }
-
-                    is UiState.Empty -> {
-                        progressIndicator.showLoading(false)
-                    }
-                }
+        observeStateLatest(
+            stateFlow = authViewModel.signOutState,
+            progressView = binding.progressCircular.progressBar,
+            fragment = this
+        ) { success ->
+            if (success) {
+                navigateToAuthActivity() // ✅ 로그아웃 성공 시 화면 전환
+            } else {
+                showToast(getString(R.string.sign_out_failed_message)) // ✅ 로그아웃 실패 메시지 표시
             }
         }
     }
@@ -142,8 +138,7 @@ class EditProfileFragment :
                 )
                 setTextColor(
                     ContextCompat.getColor(
-                        requireContext(),
-                        if (isAvailable) R.color.primary_color
+                        requireContext(), if (isAvailable) R.color.primary_color
                         else R.color.error_color
                     )
                 )
@@ -217,37 +212,6 @@ class EditProfileFragment :
     private fun signOutButtonClickListener() {
         binding.signOut.setOnClickListener {
             authViewModel.signOut()
-        }
-    }
-
-    private fun observeSignOutState() {
-        val progressIndicator = binding.progressCircular.progressBar
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            authViewModel.signOutState.collectLatest { state ->
-                when (state) {
-                    is UiState.Loading -> {
-                        // 로딩 중 UI 표시
-                        progressIndicator.showLoading(true)
-                    }
-
-                    is UiState.Success -> {
-                        // 로그아웃 성공 시 화면 전환
-                        progressIndicator.showLoading(false)
-                        navigateToAuthActivity()
-                    }
-
-                    is UiState.Error -> {
-                        // 로그아웃 실패 시 메시지 표시
-                        progressIndicator.showLoading(false)
-                        showToast(getString(R.string.sign_out_failed_message))
-                    }
-
-                    is UiState.Empty -> {
-                        progressIndicator.showLoading(false)
-                    }
-                }
-            }
         }
     }
 
