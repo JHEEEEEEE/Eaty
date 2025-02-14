@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-
 // Firebase에서 데이터를 가져오는 구현체. MyPageServiceImpl은 MyPageService 인터페이스를 구현
 // Firestore에서 데이터를 가져오고 FaqWrapperResponse로 감싸 반환
 class MyPageServiceImpl @Inject constructor(
@@ -133,7 +132,6 @@ class MyPageServiceImpl @Inject constructor(
             false
         }
     }
-
 
     override fun observeUserUpdate(): Flow<UserResponse> = callbackFlow {
         val email = auth.currentUser?.email.orEmpty()

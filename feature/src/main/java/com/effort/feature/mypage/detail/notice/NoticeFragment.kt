@@ -18,7 +18,6 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(FragmentNoticeBinding
     private lateinit var noticeListAdapter: NoticeListAdapter
 
     override fun initView() {
-
         setupRecyclerView()
         observeViewModel()
     }

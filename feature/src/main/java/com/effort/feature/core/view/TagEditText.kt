@@ -11,7 +11,6 @@ import androidx.core.widget.doAfterTextChanged
 import com.effort.feature.R
 import com.effort.feature.databinding.ViewTagEdittextBinding
 
-
 class TagEditText : FrameLayout {
 
     constructor(context: Context) : super(context) {

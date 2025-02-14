@@ -17,8 +17,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding::inflate) {
-    private val viewModel: MyPageViewModel by viewModels()
 
+    private val viewModel: MyPageViewModel by viewModels()
     private lateinit var profilePicUrl: String
     private lateinit var nickname: String
 

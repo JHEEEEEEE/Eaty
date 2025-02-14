@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BlogReviewWrapperResponse(
+
     @SerialName("meta")
     val meta: BlogReviewMetaResponse,
 

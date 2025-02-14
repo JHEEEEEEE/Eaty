@@ -123,11 +123,11 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:background="@android:color/white"
-        android:visibility="gone"
         android:elevation="30dp"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_view" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -135,13 +135,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:elevation="20dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_view"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="3"
-        tools:listitem="@layout/item_category"/>
+        tools:listitem="@layout/item_category" />
 
     <include
         android:id="@+id/progress_circular"

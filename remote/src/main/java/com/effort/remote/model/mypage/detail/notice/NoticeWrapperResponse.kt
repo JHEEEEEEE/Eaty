@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NoticeWrapperResponse (
+
     @SerialName("notice_results")
     val resultNotices: List<NoticeResponse>
 )

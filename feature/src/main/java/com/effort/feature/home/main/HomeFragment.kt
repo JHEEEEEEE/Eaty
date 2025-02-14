@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
+
     private val myPageViewModel: MyPageViewModel by viewModels()
     private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var categoryAdapter: CategoryListAdapter
@@ -204,7 +205,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             }
         }
     }
-
 
     private fun observeSuggestionState() {
         viewLifecycleOwner.lifecycleScope.launch {

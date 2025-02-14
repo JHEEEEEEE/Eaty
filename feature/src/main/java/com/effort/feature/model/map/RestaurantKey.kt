@@ -6,7 +6,7 @@ import com.naver.maps.map.clustering.ClusteringKey
 class RestaurantKey(
     val title: String,
     private val position: LatLng
-): ClusteringKey {
+) : ClusteringKey {
 
     override fun getPosition(): LatLng = position
 

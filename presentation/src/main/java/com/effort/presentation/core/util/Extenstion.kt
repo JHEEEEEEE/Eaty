@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-
 // ViewModel에서 List 형태의 값을 내보낼때 사용하는 함수
 fun <T, R> DataResource<List<T>>.toUiStateList(
     transform: (T) -> R // 리스트 내부 요소 변환 함수

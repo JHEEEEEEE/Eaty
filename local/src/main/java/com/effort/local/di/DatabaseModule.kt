@@ -2,10 +2,8 @@ package com.effort.local.di
 
 import android.content.Context
 import androidx.room.Room
-import com.effort.local.dao.restaurant.parkinglot.ParkingLotDao
 import com.effort.local.dao.restaurant.RestaurantDao
 import com.effort.local.dao.user.UserDao
-import com.effort.local.database.restaurant.parkinglot.ParkingLotRoomDatabase
 import com.effort.local.database.restaurant.RestaurantRoomDatabase
 import com.effort.local.database.user.UserRoomDatabase
 import dagger.Module
@@ -51,22 +49,5 @@ object DatabaseModule {
     @Singleton
     fun provideRestaurantDao(database: RestaurantRoomDatabase): RestaurantDao {
         return database.restaurantDao()
-    }
-
-    @Provides
-    @Singleton
-    fun provideParkingLotRoomDatabase(@ApplicationContext context: Context): ParkingLotRoomDatabase {
-        return Room.databaseBuilder(
-            context.applicationContext,
-            ParkingLotRoomDatabase::class.java,
-            "parkingLots"
-        ).fallbackToDestructiveMigration()
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideParkingLotDao(database: ParkingLotRoomDatabase): ParkingLotDao {
-        return database.parkingLotDao()
     }
 }

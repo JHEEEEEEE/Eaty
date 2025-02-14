@@ -24,7 +24,6 @@ class CommentServiceImpl @Inject constructor(
                 .set(comment)
                 .await() // 비동기 Firestore 작업
 
-            Log.d("Debug", "Comment data: ${comment}")
             true
         } catch (e: Exception) {
             Log.e("CommentService", "Failed to add comment: ${e.message}", e)

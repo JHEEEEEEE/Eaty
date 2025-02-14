@@ -14,6 +14,7 @@ import com.effort.presentation.model.mypage.detail.notice.NoticeModel
 
 class NoticeListAdapter :
     ListAdapter<NoticeModel, NoticeListAdapter.NoticeViewHolder>(diffCallback) {
+
     private val expandedStates = mutableMapOf<Int, Boolean>()
 
     class NoticeViewHolder(private val binding: ItemNoticeBinding) :

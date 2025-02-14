@@ -1,4 +1,4 @@
-package com.effort.feature.community
+package com.effort.feature.home.restaurant.detail
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -7,6 +7,7 @@ import com.effort.feature.home.restaurant.detail.review.RestaurantReviewFragment
 import com.effort.feature.home.restaurant.detail.surrounding.RestaurantSurroundingFragment
 
 class RestaurantDetailAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+
     override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment {

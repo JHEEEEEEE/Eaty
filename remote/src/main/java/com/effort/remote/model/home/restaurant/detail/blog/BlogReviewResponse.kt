@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BlogReviewResponse(
+
     @SerialName("title") val title: String = "",
     @SerialName("contents") val contents: String = "",
     @SerialName("url") val url: String = "",

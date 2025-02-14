@@ -16,9 +16,9 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class FavoriteFragment : BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate) {
+
     private val viewModel: RestaurantFavoritesViewModel by viewModels()
     private lateinit var favoriteAdapter: RestaurantListAdapter
-
 
     override fun initView() {
         initRecyclerView()

@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.effort.feature.R
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.collectFlow
 import com.effort.feature.core.util.observeStateContinuouslyWithLifecycle
@@ -155,7 +156,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
         // 새로운 아이템 관찰
         viewModel.newItemLiveData.observe(viewLifecycleOwner) { message ->
             if (viewModel.isLastPage) {
-                showToast("모든 데이터가 출력되었습니다.")
+                showToast(getString(R.string.data_all_loaded))
             } else {
                 showToast(message)
             }

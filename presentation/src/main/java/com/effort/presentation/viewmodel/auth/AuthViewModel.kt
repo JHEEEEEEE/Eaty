@@ -1,5 +1,4 @@
 @file:Suppress("DEPRECATION")
-
 package com.effort.presentation.viewmodel.auth
 
 import android.util.Log

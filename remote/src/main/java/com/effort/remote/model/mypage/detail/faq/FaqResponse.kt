@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 // Firestore의 JSON 구조와 매핑되며, toData() 메서드를 통해 Domain 계층의 Entity로 변환 가능
 @Serializable
 data class FaqResponse(
+
     @SerialName("category")
     val category: String = "",
 

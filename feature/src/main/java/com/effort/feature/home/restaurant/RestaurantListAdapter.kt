@@ -1,5 +1,6 @@
 package com.effort.feature.home.restaurant
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -16,6 +17,7 @@ class RestaurantListAdapter(
     inner class RestaurantViewHolder(private val binding: ItemRestaurantBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("SetTextI18n")
         fun bind(item: RestaurantModel) {
             with(binding) {
                 name.text = item.title

@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.databinding.ItemCommentBinding
 import com.effort.presentation.model.home.restaurant.detail.comment.CommentModel
 
-
 class CommentAdapter : ListAdapter<CommentModel, CommentAdapter.CommentViewHolder>(DiffCallback) {
 
     class CommentViewHolder(private val binding: ItemCommentBinding) :

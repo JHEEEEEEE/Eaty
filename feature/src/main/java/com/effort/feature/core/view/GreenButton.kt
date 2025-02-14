@@ -10,8 +10,8 @@ import android.widget.FrameLayout
 import com.effort.feature.R
 import com.effort.feature.databinding.ViewGreenButtonBinding
 
-
 class GreenButton : FrameLayout, View.OnClickListener {
+
     private var listener: OnClickListener? = null
 
     constructor(context: Context) : super(context) {

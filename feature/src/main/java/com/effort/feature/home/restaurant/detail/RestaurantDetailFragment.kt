@@ -19,7 +19,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.effort.feature.R
-import com.effort.feature.community.RestaurantDetailAdapter
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.extractGuDongFromSeoulAddress
 import com.effort.feature.core.util.showToast
@@ -52,6 +51,7 @@ import kotlinx.coroutines.launch
 class RestaurantDetailFragment :
     BaseFragment<FragmentRestaurantDetailBinding>(FragmentRestaurantDetailBinding::inflate),
     OnMapReadyCallback {
+
     private lateinit var navController: NavController
     private val args: RestaurantDetailFragmentArgs by navArgs() // SafeArgs로 데이터 받기
     private val restaurantFavoritesViewModel: RestaurantFavoritesViewModel by viewModels()
@@ -468,7 +468,6 @@ class RestaurantDetailFragment :
             shareViewModel.shareLinkState.collectLatest { state ->
                 when (state) {
                     is UiState.Success -> {
-                        Log.d("restaurantDetailFragment", "${state.data}")
                         openKakaoShare(state.data)
                         showToast("공유를 시작합니다.")
                         Log.d("RestaurantDetailFragment", "Successfully Get shareLink")

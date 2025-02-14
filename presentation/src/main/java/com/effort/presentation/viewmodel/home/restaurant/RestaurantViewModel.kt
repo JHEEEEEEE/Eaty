@@ -44,7 +44,6 @@ class RestaurantViewModel @Inject constructor(
     val selectedFilter get() = _selectedFilterState.asStateFlow()
 
     private val _sortType = MutableStateFlow(SortTypeModel.DEFAULT)
-    val sortType get() = _sortType.asStateFlow()
 
     private val _newItemLiveData = MutableLiveData<String>()
     val newItemLiveData get() = _newItemLiveData
@@ -121,20 +120,6 @@ class RestaurantViewModel @Inject constructor(
 
     private fun sendNewItemMessage(newItems: Int) {
         _newItemLiveData.postValue("$newItems 개의 데이터가 추가되었습니다.")
-    }
-
-    // 정렬 기준 변경 메서드
-    fun updateSortType(newSortType: SortTypeModel) {
-        _sortType.value = newSortType
-        resetPagination()
-    }
-
-    // 페이지네이션 초기화
-    private fun resetPagination() {
-        currentPage = 1
-        isLastPage = false
-        isLoading = false
-        _getRestaurantState.value = UiState.Empty
     }
 
     fun toggleCameraInitialization() {

@@ -18,8 +18,6 @@ class RestaurantInfoRemoteDataSourceImpl @Inject constructor(
     ): Pair<List<BlogReviewEntity>, BlogReviewMetaEntity?> {
         val searchQuery = "$region \"$query\""
 
-        Log.e("RestaurantDetailRemote", "searchQuery: $searchQuery")
-
         return try {
             val response = blogReviewService.getBlogReviewList(searchQuery, page)
             val data = response.documents.map { it.toData() }

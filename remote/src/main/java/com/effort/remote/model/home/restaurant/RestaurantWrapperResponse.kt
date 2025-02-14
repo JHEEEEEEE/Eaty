@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RestaurantWrapperResponse(
+
     @SerialName("meta")
     val meta: RestaurantMetaResponse,
 

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SubwayWrapperRespose(
+data class SubwayWrapperResponse(
 
     @SerialName("documents")
     val documents: List<SubwayResponse>

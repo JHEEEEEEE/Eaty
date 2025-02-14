@@ -22,6 +22,7 @@ import javax.inject.Inject
 class NoticeViewModel @Inject constructor(
     private val getNoticeListUseCase: GetNoticeListUseCase
 ) : ViewModel() {
+
     private val _getNoticeState = MutableStateFlow<UiState<List<NoticeModel>>>(UiState.Empty)
     val getNoticeState get() = _getNoticeState.asStateFlow()
 

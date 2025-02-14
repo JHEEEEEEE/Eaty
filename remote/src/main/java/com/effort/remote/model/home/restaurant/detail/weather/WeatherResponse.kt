@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class WeatherResponse(
+
     @SerialName("dt_txt")
     val dateTimeText: String = "", // 날짜 및 시간 (예: "2022-08-30 15:00:00")
 

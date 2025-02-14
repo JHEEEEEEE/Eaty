@@ -10,6 +10,7 @@ import com.effort.feature.auth.AuthActivity
 import com.effort.feature.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivitySplashBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
 inline fun ImageView.load(
     data: Any?,
     glide: RequestManager = Glide.with(this),
@@ -35,13 +34,11 @@ inline fun ImageView.load(
     requestBuilder.into(this)
 }
 
-
 fun Int.dp(): Int {
     val metrics = getSystem().displayMetrics
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), metrics)
         .toInt()
 }
-
 
 fun crossfade(enable: Boolean): DrawableTransitionOptions {
     return if (enable) {

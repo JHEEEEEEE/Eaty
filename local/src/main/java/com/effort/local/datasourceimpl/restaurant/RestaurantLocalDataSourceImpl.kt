@@ -11,6 +11,7 @@ import javax.inject.Inject
 class RestaurantLocalDataSourceImpl @Inject constructor(
     private val restaurantDao: RestaurantDao
 ): RestaurantLocalDataSource {
+
     // Local DB에서 식당 리스트 조회
     override suspend fun getRestaurantList(query: String): List<RestaurantEntity> {
         return try {

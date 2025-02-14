@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class EditProfileFragment :
     BaseFragment<FragmentEditprofileBinding>(FragmentEditprofileBinding::inflate) {
+
     private val editProfileViewModel: EditProfileViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
     private val args: EditProfileFragmentArgs by navArgs() //SafeArgs로 데이터 받기

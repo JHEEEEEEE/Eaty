@@ -33,19 +33,8 @@
 
     <!-- 바텀네비게이션 뷰  -->
     <string name="home">홈</string>
-    <string name="community">커뮤니티</string>
     <string name="map">지도</string>
 
-    <!-- community-->
-    <string name="recy_talk">Recy-Talk</string>
-    <string name="recy_talk_description">환경을 사랑하는 리사이크루들의 소통의 장! 환경에 대한 자유로운 이야기로 나눠요🍀</string>
-
-    <string name="recy_giveaway">Recy-Giveaway</string>
-    <string name="recy_giveaway_description">환경을 사랑하는 리사이크루들의 나눔의 장! 서로에게 필요한 제품을 나누며 환경을 지켜요💚</string>
-
-    <string name="recy_meetup">Recy-Meetup</string>
-    <string name="recy_meetup_description">환경에 진심인 크루들의 모임의 장! 함께 모여 플로깅을 하며 건강과 환경을 지켜요🌱</string>
-    <string name="play">더보기</string>
 
     <!-- FAQ, Notice   -->
     <string name="category">카테고리</string>
@@ -84,13 +73,6 @@
     <string name="place_url">업체 링크</string>
     <string name="meter">%1$s m</string>
 
-    <!-- ParkingLot(SurroundingFragment) -->
-    <string name="parking_lot_id">주차장ID</string>
-    <string name="address">주소</string>
-    <string name="latitude">위도</string>
-    <string name="longitude">경도</string>
-    <string name="capacity">주차구획수</string>
-
     <!-- Weather(SurroundingFragment) -->
     <string name="time">시간</string>
     <string name="condition">상태</string>
@@ -101,6 +83,7 @@
 
     <!--    Map     -->
     <string name="filter">Filter</string>
+    <string name="play">더보기</string>
 
     <!-- Home    -->
     <string name="recommended_keyword">추천검색어</string>
@@ -137,5 +120,6 @@
 
     <!-- InfoFragment.xml   -->
     <string name="blog_info_description">🔍 블로그 리뷰를 확인하세요! \n 실제 방문자들의 경험과 유용한 팁을 만나보세요.</string>
+    <string name="data_all_loaded">모든 데이터가 출력되었습니다.</string>
 
 </resources>

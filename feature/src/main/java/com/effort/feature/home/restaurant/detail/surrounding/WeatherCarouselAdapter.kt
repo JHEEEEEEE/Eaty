@@ -1,5 +1,6 @@
 package com.effort.feature.home.restaurant.detail.surrounding
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -14,6 +15,7 @@ class WeatherCarouselAdapter :
     inner class WeatherViewHolder(private val binding: ItemWeatherBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("DefaultLocale")
         fun bind(item: WeatherModel) {
 
             with(binding) {

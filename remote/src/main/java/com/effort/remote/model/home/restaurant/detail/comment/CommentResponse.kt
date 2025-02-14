@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CommentResponse(
+
     @SerialName("content")
     val content: String = "",
 

@@ -24,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class RestaurantListFragment :
     BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate) {
+
     private val viewModel: RestaurantViewModel by viewModels()
     private val args: RestaurantListFragmentArgs by navArgs() // SafeArgs로 데이터 받기
     private lateinit var restaurantListAdapter: RestaurantListAdapter

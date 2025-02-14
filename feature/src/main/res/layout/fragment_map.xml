@@ -9,24 +9,24 @@
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:navermap_locationButtonEnabled="true"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:navermap_locationButtonEnabled="true" />
 
     <!-- 필터 RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
         android:background="@android:color/transparent"
-        android:padding="8dp"
+        android:clipToPadding="false"
         android:overScrollMode="never"
-        app:layout_constraintTop_toTopOf="parent"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- 플로팅 액션 버튼 -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -37,10 +37,9 @@
         android:contentDescription="@string/play"
         android:src="@drawable/ic_baseline_add_24"
         app:backgroundTint="@color/primary_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 프로그레스 인디케이터 -->
     <include
         android:id="@+id/progress_circular"
         layout="@layout/progress_indicator" />

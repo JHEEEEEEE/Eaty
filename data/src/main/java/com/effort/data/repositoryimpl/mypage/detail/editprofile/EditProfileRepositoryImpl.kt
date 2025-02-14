@@ -23,7 +23,7 @@ class EditProfileRepositoryImpl @Inject constructor(
     }
 
     override fun checkNicknameDuplicated(nickname: String): Flow<DataResource<Boolean>> = flow {
-        emit(DataResource.loading<Boolean>()) // 로딩 상태 방출
+        emit(DataResource.loading()) // 로딩 상태 방출
 
         try {
             editProfileRemoteDataSource.checkNicknameDuplicated(nickname)

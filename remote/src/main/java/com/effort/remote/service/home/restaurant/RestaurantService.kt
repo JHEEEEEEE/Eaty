@@ -1,11 +1,11 @@
 package com.effort.remote.service.home.restaurant
 
-
 import com.effort.remote.model.home.restaurant.RestaurantWrapperResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface RestaurantService {
+
     @GET("v2/local/search/keyword.json")
     suspend fun getRestaurantList(
         @Query("query") query: String,

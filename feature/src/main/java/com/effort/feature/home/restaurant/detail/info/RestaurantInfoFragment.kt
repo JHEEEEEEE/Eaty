@@ -26,9 +26,7 @@ class RestaurantInfoFragment :
 
     private val viewModel: RestaurantInfoViewModel by viewModels()
     private val sharedViewModel: RestaurantOverviewViewModel by activityViewModels() // SharedViewModel 주입
-
     private lateinit var blogReviewListAdapter: BlogReviewListAdapter
-
 
     override fun initView() {
         setupRecyclerView()

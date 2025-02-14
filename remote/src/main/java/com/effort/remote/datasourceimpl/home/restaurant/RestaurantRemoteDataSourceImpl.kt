@@ -27,7 +27,6 @@ class RestaurantRemoteDataSourceImpl @Inject constructor(
                 page = page
             )
 
-
             // 3. 응답 처리
             if (response.documents.isNotEmpty()) { // 응답 결과 유효성 검사
                 Log.d("RestaurantResponse", "${response.documents}")
