@@ -1,10 +1,7 @@
 package com.effort.feature
 
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +18,6 @@ import com.effort.feature.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.security.MessageDigest
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -124,6 +120,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

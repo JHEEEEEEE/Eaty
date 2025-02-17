@@ -70,10 +70,6 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
     // hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
@@ -84,9 +80,6 @@ dependencies {
 
     // auth
     implementation(libs.play.services.auth)
-
-    // conscrypt
-    implementation(libs.conscrypt)
 
     // KakaoShare
     implementation(libs.kakao.share)
