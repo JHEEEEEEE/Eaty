@@ -38,7 +38,6 @@ class AuthRepositoryImpl @Inject constructor(
 
             val isSignedOut = authRemoteDataSource.signOut()
 
-            // 2. Local 데이터 초기화 (트랜잭션 처리 강화)
             try {
                 authLocalDataSource.clearUsers()
             } catch (e: Exception) {

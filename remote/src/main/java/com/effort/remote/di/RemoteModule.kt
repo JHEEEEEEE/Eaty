@@ -9,7 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class) // Singleton 범위에서 Remote Layer에만 주입
+@InstallIn(SingletonComponent::class)
 object RemoteModule {
 
     @Provides

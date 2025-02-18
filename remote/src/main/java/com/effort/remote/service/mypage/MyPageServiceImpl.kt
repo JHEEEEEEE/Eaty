@@ -16,21 +16,21 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-// Firebase에서 데이터를 가져오는 구현체. MyPageServiceImpl은 MyPageService 인터페이스를 구현
-// Firestore에서 데이터를 가져오고 FaqWrapperResponse로 감싸 반환
 class MyPageServiceImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
     private val storage: FirebaseStorage
 ) : MyPageService {
 
-    // Firestore에서 'faq' 컬렉션 데이터를 가져와 정렬 후 FaqWrapperResponse로 반환
+    /**
+     * Firestore에서 'faq' 컬렉션 데이터를 가져와 정렬 후 반환한다.
+     * - FAQ 목록을 가져와 FaqWrapperResponse로 감싸서 반환
+     */
     override suspend fun getFaqs(): FaqWrapperResponse {
         val snapshot = firestore.collection("faq")
-            .get() // 데이터를 한 번 가져옴
+            .get()
             .await()
 
-        // Firestore 데이터를 FaqResponse 리스트로 변환
         val faqList = snapshot.documents.mapNotNull { document ->
             with(document) {
                 val category = getString("category") ?: ""
@@ -40,11 +40,13 @@ class MyPageServiceImpl @Inject constructor(
                 FaqResponse(category, question, answer, timestamp)
             }
         }
-
-        // FaqResponse 리스트를 FaqWrapperResponse로 감싸 반환
         return FaqWrapperResponse(resultFaqs = faqList)
     }
 
+    /**
+     * Firestore에서 'notice' 컬렉션 데이터를 가져와 정렬 후 반환한다.
+     * - 공지사항 목록을 가져와 NoticeWrapperResponse로 감싸서 반환
+     */
     override suspend fun getNotices(): NoticeWrapperResponse {
         val snapshot = firestore.collection("notice")
             .get()
@@ -60,10 +62,13 @@ class MyPageServiceImpl @Inject constructor(
                 NoticeResponse(category, title, description, imageUrl, timestamp)
             }
         }
-
         return NoticeWrapperResponse(resultNotices = noticeList)
     }
 
+    /**
+     * Firestore에서 닉네임을 업데이트한다.
+     * - 사용자 인증 상태 확인 후 닉네임 업데이트 실행
+     */
     override suspend fun updateNickname(nickname: String): Boolean {
         return try {
             val currentUserEmail =
@@ -71,55 +76,54 @@ class MyPageServiceImpl @Inject constructor(
 
             val userDoc = firestore.collection("users").document(currentUserEmail)
             userDoc.update("nickname", nickname).await()
-
             true
         } catch (e: Exception) {
             false
         }
     }
 
+    /**
+     * 닉네임 중복 여부 확인한다.
+     * - Firestore에서 동일한 닉네임이 존재하는지 실시간 감지
+     */
     override fun checkNicknameDuplicated(nickname: String): Flow<Boolean> = callbackFlow {
-
         val listenerRegistration = firestore.collection("users")
             .whereEqualTo("nickname", nickname)
             .addSnapshotListener { snapshot, exception ->
                 if (exception != null) {
-                    close(exception) // 예외 발생 시 스트림 종료
+                    close(exception)
                     return@addSnapshotListener
                 }
 
                 val isAvailable = snapshot?.documents.isNullOrEmpty()
-                trySend(isAvailable) // 중복 여부를 스트림으로 전송 -> 중복 있으면 false, 없으면 true
+                trySend(isAvailable) // 중복 여부 전송 (중복 존재 시 false, 없으면 true)
             }
-
-        awaitClose {
-            listenerRegistration.remove() // 리스너 해제
-        }
+        awaitClose { listenerRegistration.remove() }
     }
 
+    /**
+     * 사용자 프로필 사진 업데이트한다.
+     * - Firebase Storage에 업로드 후 Firestore에 URL 저장
+     */
     override suspend fun updateProfilePic(profilePicPath: String): Boolean {
         return try {
-            // Log profilePicPath to check its value
             Log.d("UpdateProfilePic", "profilePicPath: $profilePicPath")
 
             val currentUserEmail = auth.currentUser?.email
                 ?: throw Exception("User not logged in")
 
-            // Log email to ensure current user email is fetched correctly
             Log.d("UpdateProfilePic", "currentUserEmail: $currentUserEmail")
 
             val storageRef = storage.reference.child("profile_pictures/${currentUserEmail}.jpg")
 
             val uri = Uri.parse(profilePicPath)
 
-            // Log URI to verify it's parsed correctly
             Log.d("UpdateProfilePic", "URI: $uri")
 
             storageRef.putFile(uri).await()
 
             val downloadUrl = storageRef.downloadUrl.await()
 
-            // Log download URL after upload
             Log.d("UpdateProfilePic", "downloadUrl: $downloadUrl")
 
             firestore.collection("users").document(currentUserEmail)
@@ -127,12 +131,15 @@ class MyPageServiceImpl @Inject constructor(
 
             true
         } catch (e: Exception) {
-            // Log exception message for debugging
             Log.e("UpdateProfilePic", "Error: ${e.message}", e)
             false
         }
     }
 
+    /**
+     * 사용자 정보 변경을 실시간으로 감지한다.
+     * - Firestore에서 사용자 정보가 변경될 때마다 스트림으로 전송
+     */
     override fun observeUserUpdate(): Flow<UserResponse> = callbackFlow {
         val email = auth.currentUser?.email.orEmpty()
         if (email.isEmpty()) {
@@ -151,6 +158,6 @@ class MyPageServiceImpl @Inject constructor(
                     trySend(it)
                 }
             }
-        awaitClose { listenerRegistration.remove() } // 리스너 해제
+        awaitClose { listenerRegistration.remove() }
     }
 }

@@ -11,24 +11,21 @@ class LocationRepositoryImpl @Inject constructor(
     private val locationRemoteDataSource: LocationRemoteDataSource
 ) : LocationRepository {
 
+    /**
+     * 현재 위치 정보를 가져온다.
+     * - 위치 정보 요청 성공 시 위경도를 로그로 출력
+     * - 실패 시 예외를 처리하고 오류 상태 반환
+     */
     override suspend fun getCurrentLocation(): DataResource<Location> {
         Log.d("LocationRepositoryImpl", "현재 위치 요청 시작")
 
         return try {
-            // 1. 위치 정보 요청
+            // 위치 정보 요청
             val location = locationRemoteDataSource.getCurrentLocation()
             Log.d("LocationRepositoryImpl", "위치 정보 요청 성공: $location")
 
-            // **현재 위치 위경도 로그 출력**
-            Log.d(
-                "LocationLog",
-                "현재 위치 - 위도: ${location.latitude}, 경도: ${location.longitude}"
-            )
-
-            // 2. 성공 시 데이터 변환 및 반환
             DataResource.success(location.toDomain())
         } catch (e: Exception) {
-            // 3. 실패 시 예외 처리 및 반환
             Log.e("LocationRepositoryImpl", "위치 정보 요청 실패: ${e.message}", e)
             DataResource.error(e)
         }

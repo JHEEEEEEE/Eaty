@@ -30,16 +30,16 @@ class NoticeViewModel @Inject constructor(
         fetchNotices()
     }
 
-    // 반복되는 중복 로직 줄일 수 있는 방법 강구
+    /**
+     * 공지사항 목록을 불러온다.
+     * - API 요청을 통해 데이터를 가져오고 `UiState`로 관리
+     * - 로딩 상태와 데이터 로딩 완료 후의 상태를 반영
+     */
     private fun fetchNotices() {
         viewModelScope.launch {
             getNoticeListUseCase()
-                .onStart {
-                    setLoadingState(_getNoticeState)
-                }
-                .onCompletion { cause ->
-                    handleCompletionState(_getNoticeState, cause) // 상태 관리 함수 호출
-                }
+                .onStart { setLoadingState(_getNoticeState) }
+                .onCompletion { cause -> handleCompletionState(_getNoticeState, cause) }
                 .collectLatest { dataResource ->
                     _getNoticeState.value = dataResource.toUiStateList { it.toPresentation() }
                 }

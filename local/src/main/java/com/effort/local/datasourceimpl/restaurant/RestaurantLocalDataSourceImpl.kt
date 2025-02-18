@@ -19,7 +19,7 @@ class RestaurantLocalDataSourceImpl @Inject constructor(
             localData
         } catch (e: Exception) {
             Log.e("RestaurantLocalDataSourceImpl", "Failed to fetch data: ${e.message}")
-            emptyList() // 오류 발생 시 빈 리스트 반환
+            emptyList()
         }
     }
 

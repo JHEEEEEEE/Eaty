@@ -13,6 +13,12 @@ import kotlin.coroutines.resume
 class ShareServiceImpl @Inject constructor(
     private val context: Context
 ) : ShareService {
+
+    /**
+     * 카카오톡 공유 URL 생성
+     * - 위치 정보를 기반으로 LocationTemplate을 생성하여 공유 URL을 반환
+     * - 카카오톡이 설치되어 있으면 `ShareClient`를 사용, 없으면 `WebSharerClient`를 사용
+     */
     override suspend fun createKakaoShareUrl(
         title: String,
         lotNumberAddress: String,
@@ -41,6 +47,11 @@ class ShareServiceImpl @Inject constructor(
         )
 
         return if (ShareClient.instance.isKakaoTalkSharingAvailable(context)) {
+            /**
+             * 1. 카카오톡 앱이 설치된 경우
+             * - `ShareClient.instance.shareDefault()`를 사용하여 공유 URL 생성
+             * - 공유 실패 시 예외 메시지 반환
+             */
             suspendCancellableCoroutine { continuation ->
                 ShareClient.instance.shareDefault(context, locationTemplate) { sharingResult, error ->
                     if (error != null) {
@@ -51,6 +62,10 @@ class ShareServiceImpl @Inject constructor(
                 }
             }
         } else {
+            /**
+             * 2. 카카오톡이 설치되지 않은 경우
+             * - `WebSharerClient.instance.makeDefaultUrl()`을 사용하여 웹 공유 URL 생성
+             */
             WebSharerClient.instance.makeDefaultUrl(locationTemplate).toString()
         }
     }

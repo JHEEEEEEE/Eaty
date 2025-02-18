@@ -15,22 +15,34 @@ class CommentServiceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : CommentService {
 
+    /**
+     * Firestore에 댓글 추가한다.
+     * - 특정 레스토랑의 "comments" 컬렉션에 댓글 저장
+     * - 문서 ID를 사용자 ID로 설정하여 중복 방지
+     * - Firestore 작업이 완료될 때까지 await() 사용하여 비동기 처리
+     */
     override suspend fun addComment(restaurantId: String, comment: CommentResponse): Boolean {
         return try {
             firestore.collection("restaurants")
                 .document(restaurantId)
                 .collection("comments")
-                .document(comment.userId) // 자동 생성 ID 사용
+                .document(comment.userId)
                 .set(comment)
-                .await() // 비동기 Firestore 작업
+                .await()
 
             true
         } catch (e: Exception) {
             Log.e("CommentService", "Failed to add comment: ${e.message}", e)
-            throw e // 예외를 재던지기
+            throw e
         }
     }
 
+    /**
+     * Firestore에서 특정 레스토랑의 댓글 목록을 실시간으로 가져온다.
+     * - `callbackFlow`를 사용하여 데이터 변경을 즉시 반영
+     * - "timestamp" 기준으로 내림차순 정렬
+     * - 스냅샷이 변경될 때마다 데이터를 새로 전송
+     */
     override fun getCommentList(restaurantId: String): Flow<CommentWrapperResponse> = callbackFlow {
         val listener = firestore.collection("restaurants")
             .document(restaurantId)
@@ -48,7 +60,6 @@ class CommentServiceImpl @Inject constructor(
                     trySend(CommentWrapperResponse(resultComments = comments)).isSuccess
                 }
             }
-        awaitClose { listener.remove() } // Listener 해제
+        awaitClose { listener.remove() }
     }
-
 }

@@ -28,35 +28,43 @@ class RestaurantInfoViewModel @Inject constructor(
     var isLastPage = false
     var isLoading = false
 
+    /**
+     * 블로그 리뷰 데이터 요청한다.
+     * - 최초 로딩 또는 추가 로딩을 수행
+     * - `loadMore` 값이 `true`이면 기존 데이터에 이어서 추가 페이지 요청
+     * - 마지막 페이지거나 이미 로딩 중이면 추가 요청하지 않음
+     *
+     * @param query 검색어 (식당명)
+     * @param region 검색 지역
+     * @param loadMore 추가 데이터 로딩 여부
+     */
     fun fetchBlogReviews(query: String, region: String, loadMore: Boolean = false) {
-        // 1. 추가 로딩 조건 확인
         if (isLoading || (isLastPage && loadMore)) return
 
-        // 2. 로딩 상태 시작
         isLoading = true
         if (!loadMore) {
-            setLoadingState(_getBlogReviewState) // 초기 로딩 상태
+            setLoadingState(_getBlogReviewState)
         }
 
         viewModelScope.launch {
             when (val dataResource = getBlogReviewListUseCase(query, region, currentPage)) {
                 is DataResource.Success -> {
                     val (reviews, meta) = dataResource.data
+
+                    // 기존 데이터와 새 데이터 결합 (추가 로딩이면 기존 데이터 유지)
                     val currentData = if (loadMore) {
                         (_getBlogReviewState.value as? UiState.Success)?.data.orEmpty()
                     } else {
                         emptyList()
                     }
-
                     val combinedData = currentData + reviews.map { it.toPresentation() }
 
                     _getBlogReviewState.value = UiState.Success(combinedData)
 
-                    // 5. 페이지네이션 업데이트
-                    if (meta?.isEnd == true) { // 마지막 페이지 확인
+                    if (meta?.isEnd == true) {
                         isLastPage = true
                     } else {
-                        currentPage++ // 다음 페이지 증가
+                        currentPage++
                     }
                 }
 

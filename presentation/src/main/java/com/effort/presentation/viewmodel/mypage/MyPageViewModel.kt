@@ -27,24 +27,20 @@ class MyPageViewModel @Inject constructor(
         observeUserUpdate()
     }
 
+    /**
+     * 사용자의 정보를 실시간으로 감지하여 UI에 반영한다.
+     * - `ObserveUserUpdateUseCase`를 통해 사용자 상태를 지속적으로 감시
+     * - 상태 변경이 발생하면 `UiState`를 업데이트하여 UI에서 즉시 반영
+     */
     private fun observeUserUpdate() {
         viewModelScope.launch {
             observeUserUpdateUseCase().collectLatest { dataResource ->
                 _userUpdateState.value = when (dataResource) {
-                    is DataResource.Success -> {
-                        UiState.Success(dataResource.data.toPresentation())
-                    }
-
-                    is DataResource.Error -> {
-                        UiState.Error(dataResource.throwable)
-                    }
-
-                    is DataResource.Loading -> {
-                        UiState.Loading
-                    }
+                    is DataResource.Success -> UiState.Success(dataResource.data.toPresentation())
+                    is DataResource.Error -> UiState.Error(dataResource.throwable)
+                    is DataResource.Loading -> UiState.Loading
                 }
             }
         }
     }
-
 }

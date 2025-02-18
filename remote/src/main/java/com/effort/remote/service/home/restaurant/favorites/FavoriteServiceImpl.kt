@@ -12,6 +12,11 @@ class FavoriteServiceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : FavoriteService {
 
+    /**
+     * 사용자의 즐겨찾기에 레스토랑 추가한다.
+     * - Firestore에서 중복 확인 후 저장
+     * - 동일한 레스토랑이 이미 존재하면 추가하지 않음
+     */
     override suspend fun addRestaurantToFavorites(
         userId: String,
         restaurant: RestaurantResponse
@@ -22,17 +27,15 @@ class FavoriteServiceImpl @Inject constructor(
                 .collection("restaurants")
                 .document(restaurant.title)
 
-            // Firestore에서 중복 확인
             val documentSnapshot = userDocRef.get().await()
             if (documentSnapshot.exists()) {
                 Log.d(
                     "FavoriteServiceImpl",
                     "Restaurant '${restaurant.title}' already exists for user: $userId"
                 )
-                return false // 중복된 데이터가 이미 존재
+                return false
             }
 
-            // Firestore에 저장
             userDocRef.set(restaurant).await()
             Log.d(
                 "FavoriteServiceImpl",
@@ -49,6 +52,10 @@ class FavoriteServiceImpl @Inject constructor(
         }
     }
 
+    /**
+     * 사용자의 즐겨찾기에서 레스토랑 제거한다.
+     * - Firestore에서 특정 레스토랑 문서 삭제
+     */
     override suspend fun removeRestaurantFromFavorites(
         userId: String,
         restaurantName: String
@@ -59,7 +66,6 @@ class FavoriteServiceImpl @Inject constructor(
                 .collection("restaurants")
                 .document(restaurantName)
 
-            // Firestore에서 문서 삭제
             userDocRef.delete().await()
             Log.d(
                 "FavoriteServiceImpl",
@@ -76,6 +82,10 @@ class FavoriteServiceImpl @Inject constructor(
         }
     }
 
+    /**
+     * 사용자의 즐겨찾기 목록에서 특정 레스토랑이 존재하는지 확인한다.
+     * - Firestore에서 문서 존재 여부 확인 후 반환
+     */
     override suspend fun checkIfRestaurantIsFavorite(
         userId: String,
         restaurantName: String
@@ -85,8 +95,8 @@ class FavoriteServiceImpl @Inject constructor(
                 .document(userId)
                 .collection("restaurants")
                 .document(restaurantName)
-                .get() // Firestore 문서 가져오기
-                .await() // 비동기 작업 대기
+                .get()
+                .await()
 
             val exists = userDocRef.exists()
             Log.d(
@@ -104,6 +114,10 @@ class FavoriteServiceImpl @Inject constructor(
         }
     }
 
+    /**
+     * 사용자의 즐겨찾기 목록을 Firestore에서 가져와 반환한다.
+     * - Firestore 데이터 -> RestaurantFavoritesResponse 리스트 변환
+     */
     override suspend fun getFavorites(userId: String): RestaurantFavoritesWrapperResponse {
         val snapshot = firestore.collection("users")
             .document(userId)
@@ -111,7 +125,7 @@ class FavoriteServiceImpl @Inject constructor(
             .get()
             .await()
 
-        // Firestore 데이터를 FaqResponse 리스트로 변환
+        // Firestore 데이터를 RestaurantFavoritesResponse 리스트로 변환
         val favoriteList = snapshot.documents.mapNotNull { document ->
             with(document) {
                 val title = getString("title") ?: ""

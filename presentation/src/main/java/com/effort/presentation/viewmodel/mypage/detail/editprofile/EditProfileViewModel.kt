@@ -29,19 +29,35 @@ class EditProfileViewModel @Inject constructor(
     val updateState get() = _updateState.asStateFlow()
 
     private val _checkNicknameDuplicatedState = MutableStateFlow<UiState<Boolean>>(UiState.Empty)
-    val  checkNicknameDuplicatedState get() = _checkNicknameDuplicatedState.asStateFlow()
+    val checkNicknameDuplicatedState get() = _checkNicknameDuplicatedState.asStateFlow()
 
     private val _selectedImageUri = MutableStateFlow<String?>(null)
     val selectedImageUri get() = _selectedImageUri.asStateFlow()
 
+    /**
+     * 선택한 프로필 이미지 URI를 설정한다.
+     *
+     * @param uri 선택한 이미지 URI
+     */
     fun setSelectedImageUri(uri: String) {
         _selectedImageUri.value = uri
     }
 
+    /**
+     * 닉네임 중복 확인 상태를 초기화한다.
+     */
     fun setEmptyNicknameState() {
         _checkNicknameDuplicatedState.value = UiState.Empty
     }
 
+    /**
+     * 프로필 정보를 업데이트한다.
+     * - 닉네임 또는 프로필 사진이 변경되었을 경우 업데이트 수행
+     * - 둘 다 변경되지 않으면 에러 상태 반환
+     *
+     * @param nickname 변경할 닉네임 (선택 사항)
+     * @param profilePictureUri 변경할 프로필 사진 URI (선택 사항)
+     */
     fun updateProfile(nickname: String?, profilePictureUri: String?) {
         viewModelScope.launch {
             setLoadingState(_updateState)
@@ -70,28 +86,23 @@ class EditProfileViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 닉네임 중복 여부를 확인한다.
+     * - 중복된 경우 `UiState.Success(false)` 반환
+     * - 사용 가능한 경우 `UiState.Success(true)` 반환
+     *
+     * @param nickname 중복 확인할 닉네임
+     */
     fun checkNicknameDuplicated(nickname: String) {
         viewModelScope.launch {
             checkNicknameDuplicatedUseCase(nickname)
-                .onStart {
-                    setLoadingState(_checkNicknameDuplicatedState)
-                }
-                .catch { exception ->
-                    _checkNicknameDuplicatedState.value = UiState.Error(exception)
-                }
+                .onStart { setLoadingState(_checkNicknameDuplicatedState) }
+                .catch { exception -> _checkNicknameDuplicatedState.value = UiState.Error(exception) }
                 .collectLatest { datasource ->
-                    when (datasource) {
-                        is DataResource.Success -> {
-                            _checkNicknameDuplicatedState.value = UiState.Success(datasource.data)
-                        }
-
-                        is DataResource.Error -> {
-                            _checkNicknameDuplicatedState.value = UiState.Error(datasource.throwable)
-                        }
-
-                        is DataResource.Loading -> {
-                            _checkNicknameDuplicatedState.value = UiState.Loading
-                        }
+                    _checkNicknameDuplicatedState.value = when (datasource) {
+                        is DataResource.Success -> UiState.Success(datasource.data)
+                        is DataResource.Error -> UiState.Error(datasource.throwable)
+                        is DataResource.Loading -> UiState.Loading
                     }
                 }
         }

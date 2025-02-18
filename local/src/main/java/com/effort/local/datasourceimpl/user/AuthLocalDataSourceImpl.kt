@@ -14,7 +14,7 @@ class AuthLocalDataSourceImpl @Inject constructor(
             userDao.clearUsers() // 데이터 삭제
         } catch (e: Exception) {
             Log.e("AuthLocalDataSourceImpl", "Failed to clear local users: ${e.message}")
-            throw e // 예외 전파
+            throw e
         }
     }
 }

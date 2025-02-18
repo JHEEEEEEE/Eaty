@@ -23,7 +23,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object FirebaseModule {
 
-    // Firestore 인스턴스를 Singleton으로 제공
     @Provides
     @Singleton
     fun provideFireStore(): FirebaseFirestore {
@@ -42,8 +41,6 @@ object FirebaseModule {
         return FirebaseStorage.getInstance()
     }
 
-    // MyPageService 인터페이스와 MyPageServiceImpl 구현체를 연결
-    // Hilt가 MyPageService 의존성을 주입할 때 MyPageServiceImpl 인스턴스를 제공
     @Provides
     @Singleton
     fun provideMyPageService(

@@ -9,8 +9,7 @@ class AuthRemoteDataSourceImpl @Inject constructor(
 ) : AuthRemoteDataSource {
 
     override suspend fun authenticateUser(idToken: String): Boolean {
-        val response = authService.authenticateUser(idToken)
-        return response // FirebaseUserResponse → FirebaseUserEntity 변환
+        return authService.authenticateUser(idToken)
     }
 
     override suspend fun checkUserLoggedIn(): Boolean {

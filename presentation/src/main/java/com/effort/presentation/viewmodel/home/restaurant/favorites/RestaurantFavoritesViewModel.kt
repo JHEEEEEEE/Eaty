@@ -56,6 +56,13 @@ class RestaurantFavoritesViewModel @Inject constructor(
         observeUser()
     }
 
+    /**
+     * 사용자가 특정 식당을 찜 목록에 추가한다.
+     * - 현재 로그인된 사용자를 확인 후 실행
+     * - `addRestaurantToFavoritesUseCase`를 호출하여 데이터 업데이트
+     *
+     * @param restaurant 찜할 식당 정보
+     */
     fun addRestaurantToFavorites(restaurant: RestaurantModel) {
         executeWithCurrentUser(
             userState = _userState,
@@ -66,6 +73,13 @@ class RestaurantFavoritesViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 사용자가 특정 식당을 찜 목록에서 제거한다.
+     * - 현재 로그인된 사용자를 확인 후 실행
+     * - `removeRestaurantFromFavoritesUseCase`를 호출하여 데이터 업데이트
+     *
+     * @param restaurantName 제거할 식당의 이름
+     */
     fun removeRestaurantFromFavorites(restaurantName: String) {
         executeWithCurrentUser(
             userState = _userState,
@@ -76,6 +90,13 @@ class RestaurantFavoritesViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 특정 식당이 사용자의 찜 목록에 있는지 확인한다.
+     * - 현재 로그인된 사용자를 확인 후 실행
+     * - `checkIfRestaurantIsFavoriteUseCase`를 호출하여 상태 업데이트
+     *
+     * @param restaurantName 확인할 식당의 이름
+     */
     fun checkIfRestaurantIsFavorite(restaurantName: String) {
         executeWithCurrentUser(
             userState = _userState,
@@ -86,6 +107,11 @@ class RestaurantFavoritesViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 사용자의 찜 목록을 가져온다.
+     * - 로그인된 사용자를 확인 후 실행
+     * - `getFavoriteListUseCase`를 호출하여 찜한 식당 목록을 가져옴
+     */
     fun fetchFavorites() {
         val currentUser =
             validateCurrentUser(_userState, _getFavoriteState) ?: return // 사용자 확인 실패 시 종료
@@ -95,12 +121,10 @@ class RestaurantFavoritesViewModel @Inject constructor(
         viewModelScope.launch {
             getFavoriteListUseCase(userId)
                 .onStart {
-                    // 로딩 상태로 업데이트
-                    setLoadingState(_getFavoriteState)
+                    setLoadingState(_getFavoriteState) // 로딩 상태로 업데이트
                 }
                 .onCompletion { cause ->
-                    // 로딩 종료
-                    handleCompletionState(_getFavoriteState, cause)
+                    handleCompletionState(_getFavoriteState, cause) // 로딩 종료 처리
                 }
                 .collectLatest { dataResource ->
                     _getFavoriteState.value = dataResource.toUiStateList { it.toPresentation() }
@@ -108,7 +132,10 @@ class RestaurantFavoritesViewModel @Inject constructor(
         }
     }
 
-    // 사용자 상태 관찰
+    /**
+     * 사용자 상태를 관찰하여 UI를 업데이트한다.
+     * - 로그인된 사용자의 정보를 감지하고 상태를 업데이트
+     */
     private fun observeUser() {
         viewModelScope.launch {
             observeUserUpdateUseCase()
@@ -121,7 +148,6 @@ class RestaurantFavoritesViewModel @Inject constructor(
                             )
                             UiState.Success(userResource.data.toPresentation())
                         }
-
                         is DataResource.Error -> {
                             Log.e(
                                 "RestaurantFavoritesViewModel",
@@ -129,10 +155,7 @@ class RestaurantFavoritesViewModel @Inject constructor(
                             )
                             UiState.Error(userResource.throwable)
                         }
-
-                        is DataResource.Loading -> {
-                            UiState.Loading
-                        }
+                        is DataResource.Loading -> UiState.Loading
                     }
                 }
         }

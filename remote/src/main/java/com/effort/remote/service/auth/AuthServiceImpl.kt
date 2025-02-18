@@ -12,6 +12,13 @@ class AuthServiceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : AuthService {
 
+    /**
+     * 사용자 인증을 수행하고 Firebase에 저장한다.
+     * - Google ID 토큰을 사용하여 Firebase Authentication 진행
+     * - 성공 시 사용자의 이메일을 기반으로 Firestore에 저장
+     * - 사용자 정보가 Firestore에 없을 경우 새로 생성
+     * - 예외 발생 시 로그를 남기고 실패 처리
+     */
     override suspend fun authenticateUser(idToken: String): Boolean {
         return try {
             Log.d("AuthServiceImpl", "authenticateUser() 호출")
@@ -36,12 +43,22 @@ class AuthServiceImpl @Inject constructor(
         }
     }
 
+    /**
+     * 현재 로그인 상태 확인한다.
+     * - Firebase Authentication을 사용하여 현재 사용자가 존재하는지 검사
+     */
     override suspend fun checkUserLoggedIn(): Boolean {
         val isLoggedIn = auth.currentUser != null
         Log.d("AuthServiceImpl", "checkUserLoggedIn(): $isLoggedIn")
         return isLoggedIn
     }
 
+    /**
+     * 사용자 정보를 Firestore에 저장한다.
+     * - 이메일을 기반으로 Firestore에서 사용자 정보 조회
+     * - 사용자가 존재하지 않으면 새로 저장
+     * - 기존 사용자는 업데이트하지 않고 그대로 유지
+     */
     private suspend fun saveUser(email: String, name: String, profilePicPath: String) {
         try {
             Log.d("AuthServiceImpl", "saveUser() 호출: $email")
@@ -65,6 +82,11 @@ class AuthServiceImpl @Inject constructor(
         }
     }
 
+    /**
+     * 사용자를 로그아웃 처리한다.
+     * - Firebase Authentication을 통해 로그아웃 수행
+     * - 예외 발생 시 로그를 출력하고 실패 반환
+     */
     override suspend fun signOut(): Boolean {
         return try {
             Log.d("AuthServiceImpl", "signOut() 호출")

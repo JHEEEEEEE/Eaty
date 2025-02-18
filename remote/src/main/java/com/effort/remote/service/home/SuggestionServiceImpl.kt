@@ -13,6 +13,12 @@ class SuggestionServiceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : SuggestionService {
 
+    /**
+     * Firestore에서 검색어 자동완성 데이터 조회
+     * - 검색어(query)로 시작하는 키워드를 가져옴
+     * - Firestore `whereGreaterThanOrEqualTo` 및 `whereLessThanOrEqualTo` 필터 사용
+     * - 실패 시 Flow를 종료하고 예외 처리
+     */
     override fun getSuggestions(query: String): Flow<KeywordWrapperResponse> = callbackFlow {
         try {
             // Firestore에서 "keywords" 컬렉션 조회
@@ -45,12 +51,10 @@ class SuggestionServiceImpl @Inject constructor(
                     close(exception) // 오류를 발생시키고 Flow를 종료
                 }
         } catch (e: Exception) {
-            // 예외 발생 시 로그 출력
             Log.e("SuggestionServiceImpl", "Error in getSuggestions", e)
             close(e)
         }
 
-        // Flow가 종료될 때 호출
         awaitClose()
     }
 }

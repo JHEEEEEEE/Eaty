@@ -19,24 +19,21 @@ class MyPageRepositoryImpl @Inject constructor(
 ) : MyPageRepository {
 
     override fun observeUserUpdate(): Flow<DataResource<User>> = channelFlow {
-        // 1. Local 데이터 우선 반환
         try {
             val localData = myPageLocalDataSource.getUser()
             localData?.let {
-                send(DataResource.success(it.toDomain())) // Local 데이터 반환
+                send(DataResource.success(it.toDomain()))
             }
         } catch (e: Exception) {
             Log.e("MyPageRepositoryImpl", "Failed to load local data: ${e.message}")
         }
 
-        // 2. Remote 데이터 동기화
         myPageRemoteDataSource.observeUserUpdate()
-            .retry(2) // 최대 2회 재시도
+            .retry(2)
             .map { entity ->
                 val domainData = entity.toDomain()
 
                 try {
-                    // Remote 데이터를 Local에 저장
                     myPageLocalDataSource.saveUser(entity)
                 } catch (e: Exception) {
                     Log.e("MyPageRepositoryImpl", "Failed to save user data: ${e.message}")

@@ -13,13 +13,18 @@ class RestaurantRemoteDataSourceImpl @Inject constructor(
     private val locationService: LocationService,
 ): RestaurantRemoteDataSource {
 
+    /**
+     * 현재 위치를 기반으로 레스토랑 데이터를 조회한다.
+     * - 위치 정보를 가져온 후 API 요청을 수행 (위치 정보가 없으면 예외 발생)
+     * - API 응답을 받아 유효성 검사 후 데이터를 반환
+     * - 응답이 비어 있을 경우 예외를 발생시켜 상위 계층에서 처리
+     * - 예외 발생 시 로그를 출력하고 예외를 전파
+     */
     override suspend fun getRestaurants(query: String, page: Int): Pair<List<RestaurantEntity>, RestaurantMetaEntity> {
         return try {
-            // 1. 현재 위치 가져오기
             val location = locationService.getCurrentLocation() ?: throw IllegalStateException("위치 정보를 가져올 수 없습니다.")
             Log.d("LocationInfo", "위도: ${location.latitude}, 경도: ${location.longitude}")
 
-            // 2. API 요청
             val response = restaurantService.getRestaurantList(
                 query = query,
                 latitude = location.latitude.toString(),
@@ -27,7 +32,6 @@ class RestaurantRemoteDataSourceImpl @Inject constructor(
                 page = page
             )
 
-            // 3. 응답 처리
             if (response.documents.isNotEmpty()) { // 응답 결과 유효성 검사
                 Log.d("RestaurantResponse", "${response.documents}")
                 val data = response.documents.map { it.toData() }

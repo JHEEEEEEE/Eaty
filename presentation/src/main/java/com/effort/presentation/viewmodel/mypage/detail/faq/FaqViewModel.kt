@@ -30,17 +30,16 @@ class FaqViewModel @Inject constructor(
         fetchFaqs()
     }
 
+    /**
+     * FAQ 목록을 불러온다.
+     * - API 요청을 통해 데이터를 가져오고 `UiState`로 관리
+     * - 데이터 로딩 상태 및 완료 후 상태를 반영
+     */
     private fun fetchFaqs() {
         viewModelScope.launch {
             getFaqListUseCase()
-                .onStart {
-                    // 로딩 상태로 업데이트
-                    setLoadingState(_getFaqState)
-                }
-                .onCompletion { cause ->
-                    // 로딩 종료
-                    handleCompletionState(_getFaqState, cause)
-                }
+                .onStart { setLoadingState(_getFaqState) }
+                .onCompletion { cause -> handleCompletionState(_getFaqState, cause) }
                 .collectLatest { dataResource ->
                     _getFaqState.value = dataResource.toUiStateList { it.toPresentation() }
                 }

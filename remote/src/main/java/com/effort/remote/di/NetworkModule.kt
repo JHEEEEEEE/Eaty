@@ -23,7 +23,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    // Json 인스턴스를 싱글톤으로 정의
     @Provides
     @Singleton
     fun provideJson(): Json = Json {
@@ -36,12 +35,12 @@ object NetworkModule {
     @Singleton
     @KakaoRetrofit
     fun provideKakaoRetrofit(
-        okHttpClient: OkHttpClient, // 공통 클라이언트 사용
+        okHttpClient: OkHttpClient,
         kakaoApiInterceptor: KakaoApiInterceptor,
         json: Json
     ): Retrofit {
         val client = okHttpClient.newBuilder()
-            .addInterceptor(kakaoApiInterceptor) // 인증 인터셉터 추가
+            .addInterceptor(kakaoApiInterceptor)
             .build()
 
         val contentType = "application/json".toMediaType()
@@ -56,13 +55,13 @@ object NetworkModule {
     @Singleton
     @WeatherRetrofit
     fun provideWeatherRetrofit(
-        okHttpClient: OkHttpClient, // 공통 클라이언트 사용
-        json: Json // JSON 직렬화 라이브러리 주입
+        okHttpClient: OkHttpClient,
+        json: Json
     ): Retrofit {
         val contentType = "application/json".toMediaType()
         return Retrofit.Builder()
             .baseUrl("https://api.openweathermap.org/data/2.5/")
-            .client(okHttpClient) // 공통 클라이언트 적용
+            .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
     }
@@ -121,8 +120,8 @@ object NetworkModule {
         }
 
         return OkHttpClient.Builder()
-            .addInterceptor(logging) // 로깅 인터셉터 추가
-            .connectTimeout(30, TimeUnit.SECONDS) // 타임아웃 설정
+            .addInterceptor(logging)
+            .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()

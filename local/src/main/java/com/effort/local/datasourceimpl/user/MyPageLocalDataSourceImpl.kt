@@ -18,10 +18,11 @@ class MyPageLocalDataSourceImpl @Inject constructor(
 
         } catch (e: Exception) {
             Log.e("AuthLocalDataSourceImpl", "Failed to fetch user data: ${e.message}")
-            null // 오류 발생 시 null 반환
+            null
         }
     }
 
+    // 유저 정보 저장
     override suspend fun saveUser(userEntity: UserEntity) {
         userDao.saveUser(userEntity.toLocal())
     }
