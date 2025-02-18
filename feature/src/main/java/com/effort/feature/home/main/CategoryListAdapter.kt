@@ -8,50 +8,51 @@ import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.databinding.ItemCategoryBinding
 import com.effort.presentation.model.home.CategoryModel
 
+/**
+ * 카테고리 목록을 표시하는 RecyclerView Adapter
+ * - 사용자가 카테고리를 선택하면 해당 카테고리 이름을 onClick 콜백을 통해 전달
+ */
 class CategoryListAdapter(
     private val onClick: (String) -> Unit
 ) : ListAdapter<CategoryModel, CategoryListAdapter.CategoryViewHolder>(diffCallback) {
 
-    // 뷰 홀더 클래스 정의
     inner class CategoryViewHolder(private val binding: ItemCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        /**
+         * 카테고리 데이터를 UI에 바인딩하고 클릭 이벤트를 설정
+         */
         fun bind(item: CategoryModel) {
-            with(binding) {
-                categoryName.text = item.title
-                categoryImage.setImageResource(item.imageResId)
+            binding.categoryName.text = item.title
+            binding.categoryImage.setImageResource(item.imageResId)
 
-                root.setOnClickListener {
-                    val title = item.title
-                    onClick(title)
-                }
+            binding.root.setOnClickListener {
+                onClick(item.title)
             }
         }
     }
 
-    // 뷰 홀더 생성
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val binding =
             ItemCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CategoryViewHolder(binding) // 올바른 타입 반환
+        return CategoryViewHolder(binding)
     }
 
-    // 아이템 바인딩
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        val item = getItem(position) // 아이템 가져오기
-        holder.bind(item) // 뷰 홀더 바인딩 호출
+        holder.bind(getItem(position))
     }
 
     companion object {
+        /**
+         * RecyclerView의 성능을 최적화하기 위한 DiffUtil 콜백
+         * - 같은 제목(title)을 가진 카테고리는 동일한 아이템으로 간주
+         */
         val diffCallback = object : DiffUtil.ItemCallback<CategoryModel>() {
             override fun areItemsTheSame(oldItem: CategoryModel, newItem: CategoryModel): Boolean {
                 return oldItem.title == newItem.title
             }
 
-            override fun areContentsTheSame(
-                oldItem: CategoryModel,
-                newItem: CategoryModel
-            ): Boolean {
+            override fun areContentsTheSame(oldItem: CategoryModel, newItem: CategoryModel): Boolean {
                 return oldItem == newItem
             }
         }

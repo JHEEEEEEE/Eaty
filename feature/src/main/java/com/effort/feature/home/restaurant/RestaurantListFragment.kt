@@ -26,11 +26,10 @@ class RestaurantListFragment :
     BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate) {
 
     private val viewModel: RestaurantViewModel by viewModels()
-    private val args: RestaurantListFragmentArgs by navArgs() // SafeArgs로 데이터 받기
+    private val args: RestaurantListFragmentArgs by navArgs()
     private lateinit var restaurantListAdapter: RestaurantListAdapter
     private var layoutManagerState: Parcelable? = null
 
-    // 권한 요청 코드
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
     }
@@ -58,7 +57,6 @@ class RestaurantListFragment :
 
     override fun onPause() {
         super.onPause()
-        // 스크롤 상태 저장
         layoutManagerState = binding.recyclerviewRestaurant.layoutManager?.onSaveInstanceState()
     }
 
@@ -69,8 +67,10 @@ class RestaurantListFragment :
         }
     }
 
+    /**
+     * 레스토랑 목록을 표시하는 RecyclerView 설정
+     */
     private fun initRecyclerView() {
-        // 일반 레스토랑 리스트 어댑터
         restaurantListAdapter = RestaurantListAdapter { restaurant ->
             val action = RestaurantListFragmentDirections.actionRestaurantListFragmentToRestaurantDetailFragment(
                 title = restaurant.title,
@@ -82,24 +82,29 @@ class RestaurantListFragment :
                 latitude = restaurant.latitude,
                 longitude = restaurant.longitude
             )
-            findNavController().navigate(action) // 일반 리스트에서 상세로 이동
+            findNavController().navigate(action)
         }
-        binding.recyclerviewRestaurant.apply {
-            adapter = restaurantListAdapter
-        }
+        binding.recyclerviewRestaurant.adapter = restaurantListAdapter
     }
 
+    /**
+     * ViewModel에서 레스토랑 데이터를 감지하여 UI 업데이트
+     */
     private fun observeViewModel() {
         observeStateContinuouslyWithLifecycle(
             stateFlow = viewModel.getRestaurantState,
             progressView = binding.progressCircular.progressBar,
             fragment = this
         ) { restaurantData ->
-            restaurantListAdapter.submitList(restaurantData) // ✅ 레스토랑 리스트 업데이트
+            restaurantListAdapter.submitList(restaurantData)
         }
     }
 
-    // 위치 권한 확인
+    /**
+     * 위치 권한 확인
+     *
+     * @return 위치 권한이 허용된 경우 true
+     */
     private fun checkLocationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             requireContext(),
@@ -107,7 +112,9 @@ class RestaurantListFragment :
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    // 권한 요청
+    /**
+     * 위치 권한 요청
+     */
     private fun requestLocationPermission() {
         ActivityCompat.requestPermissions(
             requireActivity(),
@@ -116,7 +123,15 @@ class RestaurantListFragment :
         )
     }
 
-    // 권한 요청 결과 처리
+    /**
+     * 권한 요청 결과 처리
+     * - 권한이 허용되면 위치 기반으로 레스토랑 데이터 조회
+     * - 권한이 거부되면 일반 데이터 조회
+     *
+     * @param requestCode 요청 코드
+     * @param permissions 요청된 권한 배열
+     * @param grantResults 권한 허용 결과 배열
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -125,25 +140,26 @@ class RestaurantListFragment :
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 권한 허용 시 위치 기반으로 데이터 조회
                 viewModel.fetchRestaurants(args.query)
             } else {
-                // 권한 거부 시 일반 데이터 조회
                 viewModel.fetchRestaurants(args.query)
                 Toast.makeText(requireContext(), "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+    /**
+     * 스크롤이 끝까지 내려가면 추가 데이터를 요청
+     * - 스크롤이 아래로 이동할 때만 동작
+     * - 추가 데이터 로딩 조건이 충족되면 새로운 페이지 요청
+     */
     private fun setupInfiniteScrollListener(recyclerView: RecyclerView) {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                // 스크롤 방향이 아래로 이동할 때만 동작
                 if (dy <= 0) return
 
-                // 무한 스크롤 조건 검사 및 페이지 로딩
                 if (shouldLoadMoreData(recyclerView)) {
                     viewModel.fetchRestaurants(query = args.query, loadMore = true)
                 }
@@ -151,40 +167,49 @@ class RestaurantListFragment :
         })
     }
 
-    // 무한 스크롤 로딩 조건 검사 함수
+    /**
+     * 무한 스크롤이 필요한 조건 검사
+     * - 현재 로딩 중이면 추가 요청하지 않음
+     * - 마지막 페이지에 도달했다면 추가 요청하지 않음
+     * - 현재 보이는 아이템 개수 + 첫 번째 보이는 아이템 위치가 전체 개수 이상이면 요청
+     *
+     * @return 추가 데이터 요청이 필요한 경우 true
+     */
     private fun shouldLoadMoreData(recyclerView: RecyclerView): Boolean {
-        // LayoutManager 타입 체크
-        val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
-            ?: return false
+        val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return false
 
-        // 스크롤 항목 개수 및 위치 계산
         val visibleItemCount = layoutManager.childCount
         val totalItemCount = layoutManager.itemCount
         val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
-        // 무한 스크롤 조건 반환
         return !viewModel.isLoading && !viewModel.isLastPage &&
                 (visibleItemCount + firstVisibleItemPosition) >= totalItemCount &&
                 firstVisibleItemPosition >= 0
     }
 
+    /**
+     * 레스토랑 데이터를 로드
+     * - 권한이 허용되면 위치 기반 데이터 조회
+     * - 권한이 없으면 권한 요청 후 데이터 조회
+     */
     private fun loadData() {
-        // 권한 확인 및 요청 처리
         if (checkLocationPermission()) {
-            // 권한 허용 시 데이터 로드
             loadRestaurantData()
         } else {
-            // 권한 요청
             requestLocationPermission()
         }
     }
 
+    /**
+     * 레스토랑 데이터를 불러오거나 캐시된 데이터를 복원
+     * - 캐시된 데이터가 없으면 새로 로드
+     * - 캐시된 데이터가 있으면 복원하여 사용
+     */
     private fun loadRestaurantData() {
-        // 데이터 복원: 캐시된 데이터가 있으면 복원, 없으면 새로 로드
         if (viewModel.cachedData.value.isEmpty()) {
-            viewModel.fetchRestaurants(args.query) // 새로 로드
+            viewModel.fetchRestaurants(args.query)
         } else {
-            viewModel.loadCachedData() // 캐시된 데이터 로드
+            viewModel.loadCachedData()
         }
     }
 }

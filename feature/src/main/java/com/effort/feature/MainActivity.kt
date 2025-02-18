@@ -4,10 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
@@ -46,10 +46,12 @@ class MainActivity : AppCompatActivity() {
         handleDeepLink(intent)
     }
 
-    private fun enableEdgeToEdge() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-    }
-
+    /**
+     * 상태바 스타일 설정
+     * - 기본 색상을 primary_color로 지정
+     * - 상태바 텍스트 색상을 어둡게 설정 (LightStatusBars 비활성화)
+     * - 루트 뷰에 상태바 패딩 적용
+     */
     private fun setupStatusBar() {
         window.apply {
             statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.primary_color)
@@ -58,19 +60,22 @@ class MainActivity : AppCompatActivity() {
         applyStatusBarPadding(binding.root)
     }
 
+    /**
+     * 상태바 높이만큼 패딩 적용
+     */
     private fun applyStatusBarPadding(view: View) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
             val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-            v.setPadding(
-                v.paddingLeft,
-                statusBarHeight,
-                v.paddingRight,
-                v.paddingBottom
-            )
+            v.setPadding(v.paddingLeft, statusBarHeight, v.paddingRight, v.paddingBottom)
             insets
         }
     }
 
+    /**
+     * 딥링크 처리
+     * - 앱이 실행될 때 전달된 Intent에서 URI를 확인
+     * - URI에서 필요한 데이터를 추출 후 상세 페이지로 이동
+     */
     private fun handleDeepLink(intent: Intent?) {
         intent?.data?.let { uri ->
             Log.d("DeepLink", "받은 딥링크 URI: $uri")
@@ -91,6 +96,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 레스토랑 상세 화면으로 이동
+     * - SafeArgs 없이 Bundle을 사용하여 데이터를 전달
+     *
+     * @param restaurantTitle 레스토랑 이름
+     * @param lotNumberAddress 지번 주소
+     * @param roadNameAddress 도로명 주소
+     * @param distance 거리 정보
+     * @param phoneNumber 전화번호
+     * @param placeUrl 상세 페이지 URL
+     */
     private fun navigateToRestaurantDetail(
         restaurantTitle: String,
         lotNumberAddress: String,

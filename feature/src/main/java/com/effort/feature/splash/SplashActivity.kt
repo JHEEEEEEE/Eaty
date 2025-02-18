@@ -15,10 +15,19 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge() // Edge-to-Edge UI 적용
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        navigateToAuthAfterDelay()
+    }
+
+    /**
+     * 일정 시간 후 인증 화면(AuthActivity)으로 이동
+     * - 2초 후 자동으로 이동
+     * - 이동 후 현재 액티비티 종료
+     */
+    private fun navigateToAuthAfterDelay() {
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(this, AuthActivity::class.java)
             startActivity(intent)

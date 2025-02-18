@@ -9,14 +9,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.databinding.ItemRestaurantBinding
 import com.effort.presentation.model.home.restaurant.RestaurantModel
 
+/**
+ * 식당 목록을 표시하는 RecyclerView Adapter
+ * - 사용자가 식당을 선택하면 `onItemClick` 콜백을 통해 해당 식당 정보를 전달
+ */
 class RestaurantListAdapter(
     private val onItemClick: (RestaurantModel) -> Unit // 클릭 이벤트를 NavDirections로 반환
 ) : ListAdapter<RestaurantModel, RestaurantListAdapter.RestaurantViewHolder>(diffCallback) {
 
-    // 뷰 홀더 정의
     inner class RestaurantViewHolder(private val binding: ItemRestaurantBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        /**
+         * 식당 데이터를 UI에 바인딩
+         * - 식당 이름, 주소, 거리, 전화번호, URL 정보를 설정
+         * - 클릭 시 `onItemClick` 콜백을 호출
+         */
         @SuppressLint("SetTextI18n")
         fun bind(item: RestaurantModel) {
             with(binding) {
@@ -27,13 +35,11 @@ class RestaurantListAdapter(
                 phoneNumber.text = item.phoneNumber
                 placeUrl.text = item.placeUrl
 
-                // 클릭 이벤트 Fragment에서 처리
                 root.setOnClickListener { onItemClick(item) }
             }
         }
     }
 
-    // 뷰 홀더 생성
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantViewHolder {
         val binding = ItemRestaurantBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -43,26 +49,28 @@ class RestaurantListAdapter(
         return RestaurantViewHolder(binding)
     }
 
-    // 아이템 바인딩
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
-        holder.bind(getItem(position)) // 아이템 바인딩
+        holder.bind(getItem(position))
     }
 
     companion object {
-        // DiffUtil을 사용한 아이템 변경 감지 최적화
+        /**
+         * RecyclerView의 성능을 최적화하기 위한 DiffUtil 콜백
+         * - 같은 title(식당명)을 가진 경우 동일한 아이템으로 간주
+         */
         val diffCallback = object : DiffUtil.ItemCallback<RestaurantModel>() {
             override fun areItemsTheSame(
                 oldItem: RestaurantModel,
                 newItem: RestaurantModel
             ): Boolean {
-                return oldItem.title == newItem.title // ID가 같으면 동일한 아이템으로 간주
+                return oldItem.title == newItem.title
             }
 
             override fun areContentsTheSame(
                 oldItem: RestaurantModel,
                 newItem: RestaurantModel
             ): Boolean {
-                return oldItem == newItem // 내용이 동일하면 동일한 아이템으로 간주
+                return oldItem == newItem
             }
         }
     }

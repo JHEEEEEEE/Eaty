@@ -21,6 +21,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.effort.feature.R
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.extractGuDongFromSeoulAddress
+import com.effort.feature.core.util.observeStateLatest
+import com.effort.feature.core.util.observeStateLatestForOtherLogic
 import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentRestaurantDetailBinding
 import com.effort.presentation.UiState
@@ -121,33 +123,7 @@ class RestaurantDetailFragment :
         }
     }
 
-    private fun observeNavigationPathState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            navigationViewModel.getNavigationPathState.collectLatest { state ->
-                when (state) {
-                    is UiState.Loading -> {
-                        binding.mapProgressBar.visibility = View.VISIBLE
-                    }
 
-                    is UiState.Success -> {
-                        drawPath(state.data)
-                    }
-
-                    is UiState.Error -> {
-                        binding.mapProgressBar.visibility = View.GONE
-                        Log.e(
-                            "RestaurantDetailFragment",
-                            "Navigation API Error: ${state.exception.message}"
-                        )
-                    }
-
-                    is UiState.Empty -> {
-                        binding.mapProgressBar.visibility = View.GONE
-                    }
-                }
-            }
-        }
-    }
 
     private fun setupMarkers(restaurantLatLng: LatLng) {
         if (restaurantLatLng.latitude.isNaN() || restaurantLatLng.longitude.isNaN()) {
@@ -210,14 +186,9 @@ class RestaurantDetailFragment :
     override fun initView() {
         setupTabLayoutAndViewPager()
         setupClickListeners()
-        observeUserState() // 사용자 상태 관찰
-        observeFavoriteCheckState() // 찜 여부 확인 상태 관찰
-        observeAddFavoriteState()
-        observeRemoveFavoriteState()
-        observeShareLinkState()
+        observeViewModel()
         setupRestaurantOverviewViewModelData()
         setupMapFragment()
-        observeNavigationPathState()
     }
 
     override fun onCreateView(
@@ -342,157 +313,105 @@ class RestaurantDetailFragment :
         shareViewModel.shareContent(args.title, args.lotNumberAddress, args.roadNameAddress, args.distance, args.phoneNumber, args.placeUrl)
     }
 
+    private fun observeViewModel() {
+        observeNavigationPathState()
+        observeUserState()
+        observeShareLinkState()
+        observeFavoriteCheckState()
+        observeAddFavoriteState()
+        observeRemoveFavoriteState()
+    }
+
+    private fun observeNavigationPathState() {
+        observeStateLatest(
+            stateFlow = navigationViewModel.getNavigationPathState,
+            progressView = binding.mapProgressBar,
+            fragment = this,
+            onSuccess = {
+                drawPath(it)
+            }
+        )
+    }
+
     private fun observeUserState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            restaurantFavoritesViewModel.userState.collectLatest { state ->
-                when (state) {
-                    is UiState.Success -> {
-                        val user = state.data
-                        Log.d("RestaurantDetailFragment", "User updated: ${user?.email}")
-                        restaurantFavoritesViewModel.checkIfRestaurantIsFavorite(args.title) // 사용자 업데이트 후 찜 여부 확인
-                    }
-
-                    is UiState.Loading -> {
-                        Log.d("RestaurantDetailFragment", "Loading user data...")
-                    }
-
-                    is UiState.Error -> {
-                        Log.e(
-                            "RestaurantDetailFragment",
-                            "Error loading user data: ${state.exception.message}"
-                        )
-                    }
-
-                    is UiState.Empty -> {
-                        Log.d("RestaurantDetailFragment", "User state is empty")
-                    }
-                }
+        observeStateLatestForOtherLogic(
+            stateFlow = restaurantFavoritesViewModel.userState,
+            fragment = this,
+            onSuccess = { user ->
+                Log.d("RestaurantDetailFragment", "User updated: ${user?.email}")
+                restaurantFavoritesViewModel.checkIfRestaurantIsFavorite(args.title) // 사용자 업데이트 후 찜 여부 확인
             }
-        }
-    }
-
-    private fun observeFavoriteCheckState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            restaurantFavoritesViewModel.isFavoriteState.collectLatest { state ->
-                when (state) {
-                    is UiState.Success -> {
-                        updateFavoriteButton(state.data)
-                        Log.d("RestaurantDetailFragment", "Favorite state: ${state.data}")
-                    }
-
-                    is UiState.Loading -> Log.d(
-                        "RestaurantDetailFragment",
-                        "Loading favorite state..."
-                    )
-
-                    is UiState.Empty -> Log.d("RestaurantDetailFragment", "Favorite state is empty")
-                    is UiState.Error -> Log.e(
-                        "RestaurantDetailFragment",
-                        "Error checking favorite state: ${state.exception.message}"
-                    )
-                }
-            }
-        }
-    }
-
-    private fun observeAddFavoriteState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            restaurantFavoritesViewModel.addFavoriteState.collectLatest { state ->
-                when (state) {
-                    is UiState.Success -> {
-                        binding.favoriteButton.isEnabled = true
-                        updateFavoriteButton(true)
-                        showToast("찜 목록에 추가되었습니다.")
-                        Log.d("RestaurantDetailFragment", "Successfully added to favorites")
-                    }
-
-                    is UiState.Loading -> {
-                        binding.favoriteButton.isEnabled = false
-                        Log.d("RestaurantDetailFragment", "Adding to favorites...")
-                    }
-
-                    is UiState.Error -> {
-                        binding.favoriteButton.isEnabled = true
-                        showToast("오류 발생: ${state.exception.message}")
-                        Log.e(
-                            "RestaurantDetailFragment",
-                            "Error adding to favorites: ${state.exception.message}"
-                        )
-                    }
-
-                    is UiState.Empty -> Log.d(
-                        "RestaurantDetailFragment",
-                        "Add favorite state is empty"
-                    )
-                }
-            }
-        }
-    }
-
-    private fun observeRemoveFavoriteState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            restaurantFavoritesViewModel.removeFavoriteState.collectLatest { state ->
-                when (state) {
-                    is UiState.Success -> {
-                        binding.favoriteButton.isEnabled = true
-                        updateFavoriteButton(false)
-                        showToast("찜 목록에서 제거되었습니다.")
-                        Log.d("RestaurantDetailFragment", "Successfully removed from favorites")
-                    }
-
-                    is UiState.Loading -> {
-                        binding.favoriteButton.isEnabled = false
-                        Log.d("RestaurantDetailFragment", "Removing from favorites...")
-                    }
-
-                    is UiState.Error -> {
-                        binding.favoriteButton.isEnabled = true
-                        showToast("오류 발생: ${state.exception.message}")
-                        Log.e(
-                            "RestaurantDetailFragment",
-                            "Error removing from favorites: ${state.exception.message}"
-                        )
-                    }
-
-                    is UiState.Empty -> Log.d(
-                        "RestaurantDetailFragment",
-                        "Remove favorite state is empty"
-                    )
-                }
-            }
-        }
+        )
     }
 
     private fun observeShareLinkState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            shareViewModel.shareLinkState.collectLatest { state ->
-                when (state) {
-                    is UiState.Success -> {
-                        openKakaoShare(state.data)
-                        showToast("공유를 시작합니다.")
-                        Log.d("RestaurantDetailFragment", "Successfully Get shareLink")
-                        shareViewModel.resetShareState()
-                    }
-
-                    is UiState.Loading -> {
-                        Log.d("RestaurantDetailFragment", "Trying to get shareLink...")
-                    }
-
-                    is UiState.Error -> {
-                        showToast("오류 발생: ${state.exception.message}")
-                        Log.e(
-                            "RestaurantDetailFragment",
-                            "Error get shareLink: ${state.exception.message}"
-                        )
-                    }
-
-                    is UiState.Empty -> Log.d(
-                        "RestaurantDetailFragment",
-                        "Get shareLink is empty"
-                    )
-                }
+        observeStateLatestForOtherLogic(
+            stateFlow = shareViewModel.shareLinkState,
+            fragment = this,
+            onSuccess = { shareLink ->
+                openKakaoShare(shareLink)
+                showToast("공유를 시작합니다.")
+                Log.d("RestaurantDetailFragment", "Successfully Get shareLink")
+                shareViewModel.resetShareState()
             }
-        }
+        )
+    }
+
+    private fun observeFavoriteCheckState() {
+        observeStateLatestForOtherLogic(
+            stateFlow = restaurantFavoritesViewModel.isFavoriteState,
+            fragment = this,
+            onSuccess = { isFavorite ->
+                updateFavoriteButton(isFavorite)
+                Log.d("RestaurantDetailFragment", "Favorite state: $isFavorite")
+            }
+        )
+    }
+
+    private fun observeAddFavoriteState() {
+        observeStateLatestForOtherLogic(
+            stateFlow = restaurantFavoritesViewModel.addFavoriteState,
+            fragment = this,
+            onSuccess = {
+                binding.favoriteButton.isEnabled = true
+                updateFavoriteButton(true)
+                showToast("찜 목록에 추가되었습니다.")
+                Log.d("RestaurantDetailFragment", "Successfully added to favorites")
+            },
+            onLoading = {
+                binding.favoriteButton.isEnabled = false
+                Log.d("RestaurantDetailFragment", "Adding to favorites...")
+            },
+            onError = { e ->
+                binding.favoriteButton.isEnabled = true
+                showToast("오류 발생: ${e.message}")
+                Log.e("RestaurantDetailFragment", "Error adding to favorites: ${e.message}")
+            },
+            onEmpty = { Log.d("RestaurantDetailFragment", "Add favorite state is empty") }
+        )
+    }
+
+    private fun observeRemoveFavoriteState() {
+        observeStateLatestForOtherLogic(
+            stateFlow = restaurantFavoritesViewModel.removeFavoriteState,
+            fragment = this,
+            onSuccess = {
+                binding.favoriteButton.isEnabled = true
+                updateFavoriteButton(false)
+                showToast("찜 목록에서 제거되었습니다.")
+                Log.d("RestaurantDetailFragment", "Successfully removed from favorites")
+            },
+            onLoading = {
+                binding.favoriteButton.isEnabled = false
+                Log.d("RestaurantDetailFragment", "Removing from favorites...")
+            },
+            onError = { e ->
+                binding.favoriteButton.isEnabled = true
+                showToast("오류 발생: ${e.message}")
+                Log.e("RestaurantDetailFragment", "Error removing from favorites: ${e.message}")
+            },
+            onEmpty = { Log.d("RestaurantDetailFragment", "Remove favorite state is empty") }
+        )
     }
 
     private fun isKakaoTalkInstalled(context: Context): Boolean {

@@ -46,33 +46,18 @@ import kotlin.math.abs
 class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate),
     OnMapReadyCallback {
 
-    // ViewModel을 Hilt를 통해 주입받음
     private val viewModel: RestaurantViewModel by viewModels()
-
-    // 필터 리스트 어댑터
     private lateinit var filterAdapter: FilterAdapter
-
-    // 네비게이션 컨트롤러
     private lateinit var navController: NavController
-
-    // 클러스터링 객체 Clusterer
     private lateinit var clusterer: Clusterer<RestaurantKey>
-
-    // 위치 추적 소스와 지도 객체
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
-
-    // 현재 위치를 표시하는 오버레이
     private lateinit var locationOverlay: LocationOverlay
 
     companion object {
-        // 위치 권한 요청 코드
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
-    /**
-     * 초기 UI 설정을 담당하는 메서드
-     */
     override fun initView() {
         setupMapFragment() // 네이버 지도 초기화
         initRecyclerView() // 필터 리스트 RecyclerView 초기화
@@ -120,7 +105,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     }
 
     /**
-     * 지도 초기화: 위치 소스 설정, 오버레이 및 상태 관찰
+     * 지도 초기화: 위치 소스 설정 및 오버레이 활성화
      */
     private fun initializeMap() {
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE) // 위치 소스 설정
@@ -130,7 +115,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     }
 
     /**
-     * ViewModel 상태를 관찰
+     * ViewModel 상태 관찰 및 UI 업데이트
      */
     private fun observeViewModel() {
         // 레스토랑 데이터 상태 관찰
@@ -164,7 +149,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     }
 
     /**
-     * 레스토랑 상태를 처리
+     * 레스토랑 상태를 감지하여 지도 마커 업데이트
      */
     private fun handleRestaurantState() {
         observeStateContinuouslyWithLifecycle(
@@ -172,12 +157,12 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
             progressView = binding.progressCircular.progressBar,
             fragment = this
         ) { restaurantData ->
-            setupClusterer(restaurantData) // ✅ 지도에 마커 업데이트
+            setupClusterer(restaurantData)
         }
     }
 
     /**
-     * 필터 변경 처리
+     * 필터 변경 감지
      */
     private fun handleFilterChange(selectedFilter: FilterModel?) {
         selectedFilter?.let { filter ->
@@ -185,6 +170,9 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
         }
     }
 
+    /**
+     * 지도에 마커 클러스터링 설정
+     */
     private fun setupClusterer(restaurantList: List<RestaurantModel>) {
         clearClusterer()
 
@@ -291,7 +279,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     }
 
     /**
-     * RecyclerView 초기화
+     * 필터 선택 UI 설정
      */
     private fun initRecyclerView() {
         filterAdapter = FilterAdapter { selectedFilter ->
@@ -305,7 +293,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     }
 
     /**
-     * FAB 버튼 클릭 리스너 설정
+     * FAB 버튼 클릭 시 필터 적용 및 데이터 로드
      */
     private fun setupFabClickListener() {
         binding.fab.setOnClickListener {
