@@ -196,13 +196,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 CategoryModel(getString(R.string.western_food), R.drawable.western_food_image),
                 CategoryModel(getString(R.string.japanese_food), R.drawable.japanese_food_image),
                 CategoryModel(getString(R.string.asian_food), R.drawable.asian_food_image),
-                CategoryModel(getString(R.string.bunsik_food), R.drawable.cafe_image),
-                CategoryModel(getString(R.string.chicken), R.drawable.cafe_image),
-                CategoryModel(getString(R.string.gukbap), R.drawable.cafe_image),
-                CategoryModel(getString(R.string.grilled_meat), R.drawable.cafe_image),
-                CategoryModel(getString(R.string.seafood), R.drawable.cafe_image),
-                CategoryModel(getString(R.string.buffet), R.drawable.cafe_image),
-                CategoryModel(getString(R.string.fastfood), R.drawable.cafe_image),
+                CategoryModel(getString(R.string.bunsik_food), R.drawable.bunsik_food_image),
+                CategoryModel(getString(R.string.chicken), R.drawable.chicken_image),
+                CategoryModel(getString(R.string.gukbap), R.drawable.gukbap_image),
+                CategoryModel(getString(R.string.grilled_meat), R.drawable.grilled_meat),
+                CategoryModel(getString(R.string.seafood), R.drawable.seafood_image),
+                CategoryModel(getString(R.string.buffet), R.drawable.buffet_image),
+                CategoryModel(getString(R.string.fastfood), R.drawable.fastfood_image),
             )
         )
     }

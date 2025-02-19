@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -25,7 +24,6 @@ import com.effort.feature.core.util.observeStateLatest
 import com.effort.feature.core.util.observeStateLatestForOtherLogic
 import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentRestaurantDetailBinding
-import com.effort.presentation.UiState
 import com.effort.presentation.model.home.restaurant.RestaurantModel
 import com.effort.presentation.model.home.restaurant.navigation.NavigationPathModel
 import com.effort.presentation.viewmodel.home.restaurant.RestaurantOverviewViewModel
@@ -46,8 +44,6 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RestaurantDetailFragment :
