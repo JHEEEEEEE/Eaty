@@ -2,7 +2,6 @@ package com.effort.feature.map
 
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.annotation.UiThread
 import androidx.fragment.app.viewModels
@@ -39,6 +38,7 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MarkerIcons
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import kotlin.math.abs
 
 
@@ -166,7 +166,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
      */
     private fun handleFilterChange(selectedFilter: FilterModel?) {
         selectedFilter?.let { filter ->
-            Log.d("MapFragment", "선택된 필터: ${filter.query}")
+            Timber.d("선택된 필터: ${filter.query}")
         }
     }
 
@@ -177,38 +177,31 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
         clearClusterer()
 
         clusterer = Clusterer.Builder<RestaurantKey>().screenDistance(50.0) // 같은 건물 정도의 거리로 클러스터링
-            .minZoom(8) // 줌 레벨 8 이하에서는 클러스터링 적용 안 함
-            .maxZoom(14) // 줌 레벨 14 이상에서는 클러스터링 해제
-            .animate(true) // 줌 변화 시 애니메이션 적용
+            .minZoom(8).maxZoom(14).animate(true)
             .clusterMarkerUpdater(object : DefaultClusterMarkerUpdater() {
                 override fun updateClusterMarker(info: ClusterMarkerInfo, marker: Marker) {
                     super.updateClusterMarker(info, marker)
-                    // 클러스터 크기에 따라 아이콘 변경
                     marker.icon = when {
                         info.size <= 7 -> MarkerIcons.CLUSTER_LOW_DENSITY
                         info.size in 8..15 -> MarkerIcons.CLUSTER_MEDIUM_DENSITY
                         else -> MarkerIcons.CLUSTER_HIGH_DENSITY
                     }
-                    marker.captionText = "${info.size}개의 장소" // 클러스터 크기 표시
+                    marker.captionText = "${info.size}개의 장소"
                 }
             }).leafMarkerUpdater(object : DefaultLeafMarkerUpdater() {
                 override fun updateLeafMarker(info: LeafMarkerInfo, marker: Marker) {
                     super.updateLeafMarker(info, marker)
                     val key = info.key as RestaurantKey
 
-                    // 기존 마커 좌표를 저장하여 중복 방지
                     val existingCoordinates = mutableListOf<LatLng>()
 
-                    // 마커의 위치를 조정하여 중복 방지 처리
                     marker.position = getAdjustedLatLng(
                         key.position, existingCoordinates, key.hashCode()
                     )
 
-                    // 마커 설정
                     marker.captionText = key.title
                     marker.icon = MarkerIcons.GREEN
 
-                    // 마커 클릭 시 상세 페이지로 이동
                     marker.setOnClickListener {
                         navigateToDetailFragment(restaurantList.first { it.title == key.title } // key.title로 레스토랑 찾기
                         )
@@ -217,22 +210,20 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
                 }
             }).build()
 
-        // 클러스터러에 데이터 추가
         val keyTagMap = mutableMapOf<RestaurantKey, Any?>()
 
-        // RestaurantModel의 데이터를 RestaurantKey로 변환 후 추가
         restaurantList.forEachIndexed { index, restaurant ->
             val adjustedLatLng = getAdjustedLatLng(
                 LatLng(restaurant.latitude.toDouble(), restaurant.longitude.toDouble()),
-                mutableListOf(), // 기존 좌표와 비교
+                mutableListOf(),
                 index
             )
 
             keyTagMap[RestaurantKey(restaurant.title, adjustedLatLng)] = null
         }
 
-        clusterer.addAll(keyTagMap) // 클러스터러에 데이터 추가
-        clusterer.map = naverMap // 클러스터러를 지도와 연결
+        clusterer.addAll(keyTagMap)
+        clusterer.map = naverMap
     }
 
     /**
@@ -265,14 +256,14 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
      */
     private fun adjustMarkerPosition(latitude: Double, longitude: Double, index: Int): LatLng {
         // 기본 오차값
-        val baseOffset = 0.0002 // 기존 0.0001에서 두 배로 증가
+        val baseOffset = 0.0002
 
         // 랜덤값 추가 (0.0 ~ 0.0001 범위)
-        val randomOffset = (0..10).random() * 0.00001 // 0.00001씩 랜덤으로 더함
+        val randomOffset = (0..10).random() * 0.00001
 
         // 인덱스를 활용해 마커를 여러 방향으로 분산
-        val latOffset = baseOffset * (index % 5) + randomOffset // 위도 오차
-        val lngOffset = baseOffset * ((index + 2) % 5) + randomOffset // 경도 오차
+        val latOffset = baseOffset * (index % 5) + randomOffset
+        val lngOffset = baseOffset * ((index + 2) % 5) + randomOffset
 
         // 조정된 LatLng 반환
         return LatLng(latitude + latOffset, longitude + lngOffset)
@@ -283,7 +274,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
      */
     private fun initRecyclerView() {
         filterAdapter = FilterAdapter { selectedFilter ->
-            viewModel.selectFilter(selectedFilter) // 필터 선택 처리
+            viewModel.selectFilter(selectedFilter)
         }
         binding.recyclerViewFilter.apply {
             layoutManager =

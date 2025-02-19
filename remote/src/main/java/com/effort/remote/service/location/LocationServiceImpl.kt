@@ -3,13 +3,13 @@ package com.effort.remote.service.location
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.effort.remote.model.location.LocationResponse
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.suspendCancellableCoroutine
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
@@ -24,42 +24,41 @@ class LocationServiceImpl @Inject constructor(
      * - 위치 정보를 성공적으로 가져오면 `LocationResponse`로 반환
      */
     override suspend fun getCurrentLocation(): LocationResponse? {
-        Log.d("LocationServiceImpl", "getCurrentLocation() 호출됨")
+        Timber.i("getCurrentLocation() 호출됨")
 
         return suspendCancellableCoroutine { continuation ->
             try {
                 // 1. 위치 권한 확인 (권한이 없으면 null 반환)
                 if (!hasLocationPermission()) {
-                    Log.e("LocationServiceImpl", "권한 없음: 위치 접근 권한이 없습니다.")
+                    Timber.w("권한 없음: 위치 접근 권한이 없습니다.")
                     continuation.resume(null)
                     return@suspendCancellableCoroutine
                 }
 
-                Log.d("LocationServiceImpl", "권한 확인 완료, 위치 요청 시작")
+                Timber.d("권한 확인 완료, 위치 요청 시작")
 
                 // 2. 위치 요청 실행 (높은 정확도 우선)
                 fusedLocationClient.getCurrentLocation(
                     Priority.PRIORITY_HIGH_ACCURACY, null
                 ).addOnSuccessListener { location ->
                     if (location != null) {
-                        Log.d("LocationServiceImpl", "위치 요청 성공: $location")
+                        Timber.i("위치 요청 성공 - 위도: ${location.latitude}, 경도: ${location.longitude}")
 
                         // 3. 성공 시 위경도 값을 LocationResponse에 담아서 반환
                         val locationResponse = LocationResponse(
-                            latitude = location.latitude,
-                            longitude = location.longitude
+                            latitude = location.latitude, longitude = location.longitude
                         )
                         continuation.resume(locationResponse)
                     } else {
-                        Log.e("LocationServiceImpl", "위치 정보를 찾을 수 없음")
+                        Timber.w("위치 정보를 찾을 수 없음")
                         continuation.resume(null)
                     }
                 }.addOnFailureListener { e ->
-                    Log.e("LocationServiceImpl", "위치 요청 실패: ${e.message}")
+                    Timber.e(e, "위치 요청 실패")
                     continuation.resume(null)
                 }
             } catch (e: SecurityException) {
-                Log.e("LocationServiceImpl", "보안 예외 발생: ${e.message}")
+                Timber.e(e, "보안 예외 발생")
                 continuation.resume(null)
             }
         }
@@ -71,15 +70,12 @@ class LocationServiceImpl @Inject constructor(
      */
     private fun hasLocationPermission(): Boolean {
         val hasPermission = ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
+            context, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
 
-        Log.d("LocationServiceImpl", "위치 권한 체크 결과: $hasPermission")
+        Timber.d("위치 권한 체크 결과: $hasPermission")
         return hasPermission
     }
 }

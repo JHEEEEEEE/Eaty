@@ -21,11 +21,8 @@ object DatabaseModule {
     @Singleton
     fun provideUserRoomDatabase(@ApplicationContext context: Context): UserRoomDatabase {
         return Room.databaseBuilder(
-            context.applicationContext,
-            UserRoomDatabase::class.java,
-            "user" // 데이터베이스 이름
-        ).fallbackToDestructiveMigration()
-            .build()
+            context.applicationContext, UserRoomDatabase::class.java, "user" // 데이터베이스 이름
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides
@@ -38,11 +35,8 @@ object DatabaseModule {
     @Singleton
     fun provideRestaurantRoomDatabase(@ApplicationContext context: Context): RestaurantRoomDatabase {
         return Room.databaseBuilder(
-            context.applicationContext,
-            RestaurantRoomDatabase::class.java,
-            "restaurants"
-        ).fallbackToDestructiveMigration()
-            .build()
+            context.applicationContext, RestaurantRoomDatabase::class.java, "restaurants"
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides

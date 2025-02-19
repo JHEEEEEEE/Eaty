@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +33,7 @@ class NavigationViewModel @Inject constructor(
      * @param end 도착지 정보
      */
     fun fetchNavigationPath(start: NavigationPathModel, end: NavigationPathModel) {
+        Timber.d("fetchNavigationPath() 호출 - 출발: ${start.latitude},${start.longitude}, 도착: ${end.latitude},${end.longitude}")
         setLoadingState(_getNavigationPathState) // 로딩 상태 설정
 
         viewModelScope.launch {
@@ -39,13 +41,20 @@ class NavigationViewModel @Inject constructor(
                 val startData = start.toDomain()
                 val endData = end.toDomain()
 
+                Timber.d("fetchNavigationPath() - 도메인 변환 완료: 출발=$startData, 도착=$endData")
+
                 // UseCase를 통해 경로 데이터 요청
                 val dataResource = getNavigationPathUseCase(startData, endData)
+
+                Timber.d("fetchNavigationPath() - API 응답 수신: $dataResource")
 
                 // `toUiStateList()`를 사용하여 변환 후 상태 업데이트
                 _getNavigationPathState.value = dataResource.toUiStateList { it.toPresentation() }
 
+                Timber.d("fetchNavigationPath() - UI 상태 업데이트 완료")
+
             } catch (e: Exception) {
+                Timber.e(e, "fetchNavigationPath() 실패")
                 _getNavigationPathState.value = UiState.Error(e)
             }
         }

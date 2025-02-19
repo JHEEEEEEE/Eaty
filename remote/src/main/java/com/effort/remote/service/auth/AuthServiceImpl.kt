@@ -1,15 +1,14 @@
 package com.effort.remote.service.auth
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthServiceImpl @Inject constructor(
-    private val auth: FirebaseAuth,
-    private val firestore: FirebaseFirestore
+    private val auth: FirebaseAuth, private val firestore: FirebaseFirestore
 ) : AuthService {
 
     /**
@@ -21,24 +20,26 @@ class AuthServiceImpl @Inject constructor(
      */
     override suspend fun authenticateUser(idToken: String): Boolean {
         return try {
-            Log.d("AuthServiceImpl", "authenticateUser() 호출")
+            Timber.i("authenticateUser() 시작")
+
             val credential = GoogleAuthProvider.getCredential(idToken, null)
             val result = auth.signInWithCredential(credential).await()
 
-            val firebaseUser = result.user ?: throw Exception("Failed to authenticate user")
-            Log.d("AuthServiceImpl", "Firebase 인증 성공: ${firebaseUser.email}")
+            val firebaseUser = result.user ?: throw Exception("Firebase 인증 실패: 사용자 정보 없음")
+            val email = firebaseUser.email ?: throw Exception("Firebase 인증 성공했지만 이메일 없음")
 
-            val email = firebaseUser.email ?: throw Exception("Email is null")
+            Timber.i("Firebase 인증 성공 - 이메일: $email")
+
             saveUser(
                 email = email,
                 name = firebaseUser.displayName ?: "Unknown",
                 profilePicPath = firebaseUser.photoUrl?.toString() ?: ""
             )
 
-            Log.d("AuthServiceImpl", "사용자 저장 완료: $email")
+            Timber.i("사용자 Firestore 저장 완료: $email")
             true
         } catch (e: Exception) {
-            Log.e("AuthServiceImpl", "authenticateUser() 실패: ${e.message}")
+            Timber.e(e, "authenticateUser() 실패")
             false
         }
     }
@@ -49,7 +50,7 @@ class AuthServiceImpl @Inject constructor(
      */
     override suspend fun checkUserLoggedIn(): Boolean {
         val isLoggedIn = auth.currentUser != null
-        Log.d("AuthServiceImpl", "checkUserLoggedIn(): $isLoggedIn")
+        Timber.d("checkUserLoggedIn(): $isLoggedIn")
         return isLoggedIn
     }
 
@@ -61,7 +62,8 @@ class AuthServiceImpl @Inject constructor(
      */
     private suspend fun saveUser(email: String, name: String, profilePicPath: String) {
         try {
-            Log.d("AuthServiceImpl", "saveUser() 호출: $email")
+            Timber.i("saveUser() 실행 - 이메일: $email")
+
             val userDocument = firestore.collection("users").document(email).get().await()
 
             if (!userDocument.exists()) {
@@ -72,13 +74,13 @@ class AuthServiceImpl @Inject constructor(
                     "profilePicPath" to profilePicPath
                 )
                 firestore.collection("users").document(email).set(userData).await()
-                Log.d("AuthServiceImpl", "새 사용자 저장 완료: $email")
+                Timber.i("새 사용자 저장 완료: $email")
             } else {
-                Log.d("AuthServiceImpl", "사용자 정보 존재: $email")
+                Timber.d("사용자 정보 존재 - 저장 불필요: $email")
             }
         } catch (e: Exception) {
-            Log.e("AuthServiceImpl", "saveUser() 실패: ${e.message}")
-            throw Exception("Failed to save user: ${e.message}", e)
+            Timber.e(e, "saveUser() 실패 - 이메일: $email")
+            throw Exception("Firestore 사용자 저장 실패", e)
         }
     }
 
@@ -89,12 +91,12 @@ class AuthServiceImpl @Inject constructor(
      */
     override suspend fun signOut(): Boolean {
         return try {
-            Log.d("AuthServiceImpl", "signOut() 호출")
+            Timber.i("signOut() 실행")
             auth.signOut()
-            Log.d("AuthServiceImpl", "signOut() 성공")
+            Timber.i("signOut() 성공")
             true
         } catch (e: Exception) {
-            Log.e("AuthServiceImpl", "signOut() 실패: ${e.message}")
+            Timber.e(e, "signOut() 실패")
             false
         }
     }

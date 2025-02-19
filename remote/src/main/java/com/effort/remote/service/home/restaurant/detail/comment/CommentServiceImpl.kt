@@ -1,6 +1,5 @@
 package com.effort.remote.service.home.restaurant.detail.comment
 
-import android.util.Log
 import com.effort.remote.model.home.restaurant.detail.comment.CommentResponse
 import com.effort.remote.model.home.restaurant.detail.comment.CommentWrapperResponse
 import com.google.firebase.firestore.FirebaseFirestore
@@ -9,6 +8,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import javax.inject.Inject
 
 class CommentServiceImpl @Inject constructor(
@@ -23,16 +23,15 @@ class CommentServiceImpl @Inject constructor(
      */
     override suspend fun addComment(restaurantId: String, comment: CommentResponse): Boolean {
         return try {
-            firestore.collection("restaurants")
-                .document(restaurantId)
-                .collection("comments")
-                .document(comment.userId)
-                .set(comment)
-                .await()
+            Timber.i("addComment() 시작 - restaurantId: $restaurantId, userId: ${comment.userId}")
 
+            firestore.collection("restaurants").document(restaurantId).collection("comments")
+                .document(comment.userId).set(comment).await()
+
+            Timber.i("댓글 추가 성공 - restaurantId: $restaurantId, userId: ${comment.userId}")
             true
         } catch (e: Exception) {
-            Log.e("CommentService", "Failed to add comment: ${e.message}", e)
+            Timber.e(e, "addComment() 실패 - restaurantId: $restaurantId, userId: ${comment.userId}")
             throw e
         }
     }
@@ -44,22 +43,30 @@ class CommentServiceImpl @Inject constructor(
      * - 스냅샷이 변경될 때마다 데이터를 새로 전송
      */
     override fun getCommentList(restaurantId: String): Flow<CommentWrapperResponse> = callbackFlow {
-        val listener = firestore.collection("restaurants")
-            .document(restaurantId)
-            .collection("comments")
-            .orderBy("timestamp", Query.Direction.DESCENDING)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    trySend(CommentWrapperResponse(resultComments = emptyList())).isSuccess
-                    return@addSnapshotListener
-                }
-                if (snapshot != null) {
-                    val comments = snapshot.documents.mapNotNull {
-                        it.toObject(CommentResponse::class.java)
+        Timber.i("getCommentList() 호출 - restaurantId: $restaurantId")
+
+        val listener =
+            firestore.collection("restaurants").document(restaurantId).collection("comments")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        Timber.e(error, "getCommentList() 실패 - restaurantId: $restaurantId")
+                        trySend(CommentWrapperResponse(resultComments = emptyList())).isSuccess
+                        return@addSnapshotListener
                     }
-                    trySend(CommentWrapperResponse(resultComments = comments)).isSuccess
+
+                    if (snapshot != null) {
+                        val comments = snapshot.documents.mapNotNull {
+                            it.toObject(CommentResponse::class.java)
+                        }
+                        Timber.d("getCommentList() 성공 - restaurantId: $restaurantId, 댓글 개수: ${comments.size}")
+                        trySend(CommentWrapperResponse(resultComments = comments)).isSuccess
+                    }
                 }
-            }
-        awaitClose { listener.remove() }
+
+        awaitClose {
+            Timber.i("getCommentList() 리스너 해제 - restaurantId: $restaurantId")
+            listener.remove()
+        }
     }
 }

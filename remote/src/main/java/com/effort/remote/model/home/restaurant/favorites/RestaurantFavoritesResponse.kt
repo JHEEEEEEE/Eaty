@@ -7,31 +7,32 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RestaurantFavoritesResponse(
 
-    @SerialName("title")
-    val title: String = "",
+    @SerialName("title") val title: String = "",
 
-    @SerialName("lotNumberAddress")
-    val lotNumberAddress: String = "",
+    @SerialName("lotNumberAddress") val lotNumberAddress: String = "",
 
-    @SerialName("roadNameAddress")
-    val roadNameAddress: String = "",
+    @SerialName("roadNameAddress") val roadNameAddress: String = "",
 
-    @SerialName("phoneNumber")
-    val phoneNumber: String = "",
+    @SerialName("phoneNumber") val phoneNumber: String = "",
 
-    @SerialName("placeUrl")
-    val placeUrl: String = "",
+    @SerialName("placeUrl") val placeUrl: String = "",
 
-    @SerialName("distance")
-    val distance: String = "",
+    @SerialName("distance") val distance: String = "",
 
-    @SerialName("longitude")
-    val longitude: String = "",
+    @SerialName("longitude") val longitude: String = "",
 
-    @SerialName("latitude")
-    val latitude: String = ""
+    @SerialName("latitude") val latitude: String = ""
 ) {
     fun toData(): RestaurantEntity {
-        return RestaurantEntity(title, lotNumberAddress, roadNameAddress, phoneNumber, placeUrl, distance, longitude, latitude)
+        return RestaurantEntity(
+            title,
+            lotNumberAddress,
+            roadNameAddress,
+            phoneNumber,
+            placeUrl,
+            distance,
+            longitude,
+            latitude
+        )
     }
 }

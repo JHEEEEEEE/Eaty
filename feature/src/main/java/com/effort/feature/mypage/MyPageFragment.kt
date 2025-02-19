@@ -23,9 +23,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
     private lateinit var nickname: String
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMypageBinding.inflate(inflater, container, false)
         return binding.root
@@ -97,10 +95,8 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
      */
     private fun loadProfileImage(profilePicPath: String?) {
         if (!profilePicPath.isNullOrEmpty()) {
-            Glide.with(binding.profileImage.context)
-                .load(profilePicPath)
-                .placeholder(R.drawable.placeholder_image)
-                .error(R.drawable.error_image)
+            Glide.with(binding.profileImage.context).load(profilePicPath)
+                .placeholder(R.drawable.placeholder_image).error(R.drawable.error_image)
                 .into(binding.profileImage)
         } else {
             binding.profileImage.setImageResource(R.drawable.profile_img_default)
@@ -125,8 +121,7 @@ class MyPageFragment : BaseFragment<FragmentMypageBinding>(FragmentMypageBinding
 
         binding.profileSettings.setOnClickListener {
             val action = MyPageFragmentDirections.actionMyPageFragmentToEditProfileFragment(
-                profilePicUrl = profilePicUrl,
-                nickname = nickname
+                profilePicUrl = profilePicUrl, nickname = nickname
             )
             findNavController().navigate(action)
         }

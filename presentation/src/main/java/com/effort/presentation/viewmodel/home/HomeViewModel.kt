@@ -1,6 +1,5 @@
 package com.effort.presentation.viewmodel.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.effort.domain.usecase.home.suggestion.GetSuggestionListUseCase
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,6 +37,7 @@ class HomeViewModel @Inject constructor(
      */
     fun setCategories(categoryList: List<CategoryModel>) {
         _categories.value = categoryList
+        Timber.d("setCategories() - 카테고리 설정 완료: ${categoryList.map { it.title }}")
     }
 
     /**
@@ -47,17 +48,18 @@ class HomeViewModel @Inject constructor(
      * @param query 검색할 키워드
      */
     fun fetchSuggestions(query: String) {
+        Timber.d("fetchSuggestions() - 키워드 검색 시작: $query")
+
         viewModelScope.launch {
-            getSuggestionListUseCase(query)
-                .onStart {
+            getSuggestionListUseCase(query).onStart {
                     setLoadingState(_getSuggestionState)
-                }
-                .onCompletion { cause ->
+                    Timber.d("fetchSuggestions() - 로딩 상태로 변경")
+                }.onCompletion { cause ->
                     handleCompletionState(_getSuggestionState, cause)
-                }
-                .collect { dataResource ->
+                    Timber.d("fetchSuggestions() - 완료 상태: $cause")
+                }.collect { dataResource ->
                     _getSuggestionState.value = dataResource.toUiStateList { keyword ->
-                        Log.d("HomeViewModel", "추천 키워드 변환: ${keyword.toPresentation()}")
+                        Timber.d("fetchSuggestions() - 추천 키워드 변환: ${keyword.keyword}")
                         keyword.toPresentation()
                     }
                 }

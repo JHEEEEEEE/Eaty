@@ -9,19 +9,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FaqResponse(
 
-    @SerialName("category")
-    val category: String = "",
+    @SerialName("category") val category: String = "",
 
-    @SerialName("question")
-    val question: String = "",
+    @SerialName("question") val question: String = "",
 
-    @SerialName("answer")
-    val answer: String = "",
+    @SerialName("answer") val answer: String = "",
 
-    @SerialName("timestamp")
-    val timestamp: String = ""
+    @SerialName("timestamp") val timestamp: String = ""
 ) {
     // FaqResponse를 Domain 계층에서 사용하는 FaqEntity로 변환
-    fun toData(): FaqEntity =
-        FaqEntity(category, question, answer, timestamp)
+    fun toData(): FaqEntity = FaqEntity(category, question, answer, timestamp)
 }

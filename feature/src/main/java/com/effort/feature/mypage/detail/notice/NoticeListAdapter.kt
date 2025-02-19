@@ -1,6 +1,5 @@
 package com.effort.feature.mypage.detail.notice
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,19 +40,15 @@ class NoticeListAdapter :
                     noticeImageView.visibility = View.GONE
                 } else {
                     noticeImageView.visibility = View.VISIBLE
-                    Glide.with(noticeImageView.context)
-                        .load(item.imageUrl)
-                        .placeholder(R.drawable.placeholder_image)
-                        .error(R.drawable.error_image)
+                    Glide.with(noticeImageView.context).load(item.imageUrl)
+                        .placeholder(R.drawable.placeholder_image).error(R.drawable.error_image)
                         .into(noticeImageView)
                 }
 
-                Log.d("NoticeModel", "공지사항 이미지 URL: ${item.imageUrl}")
-
-                noticeContainer.visibility = if (isExpanded) View.VISIBLE else View.GONE // 펼침 상태 적용
+                noticeContainer.visibility = if (isExpanded) View.VISIBLE else View.GONE
             }
 
-            itemView.setOnClickListener { onItemClicked() } // 클릭 시 펼침 상태 변경
+            itemView.setOnClickListener { onItemClicked() }
         }
     }
 
@@ -64,11 +59,11 @@ class NoticeListAdapter :
 
     override fun onBindViewHolder(holder: NoticeViewHolder, position: Int) {
         val item = getItem(position)
-        val isExpanded = expandedStates[position] ?: false // 펼침 상태 가져오기
+        val isExpanded = expandedStates[position] ?: false
 
         holder.bind(item, isExpanded) {
-            expandedStates[position] = !isExpanded // 상태 변경
-            notifyItemChanged(position) // UI 업데이트
+            expandedStates[position] = !isExpanded
+            notifyItemChanged(position)
         }
     }
 

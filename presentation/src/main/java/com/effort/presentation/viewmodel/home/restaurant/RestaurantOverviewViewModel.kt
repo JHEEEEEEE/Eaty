@@ -1,10 +1,10 @@
 package com.effort.presentation.viewmodel.home.restaurant
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,8 +28,9 @@ class RestaurantOverviewViewModel @Inject constructor() : ViewModel() {
     fun setTitle(newTitle: String) {
         if (newTitle.isNotEmpty()) {
             _title.value = newTitle
+            Timber.d("setTitle() - 제목 설정 완료: $newTitle")
         } else {
-            Log.e("RestaurantOverviewViewModel", "Title 값이 비어있습니다.")
+            Timber.e("setTitle() - 실패: 빈 제목 입력")
         }
     }
 
@@ -44,10 +45,12 @@ class RestaurantOverviewViewModel @Inject constructor() : ViewModel() {
         try {
             if (latitude.isNotBlank() && longitude.isNotBlank()) {
                 _location.value = Pair(latitude, longitude)
-                Log.d("RestaurantOverviewViewModel", "위치 설정 완료: 위도 $latitude, 경도 $longitude")
+                Timber.d("setLocation() - 위치 설정 완료: 위도 $latitude, 경도 $longitude")
+            } else {
+                Timber.e("setLocation() - 실패: 빈 위경도 값 입력")
             }
         } catch (e: NumberFormatException) {
-            Log.e("RestaurantOverviewViewModel", "위경도 변환 오류: ${e.message}")
+            Timber.e(e, "setLocation() - 위경도 변환 오류")
         }
     }
 
@@ -60,8 +63,9 @@ class RestaurantOverviewViewModel @Inject constructor() : ViewModel() {
     fun setRegion(region: String) {
         if (region.isNotEmpty()) {
             _region.value = region
+            Timber.d("setRegion() - 지역 설정 완료: $region")
         } else {
-            Log.e("RestaurantOverviewViewModel", "Region 값이 비어있습니다.")
+            Timber.e("setRegion() - 실패: 빈 지역 값 입력")
         }
     }
 }

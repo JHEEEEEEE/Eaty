@@ -1,7 +1,6 @@
 package com.effort.feature.home.restaurant.detail.info
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,9 +35,7 @@ class RestaurantInfoFragment :
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRestaurantInfoBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -112,9 +109,7 @@ class RestaurantInfoFragment :
         val totalItemCount = layoutManager.itemCount
         val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
-        return !viewModel.isLoading && !viewModel.isLastPage &&
-                (visibleItemCount + firstVisibleItemPosition) >= totalItemCount &&
-                firstVisibleItemPosition >= 0
+        return !viewModel.isLoading && !viewModel.isLastPage && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0
     }
 
     /**
@@ -124,13 +119,11 @@ class RestaurantInfoFragment :
     private fun observeSharedViewModelData() {
         viewLifecycleOwner.lifecycleScope.launch {
             combine(
-                sharedViewModel.title,
-                sharedViewModel.region
+                sharedViewModel.title, sharedViewModel.region
             ) { title, region ->
                 title to region
             }.collectLatest { (title, region) ->
                 if (title.isNotEmpty() && region.isNotEmpty()) {
-                    Log.d("RestaurantInfoFragment", "Title: $title, Region: $region")
                     viewModel.fetchBlogReviews(title, region)
                 }
             }

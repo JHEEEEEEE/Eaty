@@ -42,9 +42,7 @@ class RestaurantListFragment :
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRestaurantBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -72,16 +70,17 @@ class RestaurantListFragment :
      */
     private fun initRecyclerView() {
         restaurantListAdapter = RestaurantListAdapter { restaurant ->
-            val action = RestaurantListFragmentDirections.actionRestaurantListFragmentToRestaurantDetailFragment(
-                title = restaurant.title,
-                lotNumberAddress = restaurant.lotNumberAddress,
-                roadNameAddress = restaurant.roadNameAddress,
-                distance = restaurant.distance,
-                phoneNumber = restaurant.phoneNumber,
-                placeUrl = restaurant.placeUrl,
-                latitude = restaurant.latitude,
-                longitude = restaurant.longitude
-            )
+            val action =
+                RestaurantListFragmentDirections.actionRestaurantListFragmentToRestaurantDetailFragment(
+                    title = restaurant.title,
+                    lotNumberAddress = restaurant.lotNumberAddress,
+                    roadNameAddress = restaurant.roadNameAddress,
+                    distance = restaurant.distance,
+                    phoneNumber = restaurant.phoneNumber,
+                    placeUrl = restaurant.placeUrl,
+                    latitude = restaurant.latitude,
+                    longitude = restaurant.longitude
+                )
             findNavController().navigate(action)
         }
         binding.recyclerviewRestaurant.adapter = restaurantListAdapter
@@ -107,8 +106,7 @@ class RestaurantListFragment :
      */
     private fun checkLocationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
+            requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -133,9 +131,7 @@ class RestaurantListFragment :
      * @param grantResults 권한 허용 결과 배열
      */
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
@@ -182,9 +178,7 @@ class RestaurantListFragment :
         val totalItemCount = layoutManager.itemCount
         val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
 
-        return !viewModel.isLoading && !viewModel.isLastPage &&
-                (visibleItemCount + firstVisibleItemPosition) >= totalItemCount &&
-                firstVisibleItemPosition >= 0
+        return !viewModel.isLoading && !viewModel.isLastPage && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0
     }
 
     /**

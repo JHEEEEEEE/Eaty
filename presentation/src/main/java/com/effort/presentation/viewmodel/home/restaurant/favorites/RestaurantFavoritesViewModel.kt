@@ -1,6 +1,5 @@
 package com.effort.presentation.viewmodel.home.restaurant.favorites
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.effort.domain.DataResource
@@ -26,6 +25,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -64,12 +64,16 @@ class RestaurantFavoritesViewModel @Inject constructor(
      * @param restaurant 찜할 식당 정보
      */
     fun addRestaurantToFavorites(restaurant: RestaurantModel) {
+        Timber.d("addRestaurantToFavorites() 호출 - 식당: ${restaurant.title}")
+
         executeWithCurrentUser(
             userState = _userState,
             onErrorState = _addFavoriteState,
             onSuccessState = _addFavoriteState
         ) { user ->
-            addRestaurantToFavoritesUseCase(user?.email ?: "", restaurant.toDomain())
+            addRestaurantToFavoritesUseCase(user?.email ?: "", restaurant.toDomain()).also {
+                Timber.d("addRestaurantToFavorites() 완료 - 결과: $it")
+            }
         }
     }
 
@@ -81,12 +85,16 @@ class RestaurantFavoritesViewModel @Inject constructor(
      * @param restaurantName 제거할 식당의 이름
      */
     fun removeRestaurantFromFavorites(restaurantName: String) {
+        Timber.d("removeRestaurantFromFavorites() 호출 - 식당: $restaurantName")
+
         executeWithCurrentUser(
             userState = _userState,
             onErrorState = _removeFavoriteState,
             onSuccessState = _removeFavoriteState
         ) { user ->
-            removeRestaurantFromFavoritesUseCase(user?.email ?: "", restaurantName)
+            removeRestaurantFromFavoritesUseCase(user?.email ?: "", restaurantName).also {
+                Timber.d("removeRestaurantFromFavorites() 완료 - 결과: $it")
+            }
         }
     }
 
@@ -98,12 +106,16 @@ class RestaurantFavoritesViewModel @Inject constructor(
      * @param restaurantName 확인할 식당의 이름
      */
     fun checkIfRestaurantIsFavorite(restaurantName: String) {
+        Timber.d("checkIfRestaurantIsFavorite() 호출 - 식당: $restaurantName")
+
         executeWithCurrentUser(
             userState = _userState,
             onErrorState = _isFavoriteState,
             onSuccessState = _isFavoriteState
         ) { user ->
-            checkIfRestaurantIsFavoriteUseCase(user?.email ?: "", restaurantName)
+            checkIfRestaurantIsFavoriteUseCase(user?.email ?: "", restaurantName).also {
+                Timber.d("checkIfRestaurantIsFavorite() 결과 - 식당: $restaurantName, 상태: $it")
+            }
         }
     }
 
@@ -113,6 +125,8 @@ class RestaurantFavoritesViewModel @Inject constructor(
      * - `getFavoriteListUseCase`를 호출하여 찜한 식당 목록을 가져옴
      */
     fun fetchFavorites() {
+        Timber.d("fetchFavorites() 호출")
+
         val currentUser =
             validateCurrentUser(_userState, _getFavoriteState) ?: return // 사용자 확인 실패 시 종료
 
@@ -121,13 +135,16 @@ class RestaurantFavoritesViewModel @Inject constructor(
         viewModelScope.launch {
             getFavoriteListUseCase(userId)
                 .onStart {
+                    Timber.d("fetchFavorites() 데이터 로딩 중")
                     setLoadingState(_getFavoriteState) // 로딩 상태로 업데이트
                 }
                 .onCompletion { cause ->
+                    Timber.d("fetchFavorites() 완료 - 상태: $cause")
                     handleCompletionState(_getFavoriteState, cause) // 로딩 종료 처리
                 }
                 .collectLatest { dataResource ->
                     _getFavoriteState.value = dataResource.toUiStateList { it.toPresentation() }
+                    Timber.d("fetchFavorites() 성공 - 데이터 개수: ${_getFavoriteState.value}")
                 }
         }
     }
@@ -137,25 +154,24 @@ class RestaurantFavoritesViewModel @Inject constructor(
      * - 로그인된 사용자의 정보를 감지하고 상태를 업데이트
      */
     private fun observeUser() {
+        Timber.d("observeUser() 호출")
+
         viewModelScope.launch {
             observeUserUpdateUseCase()
                 .collectLatest { userResource ->
                     _userState.value = when (userResource) {
                         is DataResource.Success -> {
-                            Log.d(
-                                "RestaurantFavoritesViewModel",
-                                "User updated: ${userResource.data.email}"
-                            )
+                            Timber.d("observeUser() - 사용자 업데이트됨: ${userResource.data.email}")
                             UiState.Success(userResource.data.toPresentation())
                         }
                         is DataResource.Error -> {
-                            Log.e(
-                                "RestaurantFavoritesViewModel",
-                                "Failed to update user: ${userResource.throwable.message}"
-                            )
+                            Timber.e(userResource.throwable, "observeUser() - 사용자 정보 업데이트 실패")
                             UiState.Error(userResource.throwable)
                         }
-                        is DataResource.Loading -> UiState.Loading
+                        is DataResource.Loading -> {
+                            Timber.d("observeUser() - 사용자 정보 로딩 중")
+                            UiState.Loading
+                        }
                     }
                 }
         }

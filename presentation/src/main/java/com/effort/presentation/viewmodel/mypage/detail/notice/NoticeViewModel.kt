@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,6 +28,7 @@ class NoticeViewModel @Inject constructor(
     val getNoticeState get() = _getNoticeState.asStateFlow()
 
     init {
+        Timber.d("NoticeViewModel 초기화 - 공지사항 데이터 로드 시작")
         fetchNotices()
     }
 
@@ -36,12 +38,21 @@ class NoticeViewModel @Inject constructor(
      * - 로딩 상태와 데이터 로딩 완료 후의 상태를 반영
      */
     private fun fetchNotices() {
+        Timber.d("fetchNotices() - 공지사항 목록 조회 요청 시작")
+
         viewModelScope.launch {
-            getNoticeListUseCase()
-                .onStart { setLoadingState(_getNoticeState) }
-                .onCompletion { cause -> handleCompletionState(_getNoticeState, cause) }
-                .collectLatest { dataResource ->
-                    _getNoticeState.value = dataResource.toUiStateList { it.toPresentation() }
+            getNoticeListUseCase().onStart {
+                    Timber.d("fetchNotices() - 로딩 상태로 변경")
+                    setLoadingState(_getNoticeState)
+                }.onCompletion { cause ->
+                    Timber.d("fetchNotices() - 요청 완료, 상태: $cause")
+                    handleCompletionState(_getNoticeState, cause)
+                }.collectLatest { dataResource ->
+                    _getNoticeState.value = dataResource.toUiStateList {
+                        Timber.d("fetchNotices() - 변환된 공지사항 데이터: $it")
+                        it.toPresentation()
+                    }
+                    Timber.d("fetchNotices() - 최종 상태 업데이트: $_getNoticeState")
                 }
         }
     }

@@ -42,9 +42,7 @@ class RestaurantListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantViewHolder {
         val binding = ItemRestaurantBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
+            LayoutInflater.from(parent.context), parent, false
         )
         return RestaurantViewHolder(binding)
     }
@@ -60,15 +58,13 @@ class RestaurantListAdapter(
          */
         val diffCallback = object : DiffUtil.ItemCallback<RestaurantModel>() {
             override fun areItemsTheSame(
-                oldItem: RestaurantModel,
-                newItem: RestaurantModel
+                oldItem: RestaurantModel, newItem: RestaurantModel
             ): Boolean {
                 return oldItem.title == newItem.title
             }
 
             override fun areContentsTheSame(
-                oldItem: RestaurantModel,
-                newItem: RestaurantModel
+                oldItem: RestaurantModel, newItem: RestaurantModel
             ): Boolean {
                 return oldItem == newItem
             }

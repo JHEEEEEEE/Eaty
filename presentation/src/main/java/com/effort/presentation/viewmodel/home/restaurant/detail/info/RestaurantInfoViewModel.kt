@@ -1,6 +1,5 @@
 package com.effort.presentation.viewmodel.home.restaurant.detail.info
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.effort.domain.DataResource
@@ -13,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,9 +47,12 @@ class RestaurantInfoViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            Timber.d("fetchBlogReviews() 호출: query=$query, region=$region, page=$currentPage, loadMore=$loadMore")
+
             when (val dataResource = getBlogReviewListUseCase(query, region, currentPage)) {
                 is DataResource.Success -> {
                     val (reviews, meta) = dataResource.data
+                    Timber.d("fetchBlogReviews() 성공: ${reviews.size}개 데이터 로드됨")
 
                     // 기존 데이터와 새 데이터 결합 (추가 로딩이면 기존 데이터 유지)
                     val currentData = if (loadMore) {
@@ -63,18 +66,20 @@ class RestaurantInfoViewModel @Inject constructor(
 
                     if (meta?.isEnd == true) {
                         isLastPage = true
+                        Timber.d("fetchBlogReviews() 마지막 페이지 도달")
                     } else {
                         currentPage++
+                        Timber.d("fetchBlogReviews() 다음 페이지: $currentPage")
                     }
                 }
 
                 is DataResource.Error -> {
-                    Log.e("BlogReviewViewModel", "fetchBlogReviews 실패: ${dataResource.throwable}")
+                    Timber.e(dataResource.throwable, "fetchBlogReviews() 실패")
                     _getBlogReviewState.value = UiState.Error(dataResource.throwable)
                 }
 
                 is DataResource.Loading -> {
-                    Log.d("BlogReviewViewModel", "fetchBlogReviews 로딩 중")
+                    Timber.d("fetchBlogReviews() 로딩 중")
                     _getBlogReviewState.value = UiState.Loading
                 }
             }

@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
 }
@@ -46,6 +45,9 @@ dependencies {
     // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.common.ktx)
+
+    // Timber
+    implementation(libs.timber)
 
     implementation(project(":domain"))
 }

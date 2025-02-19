@@ -3,12 +3,12 @@ package com.effort.feature.core.view
 import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import com.effort.feature.R
 import com.effort.feature.databinding.ViewGreenButtonBinding
+import timber.log.Timber
 
 class GreenButton : FrameLayout, View.OnClickListener {
 
@@ -63,7 +63,7 @@ class GreenButton : FrameLayout, View.OnClickListener {
         if (isEnabled) {
             listener?.onClick(v)
         } else {
-            Log.d("GreenButton", "Button is disabled, click ignored.")
+            Timber.d("Button is disabled, click ignored.")
         }
     }
 

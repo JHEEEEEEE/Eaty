@@ -1,7 +1,6 @@
 package com.effort.feature.home.favorites
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,8 @@ import com.effort.presentation.viewmodel.home.restaurant.favorites.RestaurantFav
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FavoriteFragment : BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate) {
+class FavoriteFragment :
+    BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate) {
 
     private val viewModel: RestaurantFavoritesViewModel by viewModels()
     private lateinit var favoriteAdapter: RestaurantListAdapter
@@ -26,9 +26,7 @@ class FavoriteFragment : BaseFragment<FragmentRestaurantBinding>(FragmentRestaur
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRestaurantBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -76,7 +74,6 @@ class FavoriteFragment : BaseFragment<FragmentRestaurantBinding>(FragmentRestaur
             progressView = binding.progressCircular.progressBar,
             fragment = this
         ) {
-            Log.d("RestaurantDetailFragment", "User updated: ${it?.email}")
             viewModel.fetchFavorites() // 사용자 정보 변경 시 찜 목록 새로고침
         }
     }

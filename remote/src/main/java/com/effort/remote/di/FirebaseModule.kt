@@ -44,9 +44,7 @@ object FirebaseModule {
     @Provides
     @Singleton
     fun provideMyPageService(
-        auth: FirebaseAuth,
-        firestore: FirebaseFirestore,
-        storage: FirebaseStorage
+        auth: FirebaseAuth, firestore: FirebaseFirestore, storage: FirebaseStorage
     ): MyPageService {
         return MyPageServiceImpl(auth, firestore, storage)
     }
@@ -54,8 +52,7 @@ object FirebaseModule {
     @Provides
     @Singleton
     fun provideAuthService(
-        auth: FirebaseAuth,
-        firestore: FirebaseFirestore
+        auth: FirebaseAuth, firestore: FirebaseFirestore
     ): AuthService {
         return AuthServiceImpl(auth, firestore)
     }

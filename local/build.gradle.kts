@@ -50,5 +50,8 @@ dependencies {
     // Json -> Room
     implementation(libs.kotlin.serialization.json)
 
+    // Timber
+    implementation(libs.timber)
+
     implementation(project(":data"))
 }

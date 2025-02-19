@@ -32,7 +32,8 @@ class FaqListAdapter : ListAdapter<FaqModel, FaqListAdapter.FaqViewHolder>(diffC
                 faqQuestion.text = item.question
                 answerTextView.text = item.answer
 
-                answerContainer.visibility = if (isExpanded) View.VISIBLE else View.GONE // 답변 표시 여부 조절
+                answerContainer.visibility =
+                    if (isExpanded) View.VISIBLE else View.GONE // 답변 표시 여부 조절
             }
 
             itemView.setOnClickListener { onItemClicked() } // 클릭 시 펼침 상태 변경

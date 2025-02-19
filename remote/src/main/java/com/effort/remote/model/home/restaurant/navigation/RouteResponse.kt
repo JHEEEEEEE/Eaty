@@ -7,6 +7,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RouteResponse(
 
-    @SerialName("trafast")
-    val trafast: List<TraFastResponse> // "가장 빠른 길"을 포함하는 리스트
+    @SerialName("trafast") val trafast: List<TraFastResponse> // "가장 빠른 길"을 포함하는 리스트
 )

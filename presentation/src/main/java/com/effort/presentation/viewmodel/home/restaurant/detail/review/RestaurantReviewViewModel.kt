@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,7 +40,7 @@ class RestaurantReviewViewModel @Inject constructor(
     private val _userState = MutableStateFlow<UserModel?>(null)
 
     init {
-        observeUser() // 로그인한 사용자 정보 감지
+        observeUser()
     }
 
     /**
@@ -51,11 +52,24 @@ class RestaurantReviewViewModel @Inject constructor(
      */
     fun getComments(restaurantId: String) {
         viewModelScope.launch {
+            Timber.d("getComments() 호출: restaurantId=$restaurantId")
+
             getCommentUseCase(restaurantId)
-                .onStart { setLoadingState(_getCommentState) } // 로딩 상태 반영
-                .onCompletion { cause -> handleCompletionState(_getCommentState, cause) } // 완료 시 상태 처리
+                .onStart {
+                    Timber.d("getComments() 로딩 시작")
+                    setLoadingState(_getCommentState)
+                }
+                .onCompletion { cause ->
+                    if (cause != null) {
+                        Timber.e(cause, "getComments() 중단됨")
+                    } else {
+                        Timber.d("getComments() 완료")
+                    }
+                    handleCompletionState(_getCommentState, cause)
+                }
                 .collectLatest { dataResource ->
                     _getCommentState.value = dataResource.toUiStateList { it.toPresentation() }
+                    Timber.d("getComments() 결과 수신: ${_getCommentState.value}")
                 }
         }
     }
@@ -72,6 +86,7 @@ class RestaurantReviewViewModel @Inject constructor(
     fun addComment(restaurantId: String, content: String) {
         val currentUser = _userState.value
         if (currentUser == null) {
+            Timber.e("addComment() 실패: 로그인된 사용자 정보 없음")
             _addCommentState.value = UiState.Error(Exception("User not logged in"))
             return
         }
@@ -84,11 +99,19 @@ class RestaurantReviewViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
+            Timber.d("addComment() 호출: restaurantId=$restaurantId, content=$content")
             _addCommentState.value = UiState.Loading
+
             val dataResource = addCommentUseCase(restaurantId, newComment.toDomain())
             _addCommentState.value = when (dataResource) {
-                is DataResource.Success -> UiState.Success(dataResource.data)
-                is DataResource.Error -> UiState.Error(dataResource.throwable)
+                is DataResource.Success -> {
+                    Timber.d("addComment() 성공")
+                    UiState.Success(dataResource.data)
+                }
+                is DataResource.Error -> {
+                    Timber.e(dataResource.throwable, "addComment() 실패")
+                    UiState.Error(dataResource.throwable)
+                }
                 else -> UiState.Empty
             }
         }
@@ -100,10 +123,12 @@ class RestaurantReviewViewModel @Inject constructor(
      */
     private fun observeUser() {
         viewModelScope.launch {
+            Timber.d("observeUser() 시작")
             observeUserUpdateUseCase()
                 .collectLatest { userResource ->
                     if (userResource is DataResource.Success) {
                         _userState.value = userResource.data.toPresentation()
+                        Timber.d("observeUser() 사용자 정보 업데이트: ${_userState.value}")
                     }
                 }
         }

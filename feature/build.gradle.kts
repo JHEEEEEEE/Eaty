@@ -68,5 +68,8 @@ dependencies {
     // Google SignIn
     implementation(libs.play.services.auth)
 
+    // Timber
+    implementation(libs.timber)
+
     implementation(project(":presentation"))
 }

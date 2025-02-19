@@ -84,6 +84,9 @@ dependencies {
     // KakaoShare
     implementation(libs.kakao.share)
 
+    // Timber
+    implementation(libs.timber)
+
     implementation(project(":feature"))
     implementation(project(":presentation"))
     implementation(project(":data"))

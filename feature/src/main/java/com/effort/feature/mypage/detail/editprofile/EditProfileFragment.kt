@@ -36,7 +36,9 @@ class EditProfileFragment :
     private val args: EditProfileFragmentArgs by navArgs()
     private lateinit var photoPickerLauncher: ActivityResultLauncher<Intent>
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentEditprofileBinding.inflate(inflater, container, false)
         initializePhotoPickerLauncher()
         return binding.root
@@ -65,9 +67,7 @@ class EditProfileFragment :
         with(binding) {
             tagEdittextNickname.setText(args.nickname.ifEmpty { "" })
             val profilePicUrl = args.profilePicUrl
-            circularImageviewProfile.setImageUrl(
-                profilePicUrl.ifEmpty { R.drawable.profile_img_default }
-            )
+            circularImageviewProfile.setImageUrl(profilePicUrl.ifEmpty { R.drawable.profile_img_default })
         }
     }
 
@@ -122,8 +122,14 @@ class EditProfileFragment :
         with(binding) {
             greenButtonSave.isEnabled = isAvailable
             nicknameStateMessage.apply {
-                text = getString(if (isAvailable) R.string.nickname_available_message else R.string.nickname_duplicate_message)
-                setTextColor(ContextCompat.getColor(requireContext(), if (isAvailable) R.color.primary_color else R.color.error_color))
+                text =
+                    getString(if (isAvailable) R.string.nickname_available_message else R.string.nickname_duplicate_message)
+                setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        if (isAvailable) R.color.primary_color else R.color.error_color
+                    )
+                )
             }
         }
     }
@@ -176,16 +182,17 @@ class EditProfileFragment :
      * - 사용자가 사진을 선택하면 ViewModel에 저장
      */
     private fun initializePhotoPickerLauncher() {
-        photoPickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val selectedImageUri: Uri? = result.data?.data
-                if (selectedImageUri != null) {
-                    val imagePath = selectedImageUri.toString()
-                    editProfileViewModel.setSelectedImageUri(imagePath)
-                    binding.circularImageviewProfile.setImageUri(selectedImageUri)
-                } else showToast(getString(R.string.need_select_image))
+        photoPickerLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val selectedImageUri: Uri? = result.data?.data
+                    if (selectedImageUri != null) {
+                        val imagePath = selectedImageUri.toString()
+                        editProfileViewModel.setSelectedImageUri(imagePath)
+                        binding.circularImageviewProfile.setImageUri(selectedImageUri)
+                    } else showToast(getString(R.string.need_select_image))
+                }
             }
-        }
     }
 
     /**

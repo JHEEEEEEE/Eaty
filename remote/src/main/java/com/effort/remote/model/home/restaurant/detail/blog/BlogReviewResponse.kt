@@ -12,7 +12,7 @@ data class BlogReviewResponse(
     @SerialName("url") val url: String = "",
     @SerialName("thumbnail") val thumbnail: String = "",
     @SerialName("datetime") val dateTime: String = "",
-)  {
+) {
     fun toData(): BlogReviewEntity {
         return BlogReviewEntity(title, contents, url, dateTime)
     }

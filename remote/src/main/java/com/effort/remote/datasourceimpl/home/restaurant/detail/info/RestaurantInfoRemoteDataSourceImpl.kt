@@ -1,10 +1,10 @@
 package com.effort.remote.datasourceimpl.home.restaurant.detail.info
 
-import android.util.Log
 import com.effort.data.datasource.home.restaurant.detail.info.RestaurantInfoRemoteDataSource
 import com.effort.data.model.home.restaurant.detail.blog.BlogReviewEntity
 import com.effort.data.model.home.restaurant.detail.blog.BlogReviewMetaEntity
 import com.effort.remote.service.home.restaurant.detail.blog.BlogReviewService
+import timber.log.Timber
 import javax.inject.Inject
 
 class RestaurantInfoRemoteDataSourceImpl @Inject constructor(
@@ -18,17 +18,18 @@ class RestaurantInfoRemoteDataSourceImpl @Inject constructor(
      * - 실패 시 예외 처리 및 로그 출력
      */
     override suspend fun getBlogReviews(
-        query: String,
-        region: String,
-        page: Int
+        query: String, region: String, page: Int
     ): Pair<List<BlogReviewEntity>, BlogReviewMetaEntity?> {
         val searchQuery = "$region \"$query\""
 
         return try {
+            Timber.d("getBlogReviews() 호출 - query: $query, region: $region, page: $page")
             val response = blogReviewService.getBlogReviewList(searchQuery, page)
+
+            Timber.d("API 응답 성공 - 리뷰 ${response.documents.size}개, 메타데이터: ${response.meta}")
             Pair(response.documents.map { it.toData() }, response.meta.toData())
         } catch (e: Exception) {
-            Log.e("RestaurantDetailRemote", "API 요청 실패: ${e.message}", e)
+            Timber.e(e, "블로그 리뷰 API 요청 실패 - query: $query, region: $region, page: $page")
             throw e
         }
     }

@@ -2,7 +2,6 @@ package com.effort.feature
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +17,7 @@ import com.effort.feature.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // Edge-to-Edge 활성화
+        enableEdgeToEdge()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
         binding.bottomNav.setupWithNavController(navController)
 
-        setupStatusBar() // 상태바 색상 및 패딩 설정
+        setupStatusBar()
         handleDeepLink(intent)
     }
 
@@ -78,8 +78,6 @@ class MainActivity : AppCompatActivity() {
      */
     private fun handleDeepLink(intent: Intent?) {
         intent?.data?.let { uri ->
-            Log.d("DeepLink", "받은 딥링크 URI: $uri")
-
             val restaurantTitle = uri.getQueryParameter("title") ?: return
             val lotNumberAddress = uri.getQueryParameter("lotNumberAddress") ?: ""
             val roadNameAddress = uri.getQueryParameter("roadNameAddress") ?: ""
@@ -87,11 +85,8 @@ class MainActivity : AppCompatActivity() {
             val phoneNumber = uri.getQueryParameter("phoneNumber") ?: ""
             val placeUrl = uri.getQueryParameter("placeUrl") ?: ""
 
-            Log.d("DeepLink", "딥링크 데이터 - Title: $restaurantTitle")
-
             navigateToRestaurantDetail(
-                restaurantTitle, lotNumberAddress, roadNameAddress,
-                distance, phoneNumber, placeUrl
+                restaurantTitle, lotNumberAddress, roadNameAddress, distance, phoneNumber, placeUrl
             )
         }
     }
@@ -115,8 +110,6 @@ class MainActivity : AppCompatActivity() {
         phoneNumber: String,
         placeUrl: String
     ) {
-        Log.d("DeepLink", "navigateToRestaurantDetail() 실행됨, title: $restaurantTitle")
-
         lifecycleScope.launch(Dispatchers.Main) {
             try {
                 val bundle = Bundle().apply {
@@ -127,12 +120,9 @@ class MainActivity : AppCompatActivity() {
                     putString("phoneNumber", phoneNumber)
                     putString("placeUrl", placeUrl)
                 }
-
-                Log.d("DeepLink", "navController로 이동: title=$restaurantTitle, address=$lotNumberAddress")
-
                 navController.navigate(R.id.restaurantDetailFragment, bundle) // ✅ SafeArgs 없이 이동
             } catch (e: Exception) {
-                Log.e("DeepLink", "Navigation 오류: ${e.message}")
+                Timber.e("Navigation 오류: ${e.message}")
             }
         }
     }

@@ -37,8 +37,6 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
 
     // hilt
     implementation(libs.hilt.android)
@@ -49,6 +47,9 @@ dependencies {
 
     //auth
     implementation(libs.play.services.auth)
+
+    // Timber
+    implementation(libs.timber)
 
     implementation(project(":domain"))
 }

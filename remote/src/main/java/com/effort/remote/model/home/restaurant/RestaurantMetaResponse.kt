@@ -14,9 +14,7 @@ data class RestaurantMetaResponse(
     // Data Layer의 RestaurantEntity로 변환
     fun toData(): RestaurantMetaEntity {
         return RestaurantMetaEntity(
-            totalCount = totalCount,
-            pageableCount = pageableCount,
-            isEnd = isEnd
+            totalCount = totalCount, pageableCount = pageableCount, isEnd = isEnd
         )
     }
 }

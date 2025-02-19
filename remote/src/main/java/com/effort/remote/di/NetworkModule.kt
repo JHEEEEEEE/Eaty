@@ -35,50 +35,35 @@ object NetworkModule {
     @Singleton
     @KakaoRetrofit
     fun provideKakaoRetrofit(
-        okHttpClient: OkHttpClient,
-        kakaoApiInterceptor: KakaoApiInterceptor,
-        json: Json
+        okHttpClient: OkHttpClient, kakaoApiInterceptor: KakaoApiInterceptor, json: Json
     ): Retrofit {
-        val client = okHttpClient.newBuilder()
-            .addInterceptor(kakaoApiInterceptor)
-            .build()
+        val client = okHttpClient.newBuilder().addInterceptor(kakaoApiInterceptor).build()
 
         val contentType = "application/json".toMediaType()
-        return Retrofit.Builder()
-            .baseUrl("https://dapi.kakao.com/") // API 기본 URL
-            .client(client)
-            .addConverterFactory(json.asConverterFactory(contentType))
-            .build()
+        return Retrofit.Builder().baseUrl("https://dapi.kakao.com/") // API 기본 URL
+            .client(client).addConverterFactory(json.asConverterFactory(contentType)).build()
     }
 
     @Provides
     @Singleton
     @WeatherRetrofit
     fun provideWeatherRetrofit(
-        okHttpClient: OkHttpClient,
-        json: Json
+        okHttpClient: OkHttpClient, json: Json
     ): Retrofit {
         val contentType = "application/json".toMediaType()
-        return Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/data/2.5/")
-            .client(okHttpClient)
-            .addConverterFactory(json.asConverterFactory(contentType))
-            .build()
+        return Retrofit.Builder().baseUrl("https://api.openweathermap.org/data/2.5/")
+            .client(okHttpClient).addConverterFactory(json.asConverterFactory(contentType)).build()
     }
 
     @Provides
     @Singleton
     @NaverMapRetrofit
     fun provideNaverMapRetrofit(
-        okHttpClient: OkHttpClient,
-        json: Json
+        okHttpClient: OkHttpClient, json: Json
     ): Retrofit {
         val contentType = "application/json".toMediaType()
-        return Retrofit.Builder()
-            .baseUrl("https://naveropenapi.apigw.ntruss.com/")
-            .client(okHttpClient)
-            .addConverterFactory(json.asConverterFactory(contentType))
-            .build()
+        return Retrofit.Builder().baseUrl("https://naveropenapi.apigw.ntruss.com/")
+            .client(okHttpClient).addConverterFactory(json.asConverterFactory(contentType)).build()
     }
 
     @Provides
@@ -119,11 +104,7 @@ object NetworkModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
-        return OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
+        return OkHttpClient.Builder().addInterceptor(logging).connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).build()
     }
 }

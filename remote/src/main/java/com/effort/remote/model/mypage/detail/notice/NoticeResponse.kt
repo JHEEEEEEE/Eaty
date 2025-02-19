@@ -5,23 +5,17 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class NoticeResponse (
+data class NoticeResponse(
 
-    @SerialName("category")
-    val category: String = "",
+    @SerialName("category") val category: String = "",
 
-    @SerialName("title")
-    val title: String = "",
+    @SerialName("title") val title: String = "",
 
-    @SerialName("description")
-    val description: String = "",
+    @SerialName("description") val description: String = "",
 
-    @SerialName("imageUrl")
-    val imageUrl: String = "",
+    @SerialName("imageUrl") val imageUrl: String = "",
 
-    @SerialName("timestamp")
-    val timestamp: String = "",
+    @SerialName("timestamp") val timestamp: String = "",
 ) {
-    fun toData(): NoticeEntity =
-        NoticeEntity(category, title, description, imageUrl, timestamp)
+    fun toData(): NoticeEntity = NoticeEntity(category, title, description, imageUrl, timestamp)
 }

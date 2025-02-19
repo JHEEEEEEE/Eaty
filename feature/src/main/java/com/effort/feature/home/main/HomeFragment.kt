@@ -2,7 +2,6 @@ package com.effort.feature.home.main
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,9 +44,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -177,12 +174,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     is UiState.Loading -> binding.recyclerviewSuggestion.visibility = View.GONE
                     is UiState.Success -> {
                         val keywordList = state.data
-                        Log.d("HomeFragment", "$keywordList")
-                        Log.d("HomeFragment", "${keywordList.size}")
                         suggestionAdapter.submitList(keywordList)
                         binding.recyclerviewSuggestion.visibility = View.VISIBLE
                     }
-                    is UiState.Error, is UiState.Empty -> binding.recyclerviewSuggestion.visibility = View.GONE
+
+                    is UiState.Error, is UiState.Empty -> binding.recyclerviewSuggestion.visibility =
+                        View.GONE
                 }
             }
         }

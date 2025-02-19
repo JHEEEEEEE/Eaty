@@ -43,9 +43,7 @@ class FilterAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterViewHolder {
         val binding = ItemFilterBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
+            LayoutInflater.from(parent.context), parent, false
         )
         return FilterViewHolder(binding)
     }
@@ -59,7 +57,10 @@ class FilterAdapter(
          * RecyclerView의 성능을 최적화하기 위한 DiffUtil 콜백
          * - 같은 `id` 값을 가진 필터는 동일한 아이템으로 간주
          */
-        override fun areItemsTheSame(oldItem: FilterModel, newItem: FilterModel): Boolean = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: FilterModel, newItem: FilterModel): Boolean = oldItem == newItem
+        override fun areItemsTheSame(oldItem: FilterModel, newItem: FilterModel): Boolean =
+            oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: FilterModel, newItem: FilterModel): Boolean =
+            oldItem == newItem
     }
 }

@@ -6,6 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class KeywordWrapperResponse(
 
-    @SerialName("keyword_results")
-    val resultKeywords: List<KeywordResponse>
+    @SerialName("keyword_results") val resultKeywords: List<KeywordResponse>
 )

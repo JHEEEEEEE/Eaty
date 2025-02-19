@@ -1,7 +1,7 @@
 @file:Suppress("DEPRECATION")
+
 package com.effort.presentation.viewmodel.auth
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.effort.domain.DataResource
@@ -17,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,24 +46,26 @@ class AuthViewModel @Inject constructor(
      */
     fun checkUserLoggedIn() {
         viewModelScope.launch {
-            Log.d("AuthViewModel", "checkUserLoggedIn() 호출")
+            Timber.d("checkUserLoggedIn() 호출")
             setLoadingState(_authenticateState)
 
             _authenticateState.value = when (val dataResource = checkUserLoggedInUseCase()) {
                 is DataResource.Success -> {
-                    Log.d("AuthViewModel", "checkUserLoggedIn() 성공: ${dataResource.data}")
+                    Timber.d("checkUserLoggedIn() 성공: ${dataResource.data}")
                     if (dataResource.data) {
                         UiState.Success(Unit)
                     } else {
                         UiState.Error(Throwable(R.string.user_not_logged_in.toString()))
                     }
                 }
+
                 is DataResource.Error -> {
-                    Log.e("AuthViewModel", "checkUserLoggedIn() 실패: ${dataResource.throwable}")
+                    Timber.e(dataResource.throwable, "checkUserLoggedIn() 실패")
                     UiState.Error(dataResource.throwable)
                 }
+
                 is DataResource.Loading -> {
-                    Log.d("AuthViewModel", "checkUserLoggedIn() 로딩 중")
+                    Timber.d("checkUserLoggedIn() 로딩 중")
                     UiState.Loading
                 }
             }
@@ -77,34 +80,36 @@ class AuthViewModel @Inject constructor(
     fun handleSignInResult(account: GoogleSignInAccount) {
         viewModelScope.launch {
             try {
-                Log.d("AuthViewModel", "handleSignInResult() 호출: ${account.email}")
+                Timber.d("handleSignInResult() 호출: ${account.email}")
                 setLoadingState(_authenticateState)
 
                 _authenticateState.value =
                     when (val dataResource = authenticateUserUseCase(account.idToken!!)) {
                         is DataResource.Success -> {
-                            Log.d("AuthViewModel", "handleSignInResult() 성공")
+                            Timber.d("handleSignInResult() 성공")
                             if (dataResource.data) {
                                 UiState.Success(Unit)
                             } else {
                                 UiState.Error(Exception(R.string.authentication_failed.toString()))
                             }
                         }
+
                         is DataResource.Error -> {
-                            Log.e("AuthViewModel", "handleSignInResult() 실패: ${dataResource.throwable}")
+                            Timber.e(dataResource.throwable, "handleSignInResult() 실패")
                             UiState.Error(dataResource.throwable)
                         }
+
                         is DataResource.Loading -> {
-                            Log.d("AuthViewModel", "handleSignInResult() 로딩 중")
+                            Timber.d("handleSignInResult() 로딩 중")
                             UiState.Loading
                         }
                     }
             } catch (e: Exception) {
-                Log.e("AuthViewModel", "handleSignInResult() 예외 발생: ${e.message}")
+                Timber.e(e, "handleSignInResult() 예외 발생")
                 UiState.Error(e)
             } finally {
                 if (_authenticateState.value is UiState.Loading) {
-                    Log.d("AuthViewModel", "handleSignInResult() 상태 초기화")
+                    Timber.d("handleSignInResult() 상태 초기화")
                     UiState.Empty
                 }
             }
@@ -119,27 +124,29 @@ class AuthViewModel @Inject constructor(
     fun signOut() {
         viewModelScope.launch {
             try {
-                Log.d("AuthViewModel", "signOut() 호출")
+                Timber.d("signOut() 호출")
                 setLoadingState(_signOutState)
 
                 _signOutState.value = when (val dataResource = signOutUseCase()) {
                     is DataResource.Success -> {
                         googleSignInClient.signOut()
                         googleSignInClient.revokeAccess()
-                        Log.d("AuthViewModel", "signOut() 성공")
+                        Timber.d("signOut() 성공")
                         UiState.Success(true)
                     }
+
                     is DataResource.Error -> {
-                        Log.e("AuthViewModel", "signOut() 실패: ${dataResource.throwable}")
+                        Timber.e(dataResource.throwable, "signOut() 실패")
                         UiState.Error(dataResource.throwable)
                     }
+
                     is DataResource.Loading -> {
-                        Log.d("AuthViewModel", "signOut() 로딩 중")
+                        Timber.d("signOut() 로딩 중")
                         UiState.Loading
                     }
                 }
             } catch (e: Exception) {
-                Log.e("AuthViewModel", "signOut() 예외 발생: ${e.message}")
+                Timber.e(e, "signOut() 예외 발생")
                 UiState.Error(e)
             }
         }

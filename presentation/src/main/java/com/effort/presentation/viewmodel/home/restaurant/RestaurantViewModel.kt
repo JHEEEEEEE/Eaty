@@ -1,6 +1,5 @@
 package com.effort.presentation.viewmodel.home.restaurant
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,6 +20,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -64,6 +64,7 @@ class RestaurantViewModel @Inject constructor(
      */
     fun fetchRestaurants(query: String, loadMore: Boolean = false) {
         if (query != lastQuery) {
+            Timber.d("fetchRestaurants() - 검색어 변경 감지: $query")
             currentPage = 1
             lastQuery = query
             isLastPage = false
@@ -77,20 +78,21 @@ class RestaurantViewModel @Inject constructor(
         if (!loadMore) setLoadingState(_getRestaurantState)
 
         viewModelScope.launch {
-            getRestaurantListUseCase(query, _sortType.value.toDomain(), currentPage)
-                .onStart { if (!loadMore) setLoadingState(_getRestaurantState) }
-                .onCompletion { cause ->
+            getRestaurantListUseCase(query, _sortType.value.toDomain(), currentPage).onStart {
+                    if (!loadMore) setLoadingState(_getRestaurantState)
+                    Timber.d("fetchRestaurants() - 데이터 로딩 시작 (페이지: $currentPage)")
+                }.onCompletion { cause ->
                     handleCompletionState(_getRestaurantState, cause)
                     isLoading = false
-                }
-                .collectLatest { dataResource ->
+                    Timber.d("fetchRestaurants() - 데이터 로딩 완료 (페이지: $currentPage)")
+                }.collectLatest { dataResource ->
                     when (dataResource) {
                         is DataResource.Success -> {
                             val (restaurants, meta) = dataResource.data
                             val newItems = restaurants.map { it.toPresentation() }
                             val newItemSize = restaurants.size
 
-                            Log.d("RestaurantViewModel", "새로 로드된 데이터 개수: $newItemSize")
+                            Timber.d("fetchRestaurants() - 새로 로드된 데이터 개수: $newItemSize")
                             sendNewItemMessage(newItemSize)
 
                             if (loadMore) {
@@ -102,15 +104,20 @@ class RestaurantViewModel @Inject constructor(
 
                             if (meta?.isEnd == true) {
                                 isLastPage = true
+                                Timber.d("fetchRestaurants() - 마지막 페이지 도달")
                             } else {
                                 currentPage++
                             }
                         }
 
-                        is DataResource.Error -> _getRestaurantState.value =
-                            UiState.Error(dataResource.throwable)
+                        is DataResource.Error -> {
+                            Timber.e(dataResource.throwable, "fetchRestaurants() - API 요청 실패")
+                            _getRestaurantState.value = UiState.Error(dataResource.throwable)
+                        }
 
-                        is DataResource.Loading -> {}
+                        is DataResource.Loading -> {
+                            Timber.d("fetchRestaurants() - 데이터 로딩 중...")
+                        }
                     }
                 }
         }
@@ -122,6 +129,7 @@ class RestaurantViewModel @Inject constructor(
      * @param newItems 새로 추가된 아이템 개수
      */
     private fun sendNewItemMessage(newItems: Int) {
+        Timber.d("sendNewItemMessage() - 추가된 데이터 개수: $newItems")
         _newItemLiveData.postValue("$newItems 개의 데이터가 추가되었습니다.")
     }
 
@@ -130,6 +138,7 @@ class RestaurantViewModel @Inject constructor(
      */
     fun toggleCameraInitialization() {
         _isCameraInitialized.value = !_isCameraInitialized.value
+        Timber.d("toggleCameraInitialization() - 현재 상태: ${_isCameraInitialized.value}")
     }
 
     /**
@@ -138,6 +147,7 @@ class RestaurantViewModel @Inject constructor(
      * @param filterList 적용할 필터 리스트
      */
     fun setFilters(filterList: List<FilterModel>) {
+        Timber.d("setFilters() - 필터 리스트 업데이트: ${filterList.map { it.query }}")
         _filters.value = filterList
     }
 
@@ -161,7 +171,7 @@ class RestaurantViewModel @Inject constructor(
         _selectedFilterState.value = selected
 
         selected?.let {
-            Log.d("RestaurantViewModel", "필터 선택됨: ${it.query}")
+            Timber.d("selectFilter() - 필터 선택됨: ${it.query}")
             fetchRestaurants(it.query)
         }
     }
@@ -172,6 +182,7 @@ class RestaurantViewModel @Inject constructor(
      */
     fun loadCachedData() {
         if (_cachedData.value.isNotEmpty()) {
+            Timber.d("loadCachedData() - 캐시 데이터 로드 완료 (데이터 개수: ${_cachedData.value.size})")
             _getRestaurantState.value = UiState.Success(_cachedData.value)
         }
     }
@@ -182,6 +193,7 @@ class RestaurantViewModel @Inject constructor(
      * @param newData 추가할 새로운 데이터 리스트
      */
     private fun addPageData(newData: List<RestaurantModel>) {
+        Timber.d("addPageData() - 새로운 데이터 추가 (개수: ${newData.size})")
         val updatedData = _cachedData.value + newData
         _cachedData.value = updatedData
         _getRestaurantState.value = UiState.Success(updatedData)

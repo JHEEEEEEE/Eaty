@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,26 +34,28 @@ class ShareViewModel @Inject constructor(
         phoneNumber: String,
         placeUrl: String
     ) {
+        Timber.d("shareContent() 호출 - 식당명: $title")
+
         viewModelScope.launch {
+            Timber.d("shareContent() - 공유 요청 시작")
+
             when (val dataResource = shareUseCase(
-                title,
-                lotNumberAddress,
-                roadNameAddress,
-                distance,
-                phoneNumber,
-                placeUrl
+                title, lotNumberAddress, roadNameAddress, distance, phoneNumber, placeUrl
             )) {
                 is DataResource.Success -> {
                     val shareUrl = dataResource.data
                     _shareLinkState.value = UiState.Success(shareUrl)
+                    Timber.d("shareContent() 성공 - 공유 링크: $shareUrl")
                 }
 
                 is DataResource.Error -> {
                     _shareLinkState.value = UiState.Error(dataResource.throwable)
+                    Timber.e(dataResource.throwable, "shareContent() 실패")
                 }
 
                 is DataResource.Loading -> {
                     _shareLinkState.value = UiState.Loading
+                    Timber.d("shareContent() - 공유 링크 생성 중...")
                 }
             }
         }
@@ -64,6 +67,7 @@ class ShareViewModel @Inject constructor(
      * - 이후 새로운 공유 요청을 받을 수 있도록 함
      */
     fun resetShareState() {
+        Timber.d("resetShareState() 호출 - 공유 상태 초기화")
         _shareLinkState.value = UiState.Empty
     }
 }

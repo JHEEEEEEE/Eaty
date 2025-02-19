@@ -14,7 +14,7 @@ interface RestaurantService {
         @Query("y") latitude: String,
         @Query("radius") radius: Int? = 20000,
         @Query("size") size: Int = 15,
-        @Query("page") page: Int = 1, // 페이지 번호
+        @Query("page") page: Int = 1,
         @Query("sort") sort: String = "distance"
     ): RestaurantWrapperResponse
 }

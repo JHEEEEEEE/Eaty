@@ -1,10 +1,10 @@
 package com.effort.data.repositoryimpl.location
 
-import android.util.Log
 import com.effort.data.datasource.location.LocationRemoteDataSource
 import com.effort.domain.DataResource
 import com.effort.domain.model.location.Location
 import com.effort.domain.repository.location.LocationRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 class LocationRepositoryImpl @Inject constructor(
@@ -17,16 +17,16 @@ class LocationRepositoryImpl @Inject constructor(
      * - 실패 시 예외를 처리하고 오류 상태 반환
      */
     override suspend fun getCurrentLocation(): DataResource<Location> {
-        Log.d("LocationRepositoryImpl", "현재 위치 요청 시작")
+        Timber.d("getCurrentLocation() 호출됨")
 
         return try {
             // 위치 정보 요청
             val location = locationRemoteDataSource.getCurrentLocation()
-            Log.d("LocationRepositoryImpl", "위치 정보 요청 성공: $location")
+            Timber.d("위치 정보 요청 성공 - 위도: ${location.latitude}, 경도: ${location.longitude}")
 
             DataResource.success(location.toDomain())
         } catch (e: Exception) {
-            Log.e("LocationRepositoryImpl", "위치 정보 요청 실패: ${e.message}", e)
+            Timber.e(e, "위치 정보 요청 실패")
             DataResource.error(e)
         }
     }

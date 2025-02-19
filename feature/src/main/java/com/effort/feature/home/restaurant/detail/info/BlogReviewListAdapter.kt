@@ -52,11 +52,15 @@ class BlogReviewListAdapter :
          * - 같은 URL을 가진 블로그 리뷰는 동일한 아이템으로 간주
          */
         private val DiffCallback = object : DiffUtil.ItemCallback<BlogReviewModel>() {
-            override fun areItemsTheSame(oldItem: BlogReviewModel, newItem: BlogReviewModel): Boolean {
+            override fun areItemsTheSame(
+                oldItem: BlogReviewModel, newItem: BlogReviewModel
+            ): Boolean {
                 return oldItem.url == newItem.url
             }
 
-            override fun areContentsTheSame(oldItem: BlogReviewModel, newItem: BlogReviewModel): Boolean {
+            override fun areContentsTheSame(
+                oldItem: BlogReviewModel, newItem: BlogReviewModel
+            ): Boolean {
                 return oldItem == newItem
             }
         }

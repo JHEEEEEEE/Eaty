@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
-
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
@@ -24,6 +24,7 @@ class MyPageViewModel @Inject constructor(
     val userUpdateState get() = _userUpdateState.asStateFlow()
 
     init {
+        Timber.d("MyPageViewModel 초기화 - 사용자 정보 감지 시작")
         observeUserUpdate()
     }
 
@@ -33,14 +34,26 @@ class MyPageViewModel @Inject constructor(
      * - 상태 변경이 발생하면 `UiState`를 업데이트하여 UI에서 즉시 반영
      */
     private fun observeUserUpdate() {
+        Timber.d("observeUserUpdate() - 사용자 정보 감지 시작")
+
         viewModelScope.launch {
-            observeUserUpdateUseCase().collectLatest { dataResource ->
-                _userUpdateState.value = when (dataResource) {
-                    is DataResource.Success -> UiState.Success(dataResource.data.toPresentation())
-                    is DataResource.Error -> UiState.Error(dataResource.throwable)
-                    is DataResource.Loading -> UiState.Loading
+            observeUserUpdateUseCase()
+                .collectLatest { dataResource ->
+                    when (dataResource) {
+                        is DataResource.Success -> {
+                            Timber.d("observeUserUpdate() - 사용자 정보 업데이트 성공: ${dataResource.data}")
+                            _userUpdateState.value = UiState.Success(dataResource.data.toPresentation())
+                        }
+                        is DataResource.Error -> {
+                            Timber.e(dataResource.throwable, "observeUserUpdate() - 사용자 정보 업데이트 실패")
+                            _userUpdateState.value = UiState.Error(dataResource.throwable)
+                        }
+                        is DataResource.Loading -> {
+                            Timber.d("observeUserUpdate() - 사용자 정보 로딩 중")
+                            _userUpdateState.value = UiState.Loading
+                        }
+                    }
                 }
-            }
         }
     }
 }

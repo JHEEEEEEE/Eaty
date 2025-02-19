@@ -3,7 +3,6 @@ package com.effort.feature.home.restaurant.detail.surrounding
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,9 +33,7 @@ class RestaurantSurroundingFragment :
     private lateinit var weatherCarouselAdapter: WeatherCarouselAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRestaurantSurroundingBinding.inflate(inflater, container, false)
         return binding.root
@@ -60,8 +57,7 @@ class RestaurantSurroundingFragment :
         weatherCarouselAdapter = WeatherCarouselAdapter()
         binding.recyclerviewWeather.apply {
             layoutManager = CarouselLayoutManager(
-                MultiBrowseCarouselStrategy(),
-                CarouselLayoutManager.HORIZONTAL
+                MultiBrowseCarouselStrategy(), CarouselLayoutManager.HORIZONTAL
             )
             adapter = weatherCarouselAdapter
             setHasFixedSize(true)
@@ -86,8 +82,6 @@ class RestaurantSurroundingFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             sharedViewModel.location.collectLatest { location ->
                 location?.let { (latitude, longitude) ->
-                    Log.d("RestaurantSurroundingFragment", "위도: $latitude, 경도: $longitude")
-
                     viewModel.fetchWeatherData(latitude, longitude)
                     viewModel.fetchSubwayStation(latitude, longitude)
                 }
