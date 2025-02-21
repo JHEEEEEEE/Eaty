@@ -86,6 +86,7 @@
 
 ──────────────────────────────────────────────────────────  
 
+
 📌 **캡처 GIF**:  
 ## 홈화면
 
@@ -100,7 +101,7 @@
 
 | **현재 위치로부터 식당까지 네비 <br> (전화, 카카오 맵 리뷰, 네이버블로그)** | **어플 내 리뷰달기** | **음식점 주변의 환경(날씨, 지하철)**|
 |----------------------------------|----------------------------------|---------------------------------------------------------------------|
-| ![call_kakaomap_naverblog](https://github.com/user-attachments/assets/8d67f7d5-b5dc-4aae-ba34-e0752bbd60e5) |![review](https://github.com/user-attachments/assets/969bd27f-133a-47fe-b7f1-45e3180093be) | ![surrounding](https://github.com/user-attachments/assets/a6dd8f66-7fbf-4122-abf8-8575d7c38407) |
+| ![call_kakaomap_naverblog](https://github.com/user-attachments/assets/8d67f7d5-b5dc-4aae-ba34-e0752bbd60e5) |![review](https://github.com/user-attachments/assets/30cc6f74-2482-4b30-aa1f-13636dc45ddc) | ![surrounding](https://github.com/user-attachments/assets/a6dd8f66-7fbf-4122-abf8-8575d7c38407) |
 
 ## 찜화면
 
