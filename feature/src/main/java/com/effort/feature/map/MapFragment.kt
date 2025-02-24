@@ -2,13 +2,13 @@ package com.effort.feature.map
 
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.annotation.UiThread
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.effort.feature.R
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.collectFlow
 import com.effort.feature.core.util.observeStateContinuouslyWithLifecycle
@@ -38,6 +38,7 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MarkerIcons
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import kotlin.math.abs
 
 
@@ -45,33 +46,18 @@ import kotlin.math.abs
 class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate),
     OnMapReadyCallback {
 
-    // ViewModel을 Hilt를 통해 주입받음
     private val viewModel: RestaurantViewModel by viewModels()
-
-    // 필터 리스트 어댑터
     private lateinit var filterAdapter: FilterAdapter
-
-    // 네비게이션 컨트롤러
     private lateinit var navController: NavController
-
-    // 클러스터링 객체 Clusterer
     private lateinit var clusterer: Clusterer<RestaurantKey>
-
-    // 위치 추적 소스와 지도 객체
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
-
-    // 현재 위치를 표시하는 오버레이
     private lateinit var locationOverlay: LocationOverlay
 
     companion object {
-        // 위치 권한 요청 코드
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
-    /**
-     * 초기 UI 설정을 담당하는 메서드
-     */
     override fun initView() {
         setupMapFragment() // 네이버 지도 초기화
         initRecyclerView() // 필터 리스트 RecyclerView 초기화
@@ -119,7 +105,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     }
 
     /**
-     * 지도 초기화: 위치 소스 설정, 오버레이 및 상태 관찰
+     * 지도 초기화: 위치 소스 설정 및 오버레이 활성화
      */
     private fun initializeMap() {
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE) // 위치 소스 설정
@@ -129,7 +115,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     }
 
     /**
-     * ViewModel 상태를 관찰
+     * ViewModel 상태 관찰 및 UI 업데이트
      */
     private fun observeViewModel() {
         // 레스토랑 데이터 상태 관찰
@@ -155,7 +141,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
         // 새로운 아이템 관찰
         viewModel.newItemLiveData.observe(viewLifecycleOwner) { message ->
             if (viewModel.isLastPage) {
-                showToast("모든 데이터가 출력되었습니다.")
+                showToast(getString(R.string.data_all_loaded))
             } else {
                 showToast(message)
             }
@@ -163,7 +149,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     }
 
     /**
-     * 레스토랑 상태를 처리
+     * 레스토랑 상태를 감지하여 지도 마커 업데이트
      */
     private fun handleRestaurantState() {
         observeStateContinuouslyWithLifecycle(
@@ -171,55 +157,51 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
             progressView = binding.progressCircular.progressBar,
             fragment = this
         ) { restaurantData ->
-            setupClusterer(restaurantData) // ✅ 지도에 마커 업데이트
+            setupClusterer(restaurantData)
         }
     }
 
     /**
-     * 필터 변경 처리
+     * 필터 변경 감지
      */
     private fun handleFilterChange(selectedFilter: FilterModel?) {
         selectedFilter?.let { filter ->
-            Log.d("MapFragment", "선택된 필터: ${filter.query}")
+            Timber.d("선택된 필터: ${filter.query}")
         }
     }
 
+    /**
+     * 지도에 마커 클러스터링 설정
+     */
     private fun setupClusterer(restaurantList: List<RestaurantModel>) {
         clearClusterer()
 
         clusterer = Clusterer.Builder<RestaurantKey>().screenDistance(50.0) // 같은 건물 정도의 거리로 클러스터링
-            .minZoom(8) // 줌 레벨 8 이하에서는 클러스터링 적용 안 함
-            .maxZoom(14) // 줌 레벨 14 이상에서는 클러스터링 해제
-            .animate(true) // 줌 변화 시 애니메이션 적용
+            .minZoom(8).maxZoom(14).animate(true)
             .clusterMarkerUpdater(object : DefaultClusterMarkerUpdater() {
                 override fun updateClusterMarker(info: ClusterMarkerInfo, marker: Marker) {
                     super.updateClusterMarker(info, marker)
-                    // 클러스터 크기에 따라 아이콘 변경
                     marker.icon = when {
                         info.size <= 7 -> MarkerIcons.CLUSTER_LOW_DENSITY
                         info.size in 8..15 -> MarkerIcons.CLUSTER_MEDIUM_DENSITY
                         else -> MarkerIcons.CLUSTER_HIGH_DENSITY
                     }
-                    marker.captionText = "${info.size}개의 장소" // 클러스터 크기 표시
+                    marker.captionText = "${info.size}개의 장소"
                 }
             }).leafMarkerUpdater(object : DefaultLeafMarkerUpdater() {
                 override fun updateLeafMarker(info: LeafMarkerInfo, marker: Marker) {
                     super.updateLeafMarker(info, marker)
                     val key = info.key as RestaurantKey
 
-                    // 기존 마커 좌표를 저장하여 중복 방지
                     val existingCoordinates = mutableListOf<LatLng>()
 
-                    // 마커의 위치를 조정하여 중복 방지 처리
                     marker.position = getAdjustedLatLng(
                         key.position, existingCoordinates, key.hashCode()
                     )
 
-                    // 마커 설정
                     marker.captionText = key.title
                     marker.icon = MarkerIcons.GREEN
 
-                    // 마커 클릭 시 상세 페이지로 이동
                     marker.setOnClickListener {
                         navigateToDetailFragment(restaurantList.first { it.title == key.title } // key.title로 레스토랑 찾기
                         )
@@ -228,22 +210,20 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
                 }
             }).build()
 
-        // 클러스터러에 데이터 추가
         val keyTagMap = mutableMapOf<RestaurantKey, Any?>()
 
-        // RestaurantModel의 데이터를 RestaurantKey로 변환 후 추가
         restaurantList.forEachIndexed { index, restaurant ->
             val adjustedLatLng = getAdjustedLatLng(
                 LatLng(restaurant.latitude.toDouble(), restaurant.longitude.toDouble()),
-                mutableListOf(), // 기존 좌표와 비교
+                mutableListOf(),
                 index
             )
 
             keyTagMap[RestaurantKey(restaurant.title, adjustedLatLng)] = null
         }
 
-        clusterer.addAll(keyTagMap) // 클러스터러에 데이터 추가
-        clusterer.map = naverMap // 클러스터러를 지도와 연결
+        clusterer.addAll(keyTagMap)
+        clusterer.map = naverMap
     }
 
     /**
@@ -276,25 +256,25 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
      */
     private fun adjustMarkerPosition(latitude: Double, longitude: Double, index: Int): LatLng {
         // 기본 오차값
-        val baseOffset = 0.0002 // 기존 0.0001에서 두 배로 증가
+        val baseOffset = 0.0002
 
         // 랜덤값 추가 (0.0 ~ 0.0001 범위)
-        val randomOffset = (0..10).random() * 0.00001 // 0.00001씩 랜덤으로 더함
+        val randomOffset = (0..10).random() * 0.00001
 
         // 인덱스를 활용해 마커를 여러 방향으로 분산
-        val latOffset = baseOffset * (index % 5) + randomOffset // 위도 오차
-        val lngOffset = baseOffset * ((index + 2) % 5) + randomOffset // 경도 오차
+        val latOffset = baseOffset * (index % 5) + randomOffset
+        val lngOffset = baseOffset * ((index + 2) % 5) + randomOffset
 
         // 조정된 LatLng 반환
         return LatLng(latitude + latOffset, longitude + lngOffset)
     }
 
     /**
-     * RecyclerView 초기화
+     * 필터 선택 UI 설정
      */
     private fun initRecyclerView() {
         filterAdapter = FilterAdapter { selectedFilter ->
-            viewModel.selectFilter(selectedFilter) // 필터 선택 처리
+            viewModel.selectFilter(selectedFilter)
         }
         binding.recyclerViewFilter.apply {
             layoutManager =
@@ -304,7 +284,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate
     }
 
     /**
-     * FAB 버튼 클릭 리스너 설정
+     * FAB 버튼 클릭 시 필터 적용 및 데이터 로드
      */
     private fun setupFabClickListener() {
         binding.fab.setOnClickListener {

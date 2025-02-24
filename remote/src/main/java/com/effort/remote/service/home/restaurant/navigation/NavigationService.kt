@@ -6,6 +6,7 @@ import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface NavigationService {
+
     @GET("map-direction/v1/driving")
     suspend fun getNavigationPath(
         @Header("X-NCP-APIGW-API-KEY-ID") clientId: String,

@@ -5,7 +5,6 @@ import com.effort.data.model.mypage.detail.notice.NoticeEntity
 import com.effort.remote.service.mypage.MyPageService
 import javax.inject.Inject
 
-
 class NoticeRemoteDataSourceImpl @Inject constructor(
     private val myPageService: MyPageService
 ) : NoticeRemoteDataSource {

@@ -6,18 +6,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserResponse(
-    @SerialName("name")
-    val name: String = "",
 
-    @SerialName("nickname")
-    val nickname: String = "",
+    @SerialName("name") val name: String = "",
 
-    @SerialName("email")
-    val email: String = "",
+    @SerialName("nickname") val nickname: String = "",
 
-    @SerialName("profilePic")
-    val profilePicPath: String = "",
+    @SerialName("email") val email: String = "",
+
+    @SerialName("profilePic") val profilePicPath: String = "",
 ) {
-    fun toData(): UserEntity =
-        UserEntity(name, nickname, email, profilePicPath)
+    fun toData(): UserEntity = UserEntity(name, nickname, email, profilePicPath)
 }

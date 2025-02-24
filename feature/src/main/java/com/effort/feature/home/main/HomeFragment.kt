@@ -2,7 +2,6 @@ package com.effort.feature.home.main
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.effort.feature.R
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.collectFlow
-import com.effort.feature.core.util.observeStateLatestWithLifecycle
+import com.effort.feature.core.util.observeStateLatestWithLifecycleOnFragment
 import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentHomeBinding
 import com.effort.presentation.model.home.CategoryModel
@@ -27,6 +26,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
+
     private val myPageViewModel: MyPageViewModel by viewModels()
     private val homeViewModel: HomeViewModel by viewModels()
     private lateinit var categoryAdapter: CategoryListAdapter
@@ -44,9 +44,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -57,50 +55,45 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         initView()
     }
 
-
     /**
-     * ViewModel 상태를 관찰
+     * ViewModel의 상태를 관찰하여 UI 업데이트
      */
     private fun observeViewModel() {
-        // 유저 업데이트 상태 관찰
-        handleUserUpdateState() // 유저 상태 처리 로직 분리
+        handleUserUpdateState()
 
-        // 카테고리 리스트 상태 관찰
+        // 카테고리 목록이 변경될 때 RecyclerView 업데이트
         collectFlow(homeViewModel.categories) { categories ->
-            handleCategoryUpdate(categories) // 카테고리 상태 처리 로직 분리
+            categoryAdapter.submitList(categories)
         }
     }
 
     /**
-     * 유저 업데이트 상태 처리
+     * 사용자 정보가 변경될 때 UI를 업데이트
      */
     private fun handleUserUpdateState() {
-        observeStateLatestWithLifecycle(
+        observeStateLatestWithLifecycleOnFragment(
             stateFlow = myPageViewModel.userUpdateState,
             progressView = binding.progressCircular.progressBar,
             fragment = this
         ) { userData ->
-            binding.userName.text = getDisplayName(userData.nickname, userData.name) // ✅ UI 업데이트
+            binding.userName.text = getDisplayName(userData.nickname, userData.name)
         }
     }
 
     /**
-     * 카테고리 업데이트 상태 처리
+     * 닉네임이 비어있으면 실명을 반환
      */
-    private fun handleCategoryUpdate(categories: List<CategoryModel>) {
-        categoryAdapter.submitList(categories)
-    }
-
     private fun getDisplayName(nickname: String, name: String): String {
         return nickname.ifBlank { name }
     }
 
-    // 1. RecyclerView 초기화
+    /**
+     * RecyclerView를 초기화하고 어댑터를 설정
+     */
     private fun setupRecyclerView() {
         categoryAdapter = CategoryListAdapter { category ->
-            navigateToRestaurantFragment(category) // 클릭 시 이동
+            navigateToRestaurantFragment(category)
         }
-
         binding.recyclerviewCategory.apply {
             adapter = categoryAdapter
             setHasFixedSize(true)
@@ -110,51 +103,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             binding.searchKeyword.setText(selectedSuggestion)
             binding.recyclerviewSuggestion.visibility = View.GONE
         }
-
-        binding.recyclerviewSuggestion.apply {
-            adapter = suggestionAdapter
-        }
-    }
-
-    // 2. 카테고리 데이터 설정
-    private fun setupCategoryList() {
-        homeViewModel.setCategories(
-            listOf(
-                CategoryModel(getString(R.string.korean_food), R.drawable.korean_food_image),
-                CategoryModel(getString(R.string.chinese_food), R.drawable.chinese_food_image),
-                CategoryModel(getString(R.string.western_food), R.drawable.western_food_image),
-                CategoryModel(getString(R.string.japanese_food), R.drawable.japanese_food_image),
-                CategoryModel(getString(R.string.asian_food), R.drawable.asian_food_image),
-                CategoryModel(getString(R.string.bunsik_food), R.drawable.cafe_image),
-                CategoryModel(getString(R.string.chicken), R.drawable.cafe_image),
-                CategoryModel(getString(R.string.gukbap), R.drawable.cafe_image),
-                CategoryModel(getString(R.string.grilled_meat), R.drawable.cafe_image),
-                CategoryModel(getString(R.string.seafood), R.drawable.cafe_image),
-                CategoryModel(getString(R.string.buffet), R.drawable.cafe_image),
-                CategoryModel(getString(R.string.fastfood), R.drawable.cafe_image),
-            )
-        )
-    }
-
-    // 3. 클릭 시 RestaurantFragment로 이동
-    private fun navigateToRestaurantFragment(query: String) {
-        val action = HomeFragmentDirections.actionHomeFragmentToRestaurantFragment(query)
-        findNavController().navigate(action)
-    }
-
-    private fun navigateToMapFragment() {
-        val action = HomeFragmentDirections.actionHomeFragmentToMapFragment()
-        findNavController().navigate(action)
-    }
-
-    private fun setupMapButtonClickListener() {
-        binding.btnMap.setOnClickListener {
-            navigateToMapFragment()
-        }
+        binding.recyclerviewSuggestion.adapter = suggestionAdapter
     }
 
     /**
-     * 키보드 완료 버튼 처리
+     * 검색 완료 버튼 클릭 리스너 설정
      */
     private fun setupDoneButtonListener() {
         binding.searchKeyword.setOnEditorActionListener { textView, actionId, _ ->
@@ -168,7 +121,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     /**
-     * 검색 아이콘 클릭 처리
+     * 검색 아이콘 클릭 리스너 설정
      */
     private fun setupEndIconClickListener() {
         binding.searchView.setEndIconOnClickListener {
@@ -177,35 +130,43 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     /**
-     * 검색 동작 공통 처리
+     * 검색 동작 처리
      */
     private fun handleSearchAction(query: String) {
         if (query.isNotEmpty()) {
-            hideKeyboard() // 키보드 닫기
+            hideKeyboard()
             navigateToRestaurantFragment(query)
         } else {
             showToast("검색어를 입력해주세요")
         }
     }
 
+    /**
+     * 키보드 숨기기
+     */
     private fun hideKeyboard() {
         val inputMethodManager =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
+    /**
+     * 검색어 입력 리스너 설정
+     */
     private fun setupSearchKeywordListener() {
         binding.searchKeyword.addTextChangedListener { editable ->
             val query = editable.toString().trim()
             if (query.isNotEmpty()) {
-                homeViewModel.fetchSuggestions(query) // ViewModel에 검색어 전달
+                homeViewModel.fetchSuggestions(query) // 검색어 추천 요청
             } else {
-                binding.recyclerviewSuggestion.visibility = View.GONE // 추천어 숨김
+                binding.recyclerviewSuggestion.visibility = View.GONE
             }
         }
     }
 
-
+    /**
+     * 검색어 추천 상태를 관찰하여 UI 업데이트
+     */
     private fun observeSuggestionState() {
         viewLifecycleOwner.lifecycleScope.launch {
             homeViewModel.getSuggestionState.collect { state ->
@@ -213,16 +174,49 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     is UiState.Loading -> binding.recyclerviewSuggestion.visibility = View.GONE
                     is UiState.Success -> {
                         val keywordList = state.data
-                        Log.d("HomeFragment", "$keywordList")
-                        Log.d("HomeFragment", "${keywordList.size}")
                         suggestionAdapter.submitList(keywordList)
                         binding.recyclerviewSuggestion.visibility = View.VISIBLE
                     }
 
-                    is UiState.Error -> binding.recyclerviewSuggestion.visibility = View.GONE
-                    is UiState.Empty -> binding.recyclerviewSuggestion.visibility = View.GONE
+                    is UiState.Error, is UiState.Empty -> binding.recyclerviewSuggestion.visibility =
+                        View.GONE
                 }
             }
+        }
+    }
+
+    private fun setupCategoryList() {
+        homeViewModel.setCategories(
+            listOf(
+                CategoryModel(getString(R.string.korean_food), R.drawable.korean_food_image),
+                CategoryModel(getString(R.string.chinese_food), R.drawable.chinese_food_image),
+                CategoryModel(getString(R.string.western_food), R.drawable.western_food_image),
+                CategoryModel(getString(R.string.japanese_food), R.drawable.japanese_food_image),
+                CategoryModel(getString(R.string.asian_food), R.drawable.asian_food_image),
+                CategoryModel(getString(R.string.bunsik_food), R.drawable.bunsik_food_image),
+                CategoryModel(getString(R.string.chicken), R.drawable.chicken_image),
+                CategoryModel(getString(R.string.gukbap), R.drawable.gukbap_image),
+                CategoryModel(getString(R.string.grilled_meat), R.drawable.grilled_meat),
+                CategoryModel(getString(R.string.seafood), R.drawable.seafood_image),
+                CategoryModel(getString(R.string.buffet), R.drawable.buffet_image),
+                CategoryModel(getString(R.string.fastfood), R.drawable.fastfood_image),
+            )
+        )
+    }
+
+    private fun navigateToRestaurantFragment(query: String) {
+        val action = HomeFragmentDirections.actionHomeFragmentToRestaurantFragment(query)
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToMapFragment() {
+        val action = HomeFragmentDirections.actionHomeFragmentToMapFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun setupMapButtonClickListener() {
+        binding.btnMap.setOnClickListener {
+            navigateToMapFragment()
         }
     }
 }

@@ -2,7 +2,6 @@ package com.effort.presentation.model.home.restaurant
 
 import com.effort.domain.model.home.restaurant.Restaurant
 
-
 data class RestaurantModel(
     val title: String,
     val lotNumberAddress: String,
@@ -39,5 +38,3 @@ fun Restaurant.toPresentation(): RestaurantModel {
         latitude
     )
 }
-
-

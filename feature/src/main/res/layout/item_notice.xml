@@ -1,12 +1,9 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-    <!-- 질문 텍스트 -->
-    <!-- 콘텐츠 영역 Flow -->
     <androidx.constraintlayout.helper.widget.Flow
         android:id="@+id/flow_notice"
         android:layout_width="wrap_content"
@@ -16,11 +13,10 @@
         app:flow_horizontalAlign="start"
         app:flow_verticalAlign="top"
         app:flow_wrapMode="none"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- 제목과 설명 텍스트 -->
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/notice_category"
         android:layout_width="match_parent"
@@ -42,42 +38,41 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:background="#CCCCCC"
-        app:layout_constraintTop_toBottomOf="@id/flow_notice"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/flow_notice" />
 
-    <!-- 답변 컨테이너 -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/noticeContainer"
+        android:id="@+id/notice_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:padding="8dp"
         android:background="#F0F0F0"
-        app:layout_constraintTop_toBottomOf="@id/divider"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/divider">
 
         <!-- 이미지 뷰 -->
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/noticeImageView"
+            android:id="@+id/notice_imageView"
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- 답변 텍스트 -->
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/noticeDescription"
+            android:id="@+id/notice_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
             android:textColor="#333"
-            app:layout_constraintTop_toBottomOf="@id/noticeImageView"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/notice_imageView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

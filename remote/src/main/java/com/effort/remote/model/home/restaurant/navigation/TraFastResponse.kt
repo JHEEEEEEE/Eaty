@@ -7,8 +7,8 @@ import kotlinx.serialization.Serializable
 /* "trafast" 데이터 (가장 빠른 경로) */
 @Serializable
 data class TraFastResponse(
-    @SerialName("path")
-    val path: List<List<Double>> // `[longitude, latitude]` 형식의 경로 좌표 리스트
+
+    @SerialName("path") val path: List<List<Double>> // `[longitude, latitude]` 형식의 경로 좌표 리스트
 ) {
     fun toData(): List<NavigationPathEntity> {
         return path.map { point ->

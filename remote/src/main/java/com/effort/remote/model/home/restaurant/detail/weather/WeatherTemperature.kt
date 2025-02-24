@@ -6,6 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WeatherTemperature(
 
-    @SerialName("temp")
-    val temp: Double = 0.0 // 현재 온도 (섭씨)
+    @SerialName("temp") val temp: Double = 0.0 // 현재 온도 (섭씨)
 )

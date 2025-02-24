@@ -8,6 +8,5 @@ data class UserEntity(
     val email: String,
     val profilePicPath: String,
 ) {
-    fun toDomain(): User =
-        User(name, nickname, email, profilePicPath)
+    fun toDomain(): User = User(name, nickname, email, profilePicPath)
 }

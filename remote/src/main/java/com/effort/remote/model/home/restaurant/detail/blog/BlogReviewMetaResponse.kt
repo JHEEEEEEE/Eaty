@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BlogReviewMetaResponse(
+
     @SerialName("total_count") val totalCount: Int,          // 총 결과 수
     @SerialName("pageable_count") val pageableCount: Int,    // 노출 가능 결과 수
     @SerialName("is_end") val isEnd: Boolean                 // 마지막 페이지 여부

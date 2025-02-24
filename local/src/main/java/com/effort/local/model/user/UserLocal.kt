@@ -5,14 +5,13 @@ import androidx.room.PrimaryKey
 import com.effort.data.model.auth.UserEntity
 
 @Entity(tableName = "user")
-data class UserLocal (
-    @PrimaryKey
-    val email: String,
+data class UserLocal(
+    @PrimaryKey val email: String,
     val name: String,
     var nickname: String?,
     var profilePicPath: String,
 ) {
-    fun toData() : UserEntity {
+    fun toData(): UserEntity {
         return UserEntity(name, nickname ?: "", email, profilePicPath)
     }
 }

@@ -24,14 +24,13 @@ class RestaurantReviewFragment :
 
     private val viewModel: RestaurantReviewViewModel by viewModels()
     private lateinit var commentAdapter: CommentAdapter
-
     private val sharedViewModel: RestaurantOverviewViewModel by activityViewModels()
 
     override fun initView() {
         setupRecyclerView()
         observeViewModel()
 
-        // SharedViewModel에서 식당이름 데이터를 수집하여 사용
+        // SharedViewModel에서 식당 이름을 감지하여 댓글 목록을 불러옴
         viewLifecycleOwner.lifecycleScope.launch {
             sharedViewModel.title.collectLatest { restaurantId ->
                 setupSendButton(restaurantId)
@@ -41,9 +40,7 @@ class RestaurantReviewFragment :
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRestaurantReviewBinding.inflate(layoutInflater)
         return binding.root
@@ -54,6 +51,9 @@ class RestaurantReviewFragment :
         initView()
     }
 
+    /**
+     * 댓글 목록을 표시하는 RecyclerView 설정
+     */
     private fun setupRecyclerView() {
         commentAdapter = CommentAdapter()
         binding.recyclerviewComment.apply {
@@ -64,13 +64,16 @@ class RestaurantReviewFragment :
         }
     }
 
+    /**
+     * ViewModel에서 댓글 상태를 감지하여 UI 업데이트
+     */
     private fun observeViewModel() {
         observeStateLatest(
             stateFlow = viewModel.getCommentState,
             progressView = binding.progressCircular.progressBar,
             fragment = this
         ) { commentData ->
-            commentAdapter.submitList(commentData) // 댓글 목록 업데이트
+            commentAdapter.submitList(commentData)
         }
 
         observeStateLatest(
@@ -82,12 +85,19 @@ class RestaurantReviewFragment :
         }
     }
 
+    /**
+     * 댓글 전송 버튼 클릭 이벤트 설정
+     * - 사용자가 입력한 댓글이 비어있지 않으면 ViewModel에 전달
+     * - 전송 후 입력창 초기화
+     *
+     * @param restaurantId 댓글이 추가될 식당의 ID
+     */
     private fun setupSendButton(restaurantId: String) {
         binding.sendMsg.setOnClickListener {
             val content = binding.edittextMsg.text.toString().trim()
             if (content.isNotEmpty()) {
                 viewModel.addComment(restaurantId, content)
-                binding.edittextMsg.text?.clear() // 입력창 초기화
+                binding.edittextMsg.text?.clear()
             } else {
                 Toast.makeText(requireContext(), "댓글 내용을 입력하세요.", Toast.LENGTH_SHORT).show()
             }

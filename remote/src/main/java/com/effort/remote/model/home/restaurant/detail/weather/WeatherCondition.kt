@@ -6,9 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WeatherCondition(
 
-    @SerialName("id")
-    val id: Int = 0,
+    @SerialName("id") val id: Int = 0,
 
-    @SerialName("description")
-    val condition: String = "",
+    @SerialName("description") val condition: String = "",
 )

@@ -8,8 +8,7 @@ data class CommentEntity(
     val userNickname: String,     // 작성자 이름
     val timestamp: String,  // 작성 시간
 ) {
-    fun toDomain(): Comment =
-        Comment(content, userId, userNickname, timestamp)
+    fun toDomain(): Comment = Comment(content, userId, userNickname, timestamp)
 }
 
 fun Comment.toData(): CommentEntity {

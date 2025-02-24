@@ -6,10 +6,7 @@ data class LocationEntity(
     val latitude: Double,
     val longitude: Double,
 ) {
-    fun toDomain(): Location =
-        Location(
-            latitude = this.latitude,
-            longitude = this.longitude
-        )
+    fun toDomain(): Location = Location(
+        latitude = this.latitude, longitude = this.longitude
+    )
 }
-

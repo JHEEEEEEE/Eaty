@@ -37,11 +37,6 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 
     //hilt
     implementation(libs.hilt.android)
@@ -54,6 +49,9 @@ dependencies {
 
     // Json -> Room
     implementation(libs.kotlin.serialization.json)
+
+    // Timber
+    implementation(libs.timber)
 
     implementation(project(":data"))
 }

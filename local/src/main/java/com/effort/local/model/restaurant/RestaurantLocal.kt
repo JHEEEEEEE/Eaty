@@ -6,8 +6,7 @@ import com.effort.data.model.home.restaurant.RestaurantEntity
 
 @Entity(tableName = "restaurants")
 data class RestaurantLocal(
-    @PrimaryKey
-    val title: String,
+    @PrimaryKey val title: String,
     val lotNumberAddress: String,
     val roadNameAddress: String,
     val phoneNumber: String,

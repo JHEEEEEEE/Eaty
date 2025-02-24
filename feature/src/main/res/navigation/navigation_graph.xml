@@ -10,10 +10,7 @@
         android:name="com.effort.feature.home.main.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_homeFragment_to_communityFragment"
-            app:destination="@id/community_fragment"
-            app:launchSingleTop="true" />
+
         <action
             android:id="@+id/action_homeFragment_to_mapFragment"
             app:destination="@id/map_fragment"
@@ -30,11 +27,6 @@
             app:destination="@id/favorite_fragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/community_fragment"
-        android:name="com.effort.feature.community.CommunityFragment"
-        android:label="CommunityFragment"
-        tools:layout="@layout/fragment_community" />
     <fragment
         android:id="@+id/map_fragment"
         android:name="com.effort.feature.map.MapFragment"

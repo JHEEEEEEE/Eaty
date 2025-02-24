@@ -11,22 +11,19 @@ class RestaurantFavoritesRemoteDataSourceImpl @Inject constructor(
 ) : RestaurantFavoritesRemoteDataSource {
 
     override suspend fun addRestaurantToFavorites(
-        userId: String,
-        restaurant: RestaurantEntity
+        userId: String, restaurant: RestaurantEntity
     ): Boolean {
         return favoriteService.addRestaurantToFavorites(userId, restaurant.toRemote())
     }
 
     override suspend fun removeRestaurantFromFavorites(
-        userId: String,
-        restaurantName: String
+        userId: String, restaurantName: String
     ): Boolean {
         return favoriteService.removeRestaurantFromFavorites(userId, restaurantName)
     }
 
     override suspend fun checkIfRestaurantIsFavorite(
-        userId: String,
-        restaurantName: String
+        userId: String, restaurantName: String
     ): Boolean {
         return favoriteService.checkIfRestaurantIsFavorite(userId, restaurantName)
     }

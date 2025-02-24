@@ -6,14 +6,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class WeatherResponse(
-    @SerialName("dt_txt")
-    val dateTimeText: String = "", // 날짜 및 시간 (예: "2022-08-30 15:00:00")
 
-    @SerialName("main")
-    val temperatureInfo: WeatherTemperature = WeatherTemperature(), // 온도 정보
+    @SerialName("dt_txt") val dateTimeText: String = "", // 날짜 및 시간 (예: "2022-08-30 15:00:00")
 
-    @SerialName("weather")
-    val weatherConditions: List<WeatherCondition> = emptyList() // 날씨 상태 정보
+    @SerialName("main") val temperatureInfo: WeatherTemperature = WeatherTemperature(), // 온도 정보
+
+    @SerialName("weather") val weatherConditions: List<WeatherCondition> = emptyList() // 날씨 상태 정보
 ) {
 
     // 변환 함수: WeatherModel로 변환

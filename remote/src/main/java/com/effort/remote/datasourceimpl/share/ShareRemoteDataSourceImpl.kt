@@ -16,6 +16,8 @@ class ShareRemoteDataSourceImpl @Inject constructor(
         phoneNumber: String,
         placeUrl: String
     ): String {
-        return shareService.createKakaoShareUrl(title, lotNumberAddress, roadNameAddress, distance, phoneNumber, placeUrl)
+        return shareService.createKakaoShareUrl(
+            title, lotNumberAddress, roadNameAddress, distance, phoneNumber, placeUrl
+        )
     }
 }

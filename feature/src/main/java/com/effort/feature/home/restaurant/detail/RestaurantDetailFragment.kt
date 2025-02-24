@@ -6,25 +6,23 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.effort.feature.R
-import com.effort.feature.community.RestaurantDetailAdapter
 import com.effort.feature.core.base.BaseFragment
 import com.effort.feature.core.util.extractGuDongFromSeoulAddress
+import com.effort.feature.core.util.observeStateLatest
+import com.effort.feature.core.util.observeStateLatestForOtherLogic
 import com.effort.feature.core.util.showToast
 import com.effort.feature.databinding.FragmentRestaurantDetailBinding
-import com.effort.presentation.UiState
 import com.effort.presentation.model.home.restaurant.RestaurantModel
 import com.effort.presentation.model.home.restaurant.navigation.NavigationPathModel
 import com.effort.presentation.viewmodel.home.restaurant.RestaurantOverviewViewModel
@@ -45,13 +43,13 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.PathOverlay
 import com.naver.maps.map.util.FusedLocationSource
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class RestaurantDetailFragment :
     BaseFragment<FragmentRestaurantDetailBinding>(FragmentRestaurantDetailBinding::inflate),
     OnMapReadyCallback {
+
     private lateinit var navController: NavController
     private val args: RestaurantDetailFragmentArgs by navArgs() // SafeArgs로 데이터 받기
     private val restaurantFavoritesViewModel: RestaurantFavoritesViewModel by viewModels()
@@ -76,8 +74,7 @@ class RestaurantDetailFragment :
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.naver_map_container) as? MapFragment
                 ?: MapFragment.newInstance().also {
-                    childFragmentManager.beginTransaction()
-                        .replace(R.id.naver_map_container, it)
+                    childFragmentManager.beginTransaction().replace(R.id.naver_map_container, it)
                         .commit()
                 }
 
@@ -121,33 +118,6 @@ class RestaurantDetailFragment :
         }
     }
 
-    private fun observeNavigationPathState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            navigationViewModel.getNavigationPathState.collectLatest { state ->
-                when (state) {
-                    is UiState.Loading -> {
-                        binding.mapProgressBar.visibility = View.VISIBLE
-                    }
-
-                    is UiState.Success -> {
-                        drawPath(state.data)
-                    }
-
-                    is UiState.Error -> {
-                        binding.mapProgressBar.visibility = View.GONE
-                        Log.e(
-                            "RestaurantDetailFragment",
-                            "Navigation API Error: ${state.exception.message}"
-                        )
-                    }
-
-                    is UiState.Empty -> {
-                        binding.mapProgressBar.visibility = View.GONE
-                    }
-                }
-            }
-        }
-    }
 
     private fun setupMarkers(restaurantLatLng: LatLng) {
         if (restaurantLatLng.latitude.isNaN() || restaurantLatLng.longitude.isNaN()) {
@@ -170,9 +140,7 @@ class RestaurantDetailFragment :
 
     private fun updateUserLocation(userLatLng: LatLng) {
 
-        if (userLatLng.latitude.isNaN() || userLatLng.longitude.isNaN() ||
-            restaurantMarker.position.latitude.isNaN() || restaurantMarker.position.longitude.isNaN()
-        ) {
+        if (userLatLng.latitude.isNaN() || userLatLng.longitude.isNaN() || restaurantMarker.position.latitude.isNaN() || restaurantMarker.position.longitude.isNaN()) {
             return
         }
 
@@ -184,7 +152,7 @@ class RestaurantDetailFragment :
             naverMap.moveCamera(cameraUpdate)
 
         } catch (e: Exception) {
-            Log.e("ERROR", "Failed to update camera bounds: ${e.message}")
+            Timber.e("Failed to update camera bounds: ${e.message}")
         }
     }
 
@@ -210,14 +178,9 @@ class RestaurantDetailFragment :
     override fun initView() {
         setupTabLayoutAndViewPager()
         setupClickListeners()
-        observeUserState() // 사용자 상태 관찰
-        observeFavoriteCheckState() // 찜 여부 확인 상태 관찰
-        observeAddFavoriteState()
-        observeRemoveFavoriteState()
-        observeShareLinkState()
+        observeViewModel()
         setupRestaurantOverviewViewModelData()
         setupMapFragment()
-        observeNavigationPathState()
     }
 
     override fun onCreateView(
@@ -234,10 +197,8 @@ class RestaurantDetailFragment :
         val bundle = arguments // ✅ 딥링크에서 전달된 데이터 확인
 
         if (bundle != null && bundle.containsKey("title")) {
-            Log.d("RestaurantDetailFragment", "arguments 사용 (딥링크)")
             bindRestaurantDetails(bundle)
         } else {
-            Log.d("RestaurantDetailFragment", "SafeArgs 사용")
             bindRestaurantDetails(args) // ✅ Fragment 간 이동은 SafeArgs 사용
         }
 
@@ -249,7 +210,7 @@ class RestaurantDetailFragment :
         try {
             navController = findNavController()  // 부모 Fragment의 NavController를 찾음
         } catch (e: Exception) {
-            Log.e("RestaurantDetailFragment", "NavController is not found", e)
+            Timber.e(e, "NavController is not found")
         }
 
         val tabLayout: TabLayout = binding.tabs
@@ -283,7 +244,8 @@ class RestaurantDetailFragment :
             restaurantTitle.text = bundle.getString("title", "제목 없음")
             restaurantLotNumberAddress.text = bundle.getString("lotNumberAddress", "주소 없음")
             restaurantRoadNameAddress.text = bundle.getString("roadNameAddress", "도로명 주소 없음")
-            restaurantDistance.text = getString(R.string.distance, bundle.getString("distance", "0m"))
+            restaurantDistance.text =
+                getString(R.string.distance, bundle.getString("distance", "0m"))
             restaurantNumber.text = bundle.getString("phoneNumber", "전화번호 없음")
             restaurantWebpage.text = bundle.getString("placeUrl", "웹페이지 없음")
         }
@@ -305,12 +267,10 @@ class RestaurantDetailFragment :
     }
 
     private fun setupClickListeners() {
-        listOf(
-            binding.restaurantWebpage to { openUrl(args.placeUrl) },
+        listOf(binding.restaurantWebpage to { openUrl(args.placeUrl) },
             binding.restaurantNumber to { dialPhoneNumber(args.phoneNumber) },
             binding.shareButton to { shareRestaurant() },  // ✅ 공유 기능 함수 분리
-            binding.favoriteButton to { handleFavoriteClick() }
-        ).forEach { (view, action) ->
+            binding.favoriteButton to { handleFavoriteClick() }).forEach { (view, action) ->
             view.setOnClickListener { action() }
         }
     }
@@ -339,161 +299,95 @@ class RestaurantDetailFragment :
 
     // 공유 기능 함수 (shareViewModel 호출)
     private fun shareRestaurant() {
-        shareViewModel.shareContent(args.title, args.lotNumberAddress, args.roadNameAddress, args.distance, args.phoneNumber, args.placeUrl)
+        shareViewModel.shareContent(
+            args.title,
+            args.lotNumberAddress,
+            args.roadNameAddress,
+            args.distance,
+            args.phoneNumber,
+            args.placeUrl
+        )
+    }
+
+    private fun observeViewModel() {
+        observeNavigationPathState()
+        observeUserState()
+        observeShareLinkState()
+        observeFavoriteCheckState()
+        observeAddFavoriteState()
+        observeRemoveFavoriteState()
+    }
+
+    private fun observeNavigationPathState() {
+        observeStateLatest(stateFlow = navigationViewModel.getNavigationPathState,
+            progressView = binding.mapProgressBar,
+            fragment = this,
+            onSuccess = {
+                drawPath(it)
+            })
     }
 
     private fun observeUserState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            restaurantFavoritesViewModel.userState.collectLatest { state ->
-                when (state) {
-                    is UiState.Success -> {
-                        val user = state.data
-                        Log.d("RestaurantDetailFragment", "User updated: ${user?.email}")
-                        restaurantFavoritesViewModel.checkIfRestaurantIsFavorite(args.title) // 사용자 업데이트 후 찜 여부 확인
-                    }
-
-                    is UiState.Loading -> {
-                        Log.d("RestaurantDetailFragment", "Loading user data...")
-                    }
-
-                    is UiState.Error -> {
-                        Log.e(
-                            "RestaurantDetailFragment",
-                            "Error loading user data: ${state.exception.message}"
-                        )
-                    }
-
-                    is UiState.Empty -> {
-                        Log.d("RestaurantDetailFragment", "User state is empty")
-                    }
-                }
-            }
-        }
-    }
-
-    private fun observeFavoriteCheckState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            restaurantFavoritesViewModel.isFavoriteState.collectLatest { state ->
-                when (state) {
-                    is UiState.Success -> {
-                        updateFavoriteButton(state.data)
-                        Log.d("RestaurantDetailFragment", "Favorite state: ${state.data}")
-                    }
-
-                    is UiState.Loading -> Log.d(
-                        "RestaurantDetailFragment",
-                        "Loading favorite state..."
-                    )
-
-                    is UiState.Empty -> Log.d("RestaurantDetailFragment", "Favorite state is empty")
-                    is UiState.Error -> Log.e(
-                        "RestaurantDetailFragment",
-                        "Error checking favorite state: ${state.exception.message}"
-                    )
-                }
-            }
-        }
-    }
-
-    private fun observeAddFavoriteState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            restaurantFavoritesViewModel.addFavoriteState.collectLatest { state ->
-                when (state) {
-                    is UiState.Success -> {
-                        binding.favoriteButton.isEnabled = true
-                        updateFavoriteButton(true)
-                        showToast("찜 목록에 추가되었습니다.")
-                        Log.d("RestaurantDetailFragment", "Successfully added to favorites")
-                    }
-
-                    is UiState.Loading -> {
-                        binding.favoriteButton.isEnabled = false
-                        Log.d("RestaurantDetailFragment", "Adding to favorites...")
-                    }
-
-                    is UiState.Error -> {
-                        binding.favoriteButton.isEnabled = true
-                        showToast("오류 발생: ${state.exception.message}")
-                        Log.e(
-                            "RestaurantDetailFragment",
-                            "Error adding to favorites: ${state.exception.message}"
-                        )
-                    }
-
-                    is UiState.Empty -> Log.d(
-                        "RestaurantDetailFragment",
-                        "Add favorite state is empty"
-                    )
-                }
-            }
-        }
-    }
-
-    private fun observeRemoveFavoriteState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            restaurantFavoritesViewModel.removeFavoriteState.collectLatest { state ->
-                when (state) {
-                    is UiState.Success -> {
-                        binding.favoriteButton.isEnabled = true
-                        updateFavoriteButton(false)
-                        showToast("찜 목록에서 제거되었습니다.")
-                        Log.d("RestaurantDetailFragment", "Successfully removed from favorites")
-                    }
-
-                    is UiState.Loading -> {
-                        binding.favoriteButton.isEnabled = false
-                        Log.d("RestaurantDetailFragment", "Removing from favorites...")
-                    }
-
-                    is UiState.Error -> {
-                        binding.favoriteButton.isEnabled = true
-                        showToast("오류 발생: ${state.exception.message}")
-                        Log.e(
-                            "RestaurantDetailFragment",
-                            "Error removing from favorites: ${state.exception.message}"
-                        )
-                    }
-
-                    is UiState.Empty -> Log.d(
-                        "RestaurantDetailFragment",
-                        "Remove favorite state is empty"
-                    )
-                }
-            }
-        }
+        observeStateLatestForOtherLogic(
+            stateFlow = restaurantFavoritesViewModel.userState,
+            fragment = this,
+            onSuccess = {
+                restaurantFavoritesViewModel.checkIfRestaurantIsFavorite(args.title) // 사용자 업데이트 후 찜 여부 확인
+            })
     }
 
     private fun observeShareLinkState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            shareViewModel.shareLinkState.collectLatest { state ->
-                when (state) {
-                    is UiState.Success -> {
-                        Log.d("restaurantDetailFragment", "${state.data}")
-                        openKakaoShare(state.data)
-                        showToast("공유를 시작합니다.")
-                        Log.d("RestaurantDetailFragment", "Successfully Get shareLink")
-                        shareViewModel.resetShareState()
-                    }
+        observeStateLatestForOtherLogic(stateFlow = shareViewModel.shareLinkState,
+            fragment = this,
+            onSuccess = { shareLink ->
+                openKakaoShare(shareLink)
+                showToast("공유를 시작합니다.")
+                shareViewModel.resetShareState()
+            })
+    }
 
-                    is UiState.Loading -> {
-                        Log.d("RestaurantDetailFragment", "Trying to get shareLink...")
-                    }
+    private fun observeFavoriteCheckState() {
+        observeStateLatestForOtherLogic(stateFlow = restaurantFavoritesViewModel.isFavoriteState,
+            fragment = this,
+            onSuccess = { isFavorite ->
+                updateFavoriteButton(isFavorite)
+            })
+    }
 
-                    is UiState.Error -> {
-                        showToast("오류 발생: ${state.exception.message}")
-                        Log.e(
-                            "RestaurantDetailFragment",
-                            "Error get shareLink: ${state.exception.message}"
-                        )
-                    }
+    private fun observeAddFavoriteState() {
+        observeStateLatestForOtherLogic(stateFlow = restaurantFavoritesViewModel.addFavoriteState,
+            fragment = this,
+            onSuccess = {
+                binding.favoriteButton.isEnabled = true
+                updateFavoriteButton(true)
+                showToast("찜 목록에 추가되었습니다.")
+            },
+            onLoading = {
+                binding.favoriteButton.isEnabled = false
+            },
+            onError = { e ->
+                binding.favoriteButton.isEnabled = true
+                showToast("오류 발생: ${e.message}")
+            },
+            onEmpty = { Timber.d("Add favorite state is empty") })
+    }
 
-                    is UiState.Empty -> Log.d(
-                        "RestaurantDetailFragment",
-                        "Get shareLink is empty"
-                    )
-                }
-            }
-        }
+    private fun observeRemoveFavoriteState() {
+        observeStateLatestForOtherLogic(stateFlow = restaurantFavoritesViewModel.removeFavoriteState,
+            fragment = this,
+            onSuccess = {
+                binding.favoriteButton.isEnabled = true
+                updateFavoriteButton(false)
+                showToast("찜 목록에서 제거되었습니다.")
+            },
+            onLoading = {
+                binding.favoriteButton.isEnabled = false
+            },
+            onError = { e ->
+                binding.favoriteButton.isEnabled = true
+                showToast("오류 발생: ${e.message}")
+            },
+            onEmpty = { Timber.d("Remove favorite state is empty") })
     }
 
     private fun isKakaoTalkInstalled(context: Context): Boolean {
@@ -509,15 +403,19 @@ class RestaurantDetailFragment :
     private fun openKakaoShare(shareUrl: String) {
         if (!isKakaoTalkInstalled(requireContext())) {
             // 사용자에게 설치 필요 안내
-            Toast.makeText(requireContext(), "카카오톡이 설치되어 있지 않습니다. 설치 후 다시 시도해주세요.", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                requireContext(), "카카오톡이 설치되어 있지 않습니다. 설치 후 다시 시도해주세요.", Toast.LENGTH_LONG
+            ).show()
 
             // 카카오톡 설치 페이지로 이동 (Play Store)
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.kakaotalk_playstorelink)))
+            val intent =
+                Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.kakaotalk_playstorelink)))
             if (intent.resolveActivity(requireContext().packageManager) != null) {
                 startActivity(intent)
             } else {
                 // Play Store 앱이 없을 경우 웹으로 이동
-                val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.kakaotalk_weblink)))
+                val webIntent =
+                    Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.kakaotalk_weblink)))
                 startActivity(webIntent)
             }
             return
@@ -530,7 +428,6 @@ class RestaurantDetailFragment :
             Toast.makeText(requireContext(), "공유할 수 있는 앱이 없습니다.", Toast.LENGTH_SHORT).show()
         }
     }
-
 
 
     private fun createRestaurantModel(): RestaurantModel {

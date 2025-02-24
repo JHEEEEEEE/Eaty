@@ -4,15 +4,14 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-    <!-- 제목과 설명 텍스트 -->
     <androidx.constraintlayout.helper.widget.Flow
         android:id="@+id/flow_subway"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         app:constraint_referenced_ids="station_name, station_distance, navigate_icon"
+        app:flow_horizontalStyle="spread_inside"
         app:flow_maxElementsWrap="3"
         app:flow_wrapMode="chain"
-        app:flow_horizontalStyle="spread_inside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -24,8 +23,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/title"
-        android:textSize="20sp"
         android:textColor="@color/primary_color"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/flow_subway"
         app:layout_constraintStart_toStartOf="@id/flow_subway"
         app:layout_constraintTop_toTopOf="@id/flow_subway" />
@@ -34,8 +33,8 @@
         android:id="@+id/station_distance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/distance"
         android:paddingStart="20dp"
+        android:text="@string/distance"
         android:textColor="@color/gray"
         app:layout_constraintBottom_toBottomOf="@id/flow_subway"
         app:layout_constraintStart_toEndOf="@id/station_name"
@@ -51,7 +50,6 @@
         app:layout_constraintTop_toTopOf="@id/flow_subway"
         app:srcCompat="@drawable/ic_navigate_12" />
 
-    <!-- 구분선 -->
     <View
         android:id="@+id/divider"
         android:layout_width="0dp"

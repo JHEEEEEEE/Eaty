@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,22 +28,31 @@ class FaqViewModel @Inject constructor(
     val getFaqState get() = _getFaqState.asStateFlow()
 
     init {
+        Timber.d("FaqViewModel 초기화 - FAQ 데이터 로드 시작")
         fetchFaqs()
     }
 
+    /**
+     * FAQ 목록을 불러온다.
+     * - API 요청을 통해 데이터를 가져오고 `UiState`로 관리
+     * - 데이터 로딩 상태 및 완료 후 상태를 반영
+     */
     private fun fetchFaqs() {
+        Timber.d("fetchFaqs() - FAQ 목록 조회 요청 시작")
+
         viewModelScope.launch {
-            getFaqListUseCase()
-                .onStart {
-                    // 로딩 상태로 업데이트
+            getFaqListUseCase().onStart {
+                    Timber.d("fetchFaqs() - 로딩 상태로 변경")
                     setLoadingState(_getFaqState)
-                }
-                .onCompletion { cause ->
-                    // 로딩 종료
+                }.onCompletion { cause ->
+                    Timber.d("fetchFaqs() - 요청 완료, 상태: $cause")
                     handleCompletionState(_getFaqState, cause)
-                }
-                .collectLatest { dataResource ->
-                    _getFaqState.value = dataResource.toUiStateList { it.toPresentation() }
+                }.collectLatest { dataResource ->
+                    _getFaqState.value = dataResource.toUiStateList {
+                        Timber.d("fetchFaqs() - 변환된 FAQ 데이터: $it")
+                        it.toPresentation()
+                    }
+                    Timber.d("fetchFaqs() - 최종 상태 업데이트: $_getFaqState")
                 }
         }
     }

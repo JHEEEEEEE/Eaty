@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RestaurantResponse(
+
     @SerialName("place_name") val title: String = "",          // 장소명
     //@SerialName("category_name") val category: String = "",    // 카테고리
     @SerialName("address_name") val lotNumberAddress: String = "",      // 지번 주소

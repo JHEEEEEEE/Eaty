@@ -8,6 +8,7 @@ import com.effort.local.model.user.UserLocal
 
 @Dao
 interface UserDao {
+
     @Query("SELECT * FROM user LIMIT 1")
     suspend fun getUser(): UserLocal?
 

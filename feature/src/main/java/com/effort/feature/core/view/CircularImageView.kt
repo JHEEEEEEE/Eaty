@@ -13,7 +13,6 @@ import com.effort.feature.core.util.dp
 import com.effort.feature.core.util.load
 import com.effort.feature.databinding.ViewCircularImageBinding
 
-
 class CircularImageView : FrameLayout {
 
     constructor(context: Context) : super(context) {
@@ -78,5 +77,4 @@ class CircularImageView : FrameLayout {
             crossfade(true)
         }
     }
-
 }

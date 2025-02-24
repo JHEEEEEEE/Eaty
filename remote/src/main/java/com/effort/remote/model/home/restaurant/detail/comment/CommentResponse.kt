@@ -6,17 +6,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CommentResponse(
-    @SerialName("content")
-    val content: String = "",
 
-    @SerialName("userId")
-    val userId: String = "",
+    @SerialName("content") val content: String = "",
 
-    @SerialName("userNickname")
-    val userNickname: String = "",
+    @SerialName("userId") val userId: String = "",
 
-    @SerialName("timestamp")
-    val timestamp: String = ""
+    @SerialName("userNickname") val userNickname: String = "",
+
+    @SerialName("timestamp") val timestamp: String = ""
 ) {
     fun toData(): CommentEntity {
         return CommentEntity(content, userId, userNickname, timestamp)
