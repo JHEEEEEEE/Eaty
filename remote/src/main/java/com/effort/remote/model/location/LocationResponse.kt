@@ -2,7 +2,7 @@ package com.effort.remote.model.location
 
 import com.effort.data.model.location.LocationEntity
 
-data class LocationResponse (
+data class LocationResponse(
     val latitude: Double,
     val longitude: Double,
 ) {

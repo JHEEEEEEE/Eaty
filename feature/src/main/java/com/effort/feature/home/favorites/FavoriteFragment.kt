@@ -1,7 +1,6 @@
 package com.effort.feature.home.favorites
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,11 @@ import com.effort.presentation.viewmodel.home.restaurant.favorites.RestaurantFav
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FavoriteFragment : BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate) {
+class FavoriteFragment :
+    BaseFragment<FragmentRestaurantBinding>(FragmentRestaurantBinding::inflate) {
+
     private val viewModel: RestaurantFavoritesViewModel by viewModels()
     private lateinit var favoriteAdapter: RestaurantListAdapter
-
 
     override fun initView() {
         initRecyclerView()
@@ -26,9 +26,7 @@ class FavoriteFragment : BaseFragment<FragmentRestaurantBinding>(FragmentRestaur
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRestaurantBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -39,42 +37,44 @@ class FavoriteFragment : BaseFragment<FragmentRestaurantBinding>(FragmentRestaur
         initView()
     }
 
+    /**
+     * 찜한 식당 목록을 표시하는 RecyclerView 초기화
+     * - 클릭 시 상세 화면으로 이동
+     */
     private fun initRecyclerView() {
-        // 찜 목록 어댑터
         favoriteAdapter = RestaurantListAdapter { restaurant ->
-            val action = FavoriteFragmentDirections.actionFavoriteFragmentToRestaurantDetailFragment(
-                title = restaurant.title,
-                lotNumberAddress = restaurant.lotNumberAddress,
-                roadNameAddress = restaurant.roadNameAddress,
-                distance = restaurant.distance,
-                phoneNumber = restaurant.phoneNumber,
-                placeUrl = restaurant.placeUrl,
-                latitude = restaurant.latitude,
-                longitude = restaurant.longitude
+            findNavController().navigate(
+                FavoriteFragmentDirections.actionFavoriteFragmentToRestaurantDetailFragment(
+                    title = restaurant.title,
+                    lotNumberAddress = restaurant.lotNumberAddress,
+                    roadNameAddress = restaurant.roadNameAddress,
+                    distance = restaurant.distance,
+                    phoneNumber = restaurant.phoneNumber,
+                    placeUrl = restaurant.placeUrl,
+                    latitude = restaurant.latitude,
+                    longitude = restaurant.longitude
+                )
             )
-            findNavController().navigate(action) // 찜 목록에서 상세로 이동
         }
-        binding.recyclerviewRestaurant.apply {
-            adapter = favoriteAdapter
-        }
+        binding.recyclerviewRestaurant.adapter = favoriteAdapter
     }
 
+    /**
+     * 찜 목록과 사용자 정보를 관찰하여 UI 업데이트
+     */
     private fun observeViewModel() {
         observeStateLatest(
             stateFlow = viewModel.getFavoriteState,
             progressView = binding.progressCircular.progressBar,
             fragment = this
-        ) { favoriteData ->
-            favoriteAdapter.submitList(favoriteData) // 찜 목록 업데이트
-        }
+        ) { favoriteAdapter.submitList(it) } // 찜 목록 변경 시 RecyclerView 업데이트
 
         observeStateLatest(
             stateFlow = viewModel.userState,
             progressView = binding.progressCircular.progressBar,
             fragment = this
-        ) { user ->
-            Log.d("RestaurantDetailFragment", "User updated: ${user?.email}")
-            viewModel.fetchFavorites() // 찜 목록 불러오기
+        ) {
+            viewModel.fetchFavorites() // 사용자 정보 변경 시 찜 목록 새로고침
         }
     }
 }

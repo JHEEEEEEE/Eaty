@@ -16,31 +16,43 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class NoticeViewModel @Inject constructor(
     private val getNoticeListUseCase: GetNoticeListUseCase
 ) : ViewModel() {
+
     private val _getNoticeState = MutableStateFlow<UiState<List<NoticeModel>>>(UiState.Empty)
     val getNoticeState get() = _getNoticeState.asStateFlow()
 
     init {
+        Timber.d("NoticeViewModel 초기화 - 공지사항 데이터 로드 시작")
         fetchNotices()
     }
 
-    // 반복되는 중복 로직 줄일 수 있는 방법 강구
+    /**
+     * 공지사항 목록을 불러온다.
+     * - API 요청을 통해 데이터를 가져오고 `UiState`로 관리
+     * - 로딩 상태와 데이터 로딩 완료 후의 상태를 반영
+     */
     private fun fetchNotices() {
+        Timber.d("fetchNotices() - 공지사항 목록 조회 요청 시작")
+
         viewModelScope.launch {
-            getNoticeListUseCase()
-                .onStart {
+            getNoticeListUseCase().onStart {
+                    Timber.d("fetchNotices() - 로딩 상태로 변경")
                     setLoadingState(_getNoticeState)
-                }
-                .onCompletion { cause ->
-                    handleCompletionState(_getNoticeState, cause) // 상태 관리 함수 호출
-                }
-                .collectLatest { dataResource ->
-                    _getNoticeState.value = dataResource.toUiStateList { it.toPresentation() }
+                }.onCompletion { cause ->
+                    Timber.d("fetchNotices() - 요청 완료, 상태: $cause")
+                    handleCompletionState(_getNoticeState, cause)
+                }.collectLatest { dataResource ->
+                    _getNoticeState.value = dataResource.toUiStateList {
+                        Timber.d("fetchNotices() - 변환된 공지사항 데이터: $it")
+                        it.toPresentation()
+                    }
+                    Timber.d("fetchNotices() - 최종 상태 업데이트: $_getNoticeState")
                 }
         }
     }

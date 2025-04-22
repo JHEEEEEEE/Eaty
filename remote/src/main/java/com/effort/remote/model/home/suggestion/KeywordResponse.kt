@@ -7,8 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class KeywordResponse(
 
-    @SerialName("keyword")
-    val keyword: String
+    @SerialName("keyword") val keyword: String
 ) {
     fun toData(): KeywordEntity {
         return KeywordEntity(keyword)

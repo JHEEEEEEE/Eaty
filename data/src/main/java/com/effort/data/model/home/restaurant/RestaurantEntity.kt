@@ -12,17 +12,16 @@ data class RestaurantEntity(
     val longitude: String,
     val latitude: String,
 ) {
-    fun toDomain(): Restaurant =
-        Restaurant(
-            title,
-            lotNumberAddress,
-            roadNameAddress,
-            phoneNumber,
-            placeUrl,
-            distance,
-            longitude,
-            latitude
-        )
+    fun toDomain(): Restaurant = Restaurant(
+        title,
+        lotNumberAddress,
+        roadNameAddress,
+        phoneNumber,
+        placeUrl,
+        distance,
+        longitude,
+        latitude
+    )
 }
 
 fun Restaurant.toData(): RestaurantEntity {

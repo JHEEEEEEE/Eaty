@@ -10,22 +10,28 @@ import androidx.recyclerview.widget.RecyclerView
 import com.effort.feature.databinding.ItemBlogReviewBinding
 import com.effort.presentation.model.home.restaurant.detail.blog.BlogReviewModel
 
+/**
+ * 블로그 리뷰 목록을 표시하는 RecyclerView Adapter
+ * - 사용자가 블로그 리뷰를 클릭하면 해당 블로그 링크로 이동
+ * - DiffUtil을 사용하여 변경된 데이터만 갱신
+ */
 class BlogReviewListAdapter :
     ListAdapter<BlogReviewModel, BlogReviewListAdapter.BlogReviewViewHolder>(DiffCallback) {
 
     class BlogReviewViewHolder(private val binding: ItemBlogReviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        /**
+         * 블로그 리뷰 데이터를 UI에 바인딩하고, 클릭 시 해당 블로그 링크로 이동
+         */
         fun bind(item: BlogReviewModel) {
-            with(binding){
-                blogTitle.text = item.title
-                blogContents.text = item.contents
-                blogDateTime.text = item.dateTime
+            binding.blogTitle.text = item.title
+            binding.blogContents.text = item.contents
+            binding.blogDateTime.text = item.dateTime
 
-                root.setOnClickListener {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.url))
-                    it.context.startActivity(intent)
-                }
+            binding.root.setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.url))
+                it.context.startActivity(intent)
             }
         }
     }
@@ -41,6 +47,10 @@ class BlogReviewListAdapter :
     }
 
     companion object {
+        /**
+         * RecyclerView의 성능을 최적화하기 위한 DiffUtil 콜백
+         * - 같은 URL을 가진 블로그 리뷰는 동일한 아이템으로 간주
+         */
         private val DiffCallback = object : DiffUtil.ItemCallback<BlogReviewModel>() {
             override fun areItemsTheSame(
                 oldItem: BlogReviewModel, newItem: BlogReviewModel

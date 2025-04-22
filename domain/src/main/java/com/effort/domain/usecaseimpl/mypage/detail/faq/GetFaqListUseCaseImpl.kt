@@ -11,16 +11,20 @@ import javax.inject.Inject
 class GetFaqListUseCaseImpl @Inject constructor(
     private val faqRepository: FaqRepository
 ) : GetFaqListUseCase {
+
+    /**
+     * FAQ 데이터를 가져와 최신순으로 정렬하여 반환한다.
+     * - 서버에서 가져온 데이터를 클라이언트에서 정렬 처리
+     */
     override fun invoke(): Flow<DataResource<List<Faq>>> =
         faqRepository.getFaqs().map { dataResource ->
             when (dataResource) {
                 is DataResource.Success -> {
-                    // 날짜 최신순으로 정렬
+                    // 최신순 정렬 (timestamp 기준)
                     val sortedList = dataResource.data.sortedByDescending { it.timestamp }
                     DataResource.Success(sortedList)
                 }
-
-                else -> dataResource// 상태 그대로 전달
+                else -> dataResource // 기존 상태 유지
             }
         }
 }

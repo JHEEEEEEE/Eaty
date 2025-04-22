@@ -7,7 +7,7 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/naver_map_container"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="275dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -55,7 +55,9 @@
         android:id="@+id/flow_restaurant_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="15dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingTop="5dp"
         app:constraint_referenced_ids="restaurant_title, restaurant_distance,restaurant_lotNumber_address, restaurant_roadName_address, restaurant_number, restaurant_webpage"
         app:flow_horizontalBias="0"
         app:flow_horizontalStyle="packed"

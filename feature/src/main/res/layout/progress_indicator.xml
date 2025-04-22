@@ -4,18 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- res/layout/progress_bar.xml -->
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        app:indicatorSize="48dp"
         app:indicatorColor="@color/primary_color"
-        app:trackThickness="4dp"
+        app:indicatorSize="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:trackThickness="4dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

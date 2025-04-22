@@ -12,7 +12,6 @@ class MyPageRemoteDataSourceImpl @Inject constructor(
 ) : MyPageRemoteDataSource {
 
     override fun observeUserUpdate(): Flow<UserEntity> {
-        return myPageService.observeUserUpdate()
-            .map { response -> response.toData() }
+        return myPageService.observeUserUpdate().map { response -> response.toData() }
     }
 }

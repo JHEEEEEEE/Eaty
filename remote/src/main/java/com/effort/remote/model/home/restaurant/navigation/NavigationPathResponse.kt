@@ -3,7 +3,7 @@ package com.effort.remote.model.home.restaurant.navigation
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/*
+/**
     네이버 Directions API 응답 구조
 
     {
@@ -39,6 +39,6 @@ import kotlinx.serialization.Serializable
 /* 네이버 API에서 반환하는 개별 경로 응답 (result 리스트 안의 요소) */
 @Serializable
 data class NavigationPathResponse(
-    @SerialName("route")
-    val route: RouteResponse // 경로 관련 정보
+
+    @SerialName("route") val route: RouteResponse // 경로 관련 정보
 )

@@ -19,12 +19,10 @@ import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    // Json 인스턴스를 싱글톤으로 정의
     @Provides
     @Singleton
     fun provideJson(): Json = Json {
@@ -37,50 +35,35 @@ object NetworkModule {
     @Singleton
     @KakaoRetrofit
     fun provideKakaoRetrofit(
-        okHttpClient: OkHttpClient, // 공통 클라이언트 사용
-        kakaoApiInterceptor: KakaoApiInterceptor,
-        json: Json
+        okHttpClient: OkHttpClient, kakaoApiInterceptor: KakaoApiInterceptor, json: Json
     ): Retrofit {
-        val client = okHttpClient.newBuilder()
-            .addInterceptor(kakaoApiInterceptor) // 인증 인터셉터 추가
-            .build()
+        val client = okHttpClient.newBuilder().addInterceptor(kakaoApiInterceptor).build()
 
         val contentType = "application/json".toMediaType()
-        return Retrofit.Builder()
-            .baseUrl("https://dapi.kakao.com/") // API 기본 URL
-            .client(client)
-            .addConverterFactory(json.asConverterFactory(contentType))
-            .build()
+        return Retrofit.Builder().baseUrl("https://dapi.kakao.com/") // API 기본 URL
+            .client(client).addConverterFactory(json.asConverterFactory(contentType)).build()
     }
 
     @Provides
     @Singleton
     @WeatherRetrofit
     fun provideWeatherRetrofit(
-        okHttpClient: OkHttpClient, // 공통 클라이언트 사용
-        json: Json // JSON 직렬화 라이브러리 주입
+        okHttpClient: OkHttpClient, json: Json
     ): Retrofit {
         val contentType = "application/json".toMediaType()
-        return Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/data/2.5/")
-            .client(okHttpClient) // 공통 클라이언트 적용
-            .addConverterFactory(json.asConverterFactory(contentType))
-            .build()
+        return Retrofit.Builder().baseUrl("https://api.openweathermap.org/data/2.5/")
+            .client(okHttpClient).addConverterFactory(json.asConverterFactory(contentType)).build()
     }
 
     @Provides
     @Singleton
     @NaverMapRetrofit
     fun provideNaverMapRetrofit(
-        okHttpClient: OkHttpClient,
-        json: Json
+        okHttpClient: OkHttpClient, json: Json
     ): Retrofit {
         val contentType = "application/json".toMediaType()
-        return Retrofit.Builder()
-            .baseUrl("https://naveropenapi.apigw.ntruss.com/")
-            .client(okHttpClient)
-            .addConverterFactory(json.asConverterFactory(contentType))
-            .build()
+        return Retrofit.Builder().baseUrl("https://naveropenapi.apigw.ntruss.com/")
+            .client(okHttpClient).addConverterFactory(json.asConverterFactory(contentType)).build()
     }
 
     @Provides
@@ -121,11 +104,7 @@ object NetworkModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
-        return OkHttpClient.Builder()
-            .addInterceptor(logging) // 로깅 인터셉터 추가
-            .connectTimeout(30, TimeUnit.SECONDS) // 타임아웃 설정
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
+        return OkHttpClient.Builder().addInterceptor(logging).connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).build()
     }
 }

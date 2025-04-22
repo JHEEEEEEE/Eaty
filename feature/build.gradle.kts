@@ -44,9 +44,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 
     // hilt
     implementation(libs.hilt.android)
@@ -68,13 +65,11 @@ dependencies {
     implementation(libs.naver.map)
     implementation(libs.play.services.location)
 
-    // firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
+    // Google SignIn
     implementation(libs.play.services.auth)
+
+    // Timber
+    implementation(libs.timber)
 
     implementation(project(":presentation"))
 }
-
-

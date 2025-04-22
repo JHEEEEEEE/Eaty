@@ -5,6 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface BlogReviewService {
+
     @GET("v2/search/blog")
     suspend fun getBlogReviewList(
         @Query("query") query: String,                 // 검색어
